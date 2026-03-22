@@ -1,0 +1,141 @@
+.list-hover1 > li > a{
+	position: relative;
+	
+	& > span{
+		position: relative;
+		
+		&:after{
+			content: "";
+			position: absolute;
+			right: -1px;
+			bottom: 0;
+			height: 1px;
+			width: 0;
+			background-color: var(--bs-primary);
+			transition: all 0.3s linear;
+			-webkit-transition: all 0.3s linear;
+			-moz-transition: all 0.3s linear;
+			-o-transition: all 0.3s linear;
+		}
+	}
+	&:hover,
+	&.active{
+		& > span{
+			&:after{
+				width: 100%;
+				transform-origin: right;
+				-moz-transform-origin: right;
+				-webkit-transform-origin: right;
+				-ms-transform-origin: right;
+				-o-transform-origin: right;
+				right: auto;
+				left: 0;
+			}
+		}
+	}
+}
+.list-hover2 > li > a{
+	position: relative;
+	
+	& > span:not(.badge){
+		position: relative;
+		
+		&:after{
+			content: "";
+			position: absolute;
+			left: 0;
+			bottom: -1px;
+			height: 1px;
+			width: 100%;
+			background-color: var(--bs-primary);
+			transition: all 0.15s linear;
+			-webkit-transition: all 0.15s linear;
+			-moz-transition: all 0.15s linear;
+			-o-transition: all 0.15s linear;
+			transform: translateY(-5px);
+			opacity: 0;
+		}
+	}
+	
+	&:hover,
+	&.active{
+		& > span{
+			&:after{
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+	}
+}
+
+.list-hover4 > li > a{
+	position: relative;
+    overflow: hidden;
+    display: block;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+	
+	&::after {
+		position: absolute;
+		top: 100%;
+		content: attr(data-hover);
+		display: inline;
+		-webkit-transition: top 400ms cubic-bezier(0.50, -0.50, 0.250, 1.50);
+		transition: top 400ms cubic-bezier(0.50, -0.50, 0.250, 1.50);
+	}
+	& > span:not(.badge){
+		display: block;
+		-webkit-transition: -webkit-transform 400ms cubic-bezier(0.50, -0.50, 0.250, 1.50);
+		transition: -webkit-transform 400ms cubic-bezier(0.50, -0.50, 0.250, 1.50);
+		transition: transform 400ms cubic-bezier(0.50, -0.50, 0.250, 1.50);
+		transition: transform 400ms cubic-bezier(0.50, -0.50, 0.250, 1.50), -webkit-transform 400ms cubic-bezier(0.50, -0.50, 0.250, 1.50);
+	}
+
+	&:hover,
+	&.active{
+		&::after{
+			top: 5px;
+		}
+		& > span{
+			-webkit-transform: translateY(-25px);
+			transform: translateY(-25px);
+		}
+	}
+}
+.list-hover5 > li > a{
+	position: relative;
+	
+	& > span:not(.badge){
+		overflow: hidden;
+		padding-bottom: 0;
+		position: relative;
+		display: inline-flex;
+		
+		&::after{			
+			content: "";
+			top: 0;
+			bottom: 0;
+			left: 0;
+			opacity: 0;
+			background: var(--bs-primary);
+			margin: auto;
+			height: 2px;
+			width: 100%;
+			position: absolute;
+			transform: translate3d(-100%, 0, 0);
+		}
+	}
+	
+	&:hover,
+	&.active{
+		& > span{
+			&::after {
+				animation: listHover5 0.8s linear forwards;
+				animation-timing-function: linear;
+				animation-timing-function: cubic-bezier(0.650, 0.050, 0.350, 1);
+			}			
+		}
+	}
+}

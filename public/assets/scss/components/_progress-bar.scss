@@ -1,0 +1,16 @@
+// Progress Bar
+.progress-wrap{
+	
+	// Progress Info
+	.progress-info{
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 10px;
+		
+		span{
+			color: var(--bs-secondary);
+			font-weight: 500;
+		}
+	}
+}

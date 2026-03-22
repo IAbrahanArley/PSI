@@ -1,0 +1,325 @@
+table {
+    border-collapse: collapse;
+    border-spacing : 0;
+}
+.table-responsive-sm {
+    min-width: 48rem;
+}
+.table{
+    tr{
+        th{
+			font-weight: 500;
+			color: var(--bs-secondary);
+		}
+    }
+	@include respond('phone'){
+		& > :not(caption) > * > * {
+			padding: 15px 15px;
+		}
+	}
+}
+.table-striped {
+    th,
+	td{
+		border: 0;
+		background-color: transparent;
+	}
+    &.table-striped-rounded{
+		tr > *{
+			&:first-child{
+				border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+			}
+			&:last-child{
+				border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+			}
+		}
+	}
+	&.table-striped-white > tbody > tr:nth-of-type(odd) > * {
+		--bs-table-striped-bg: #fff;
+	}
+}
+.table-border-bottom{
+	tr > *{
+		&:first-child{
+			padding-left: 0;
+		}
+		&:last-child{
+			padding-right: 0;
+		}
+	}
+	tr:last-child > *{
+		border: 0;
+	}
+}
+
+.table > :not(:first-child) {
+    border-top: 1px solid #dee2e6;
+}
+.check-tbl{
+	width:100%;
+	border:1px solid rgba(0, 0, 0, 0.125);
+	vertical-align:middle;
+	
+	&.style-1{
+		thead{
+			th:not(:first-child){
+				padding-#{$dz-pos-left}:15px;
+			}
+		}
+		tbody{
+			tr{
+				border-bottom:1px solid rgba(94, 98, 111, 0.2);
+				
+				td{
+					padding:30px 18px;
+					img{
+						min-width: 100px;
+						height: 100px;
+						border-radius: 30px;
+					}
+					&:first-child,
+					&:last-child{
+						padding: 30px 0;
+					}
+					&.product-item-img{
+						min-width:100px;
+						height:100px;
+					}
+					@include respond('tab-land'){
+						padding:20px 18px;
+						img{
+							min-width:80px;
+							height:80px;
+						}
+						&:first-child,
+						&:last-child{
+							padding: 20px 0;
+						}
+						&.product-item-img{
+							min-width:80px;
+							height:80px;
+						}
+					}
+				}
+			}
+		}
+	}
+	&.style-2{
+		border-bottom:0;
+		thead{
+			th{
+				padding-#{$dz-pos-left}:0px;
+			}
+		}
+		tbody{
+			tr{
+				td{
+					font-size: 14px;
+					font-weight: 400;
+						a{
+							color:var(--bs-secondary);
+						}
+		
+					i{
+						background:var(--bs-primary);
+						color:#fff;
+						border-radius: 50%;
+						font-size: 14px;
+						padding: 3px 4px;
+						margin-#{$dz-pos-right}:15px;
+					}
+					&:last-child{
+						text-align:unset;
+					}
+					&:first-child{
+						width:33%;
+						background:#f3f3f3;
+					}
+					&.disable{
+						color:#BEBEBE;
+						i{
+							background:#BEBEBE;
+						}	
+					}	
+				}				
+			}
+		}
+	}
+	thead{
+		th{
+			font-size: 16px;
+			font-weight: 700;
+			padding: 0 0 20px;
+			color: #24262B;
+		}
+	}
+	tbody{
+		tr{	
+			border-bottom:1px solid rgba(94, 98, 111, 0.2);
+			td{
+				padding: 15px;
+				font-weight: 500;
+				font-size:16px;
+				color: var(--bs-secondary);
+				border:none;
+				font-family: var(--font-family-title);
+				padding-left: 0;
+				img{
+					width: 80px;
+					min-width: 80px;
+					height: 80px;
+					border-radius: 30px;
+				}
+				&:first-child,
+				&:last-child{
+					padding: 20px 0;
+				}
+				&:last-child{
+					text-align:$dz-pos-right;
+				}
+				&.product-item-name{
+					font-size:18px;
+					font-family: var(--font-family-title);
+					padding-left: 15px;
+				}
+				&.product-item-price{
+					color: #5E626F;
+				}
+				@include respond('tab-land'){
+					&.product-item-name{
+						font-size:16px;
+					}
+				}
+			}
+		}
+		.product-item-price{
+			span{
+				font-size: 16px;
+				text-decoration: line-through;
+				color: #5E626F;
+				margin-#{$dz-pos-right}: 10px;
+				font-weight:400;
+			}
+			strong{
+				font-weight: 500;
+				color: #24262B;				
+			}
+		}
+	}
+	.product-item-close{ 
+		text-align: $dz-pos-right;
+		a{
+			width: 42px;
+			height: 42px;
+			border-radius: 50%;
+			background:var(--bs-secondary);
+			display: inline-block;
+			text-align: center;
+			line-height: 36px;
+			i{
+				color: #fff;
+				font-weight: 900;
+				vertical-align: middle;
+			}
+		}
+	}
+}
+.check-tbl{
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+.table-responsive-md{
+	min-width: 36rem !important;
+}
+
+// Date picker
+#ui-datepicker-div {
+    display      : none;
+    background   : darken($body-bg, 2%);
+    box-shadow   : 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
+    margin-top   : 0.25rem;
+    border-radius: 0.5rem;
+    padding      : 0.5rem;
+}
+.ui-datepicker-calendar{
+    thead th {
+        padding    : 0.25rem 0;
+        text-align : center;
+        font-size  : 0.75rem;
+        font-weight: 400;
+        color      : $body-color;
+    }
+    tbody td {
+        width     : 2.5rem;
+        text-align: center;
+        padding   : 0;
+
+        a {
+            display        : block;
+            border-radius  : 0.25rem;
+            line-height    : 2rem;
+            transition     : 0.3s all;
+            color          : $body-color;
+            font-size      : 0.875rem;
+            text-decoration: none;
+
+            &:hover,
+			&.ui-state-active{
+                background-color: var(--bs-primary);
+                color           : white;
+            }
+        }
+    }
+}
+.ui-datepicker-header a {
+    &.ui-corner-all {
+        cursor       : pointer;
+        position     : absolute;
+        top          : 0;
+        width        : 2rem;
+        height       : 2rem;
+        margin       : 0.5rem;
+        border-radius: 0.25rem;
+        transition   : 0.3s all;
+
+        &:hover {
+            background-color: rgba(var(--bs-primary-rgb), 0.3);
+            color           : $white;
+        }
+    }
+    &.ui-datepicker-prev {
+        left               : 0;
+        background         : url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMyIgaGVpZ2h0PSIxMyIgdmlld0JveD0iMCAwIDEzIDEzIj48cGF0aCBmaWxsPSIjNDI0NzcwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik03LjI4OCA2LjI5NkwzLjIwMiAyLjIxYS43MS43MSAwIDAgMSAuMDA3LS45OTljLjI4LS4yOC43MjUtLjI4Ljk5OS0uMDA3TDguODAzIDUuOGEuNjk1LjY5NSAwIDAgMSAuMjAyLjQ5Ni42OTUuNjk1IDAgMCAxLS4yMDIuNDk3bC00LjU5NSA0LjU5NWEuNzA0LjcwNCAwIDAgMS0xLS4wMDcuNzEuNzEgMCAwIDEtLjAwNi0uOTk5bDQuMDg2LTQuMDg2eiIvPjwvc3ZnPg==");
+        background-repeat  : no-repeat;
+        background-size    : 0.5rem;
+        background-position: 50%;
+        transform          : rotate(180deg);
+    }
+
+    &.ui-datepicker-next {
+        right              : 0;
+        background         : url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMyIgaGVpZ2h0PSIxMyIgdmlld0JveD0iMCAwIDEzIDEzIj48cGF0aCBmaWxsPSIjNDI0NzcwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik03LjI4OCA2LjI5NkwzLjIwMiAyLjIxYS43MS43MSAwIDAgMSAuMDA3LS45OTljLjI4LS4yOC43MjUtLjI4Ljk5OS0uMDA3TDguODAzIDUuOGEuNjk1LjY5NSAwIDAgMSAuMjAyLjQ5Ni42OTUuNjk1IDAgMCAxLS4yMDIuNDk3bC00LjU5NSA0LjU5NWEuNzA0LjcwNCAwIDAgMS0xLS4wMDcuNzEuNzEgMCAwIDEtLjAwNi0uOTk5bDQuMDg2LTQuMDg2eiIvPjwvc3ZnPg==');
+        background-repeat  : no-repeat;
+        background-size    : 10px;
+        background-position: 50%;
+    }
+
+    >span {
+        display: none;
+    }
+}
+
+.ui-datepicker-title {
+    text-align    : center;
+    line-height   : 2rem;
+    margin-bottom : 0.25rem;
+    font-size     : 0.875rem;
+    font-weight  : 500;
+    padding-bottom: 0.25rem;
+}
+
+.ui-datepicker-week-col {
+    color      : $body-color;
+    font-weight: 400;
+    font-size  : 0.75rem;
+}

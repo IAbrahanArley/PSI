@@ -1,0 +1,151 @@
+.site-footer{
+	&.style-1{
+		position: relative;
+		z-index: 1;
+		overflow: hidden;
+		background-color: var(--bs-light);
+		
+		.footer-title {
+			font-weight: 500;
+		}
+		.footer-top {
+			padding: 80px 0px 45px;
+			
+			@include respond('tab-port'){
+				padding: 50px 0px 20px;
+			}
+			@include respond('phone-land'){
+				padding: 50px 0 0;
+			}
+		}
+		.footer-middle{
+			.fm-inner{
+				padding: 40px 0;
+			    border-top: 1px solid rgba(0, 0, 0, 0.1);
+			}
+			.title{
+				font-size: 24px;
+				margin-bottom: 5px;
+				font-weight: 500;
+			}
+			p{
+			    font-size: 15px;
+				margin-bottom: 0;
+			}
+		}
+		.item1{
+			z-index: 99;
+			position: absolute;
+			right: 50px;
+			bottom: 200px;
+			
+			@include respond('wide-desktop'){
+				right: 20px;
+				bottom: 250px;
+			}
+			@include respond('laptop'){
+				display: none;
+			}
+		}
+		.fh-inner{
+			padding: 80px 0 25px;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+			
+			@include respond('tab-port'){
+				padding: 50px 0 25px;
+			}
+		}
+		@include respond('phone'){
+			.footer-middle{
+				.fm-inner{
+					padding: 30px 0;
+				}
+				.title{
+					font-size: 20px;
+				}
+				p{
+					font-size: 14px;
+				}
+			}
+		}
+	}
+	&.style-2{
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center;
+		
+		.footer-title {
+			font-weight: 500;
+		}	
+		.widget_services{
+			padding-left: 30px;
+			
+			@include custommq ($max:1380px){
+				padding-left: 0;				
+			}
+		}
+		.footer-middle{
+			
+			.fm-inner{
+				border-radius: 30px;
+				padding: 25px 40px;
+				background-color: #fff;
+				
+				@include respond('phone-land'){
+					padding: 25px 25px;
+				}
+			}
+			.title{
+				margin-bottom: 3px;
+			}
+			.text{
+				font-size: 15px;
+				margin-bottom: 0;
+			}
+		}
+		&.overlay-secondary-dark::before{
+			background-color: #07121E;
+		}
+		.fb-inner{
+			border: 0;
+			padding: 20px 0;
+		}
+		.footer-head{
+			.fh-inner{
+				padding-top: 40px;
+				padding-bottom: 10px;
+				border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+			}
+		}
+		&.footer-dark{
+			--bs-body-color: #BED2E7;
+			background-color: #07121E;
+			
+			.text-body{
+				color: var(--bs-body-color) !important;
+			}
+			.footer-middle{
+				.fm-inner{
+					background-color: #07121E;
+				}
+			}
+			.dzSubscribe.style-1 .input-group .form-control {
+				background: #07121E;
+				border: 1px solid #07121E;
+				color: #fff;
+				
+				&:-webkit-autofill,
+				&:-webkit-autofill:hover,
+				&:-webkit-autofill:focus,
+				&:-webkit-autofill:active{
+					-webkit-text-fill-color: #fff;
+				}
+			}
+			.footer-head{
+				.fh-inner{
+					border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+				}
+			}
+		}
+	}
+}

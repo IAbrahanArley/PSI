@@ -1,0 +1,158 @@
+.dz-social-icon{
+	ul{
+		display: flex;
+	}
+	li{
+		display:inline-block;
+		margin-#{$dz-pos-right}: 5px;
+		a{
+			height:40px;
+			width:40px;
+			min-width:40px;
+			line-height:40px;
+			font-size: 16px;
+			text-align:center;
+			border-radius:5px;
+			@include transitionMedium;
+			i{
+				color: var(--bs-heading-color);
+			}
+		}
+	}
+	&.style-1{	
+		display:flex;
+		
+		li{
+			a{
+				width: 44px;
+				height: 44px;
+				line-height: 44px;
+				font-size: 14px;
+				display: block;
+				border-radius: 50%;
+				background-color: var(--bs-light);
+				color: var(--bs-primary);
+				
+				i{
+					color: var(--bs-primary);
+				}
+				&:hover{
+					background-color:var(--bs-primary);
+					color: #fff;
+					
+					i{
+						color: #fff;
+					}
+				}
+			}
+		}
+	}
+	&.style-2{
+		li{
+			margin-#{$dz-pos-right}:10px;
+			color:#000;
+			a{
+			    color: #fff;
+				width: 55px;
+				height: 55px;
+				line-height: 55px;
+				font-size: 20px;
+				border: 1px solid var(--border-color);
+				border-radius: 50%;
+				display: block;
+				background: var(--bs-secondary);
+				i{
+					color:#fff;
+				}
+				&:hover{
+					background-color:var(--bs-secondary);
+					border-color: var(--bs-secondary);
+					color:#fff;
+				}
+				
+			}
+		}
+
+		&.white{
+			color:#fff;
+			a{
+				color:#fff;
+				border: 1px solid rgba(255, 255, 255, 1);
+				i{
+					color: #fff;
+				}
+				&:hover{
+					background-color:#fff;
+					border-color: #fff;
+					color:var(--bs-secondary);
+					i{
+						color:var(--bs-secondary);
+					}
+				}
+			}
+		}
+		
+		@include custommq($max:1191px){
+			justify-content: center;
+		}
+	}
+	&.style-3{
+		li{
+			width: 30px;
+			height: 30px;
+			line-height: 30px;
+			text-align:center;
+			border-radius:var(--border-radius-base);
+			&:nth-child(1){
+				background-color: $facebook;
+			}
+			&:nth-child(2){
+				background-color: $twitter;
+			}
+			&:nth-child(3){
+				background-color: $whatsapp;
+			}
+			&:nth-child(4){
+				background-color: $google-plus;
+			}
+			a{
+				color:$white;
+				font-size: 16px;
+				line-height: 1;
+			}
+		}
+		@include respond('phone'){
+			display:none;
+		}
+	}
+	&.style-4{	
+		display:flex;
+		
+		ul{
+			gap: 10px;
+		}
+		li{
+			margin: 0;
+			
+			a{
+				width: 50px;
+				height: 50px;
+				line-height: 50px;
+				font-size: 18px;
+				display: block;
+				border-radius: 50%;
+				border: 1px solid var(--bs-body-color);
+				color: var(--bs-body-color);
+				
+				i{
+					color: inherit;
+				}
+				&:hover{
+					background-color: var(--bs-primary);
+					border-color: var(--bs-primary);
+					color: #fff;
+				}
+			}
+		}
+	}
+}

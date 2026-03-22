@@ -1,0 +1,66 @@
+.service-single{
+	@include respond('tab-land-min'){
+		.side-bar{
+			&:not(.left){
+				padding-left: 45px;
+			}
+			&.left{
+				padding-right: 45px;
+			}
+		}
+	}
+	.single-inner{
+		p{
+			font-size: 18px;
+			font-weight: 300;
+		}
+		h2{
+			font-size: 35px;
+			margin-bottom: 10px;
+		}
+		h3{
+			font-size: 28px;
+			margin-bottom: 20px;
+		}
+		@include respond('phone-land'){
+			p{
+				font-size: 16px;
+			}
+			h2{
+				font-size: 30px;
+			}
+			h3{
+				font-size: 24px;
+			}
+		}
+		@include respond('phone'){
+			h2{
+				font-size: 28px;
+			}
+			h3{
+				font-size: 20px;
+				margin-bottom: 12px;
+			}
+		}
+	}
+	.single-media{
+		margin-bottom: 45px;
+		
+		@include respond('phone-land'){
+			margin-bottom: 25px;
+		}
+		@include respond('phone'){
+			margin-bottom: 15px;
+		}
+	}
+	.content-item{
+		margin-bottom: 35px;
+		
+		@include respond('phone-land'){
+			margin-bottom: 25px;
+		}
+		@include respond('phone'){
+			margin-bottom: 20px;
+		}
+	}
+}

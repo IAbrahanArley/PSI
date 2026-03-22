@@ -1,0 +1,226 @@
+// to ignore cli warning about deprecated mixin
+$enable-deprecation-messages: false;
+$ignore-warning             : true;
+
+@function to-rgb($value) {
+	@return red($value), green($value), blue($value);
+}
+@function tint-color($color, $weight) {
+	@return mix(white, $color, $weight);
+}
+@function shade-color($color, $weight) {
+	@return mix(black, $color, $weight);
+}
+
+// Color
+$primary   : #00BDE0;
+$secondary : #031B4E !default;
+$success   : #31A56D !default;
+$info      : #0194D9 !default;
+$warning   : #E79600 !default;
+$danger    : #D23636 !default;
+$light     : #ECF5FB !default;
+$dark      : #444444 !default;
+$black	   : #000000;
+
+// Body
+$body-bg   : #ffffff;
+$body-color: #566593;
+
+// Typography
+$font-family-base : 'Poppins', sans-serif;
+$font-family-title : 'Poppins', sans-serif;
+
+$headings-font-weight   : 600;
+$headings-font-weight2  : 400;
+$headings-font-weight3  : 300;
+$font-size-base         : 1rem !default;
+$font-weight-base       : 400 !default;
+
+$line-height-base       : 1.6;
+$h1-font-size           : 2.5rem;
+$h2-font-size           : 1.75rem;	
+$h3-font-size           : 1.5rem;
+$h4-font-size           : 1.25rem;	
+$h5-font-size           : 1.125rem;	
+$h6-font-size           : 1rem;
+
+$text-muted : rgba(151, 151, 159, 0.39);
+$colors     : () !default;
+
+$heading-primary-size: 1.8rem;
+$sub-heading-size    : 1.6rem !default;
+$grid-gutter-width   : 30px;
+$dropdown-lik-color  : $body-color;
+$border-color        : #E1EBF1;
+$headings-color      : $secondary !default;
+
+$grid-gutter-width: 20px;
+
+// scss-docs-start grid-breakpoints
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px
+) !default;
+// scss-docs-end grid-breakpoints
+
+// scss-docs-start container-max-widths
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: 1330px
+) !default;
+// scss-docs-end container-max-widths
+
+$border-radius-base   : 20px !default;
+$shadow-color: rgba(160, 159, 202, 0.15);
+
+// BOX SHADOW
+$box-shadow:                  0 .5rem 1rem rgba($black, .15);
+$box-shadow-sm:               0 10px 30px rgba($black, 0.05);
+$box-shadow-lg:               0 1rem 3rem rgba($black, .175);
+
+// Other Color
+$orange  : #F46700;	
+$skyblue : #00aeff;
+$maroon  : #9e0168;
+$yellow  : #FDF42A;
+$red     : #f22462;
+$green   : #2E8278;
+$blue    : #131045;
+$sea	 : #1E33E5;
+$rama	 : #61C3E2;
+$glight	 : #E5CCB8;	
+
+// Color Opacity
+$primary-light: rgba($primary,0.1);
+$secondary-light: rgba($secondary,0.1);
+$success-light: rgba($success,0.1);
+$warning-light: rgba($warning,0.1);
+$danger-light: rgba($danger,0.1);
+$info-light: rgba($info,0.1);
+$dark-light: rgba($dark,0.1);
+$white-light: rgba($light,0.1);
+$yellow-light: rgba($yellow,0.1);
+
+// border radius
+$border-radius: .375rem !default;
+$border-radius-lg: 1rem !default;
+$border-radius-sm: .75rem !default;
+
+// Button Variable Start
+$input-btn-focus-width: 0rem !default;
+
+$btn-padding-y:               14px;
+$btn-padding-x:               25px;
+$btn-font-size:               16px;
+$btn-line-height:             1.25;
+
+$btn-padding-y-sm:            11px;
+$btn-padding-x-sm:            20px;
+$btn-font-size-sm:            14px;
+
+$btn-padding-y-lg:            18px;
+$btn-padding-x-lg:            25px;
+$btn-font-size-lg:            18px;
+
+$btn-border-radius:           15px;
+$btn-border-radius-sm:        10px;
+$btn-border-radius-lg:        15px;
+//  Button Variable End
+
+
+// Accordion Variable Start
+$accordion-padding-y:                     15px;
+$accordion-padding-x:                     25px;
+
+$accordion-body-padding-y:                25px;
+$accordion-body-padding-x:                25px;
+
+$accordion-button-padding-y:              18px;
+$accordion-button-padding-x:              25px;
+$accordion-button-color:                  $secondary;
+$accordion-button-bg:                     #fff;
+$accordion-button-active-bg:              $light;
+$accordion-button-active-color:           $secondary;
+
+$accordion-icon-width:                    24px;
+$accordion-icon-transform:                rotate(90deg);
+// Accordion Variable End
+
+// Nav Tabs
+$nav-link-padding-x: 1.25rem;
+$nav-link-padding-y: 0.625rem;
+$nav-pills-border-radius: 10px;
+
+// Table
+$table-color:                 $body-color;
+$table-striped-color:         $body-color;
+$table-striped-bg:            #F4F6FA;
+$table-cell-padding-y:        15px;
+$table-cell-padding-x:        25px;
+
+// Progress
+$progress-height:                   8px;
+$progress-bg:                       rgba(var(--bs-primary-rgb), 0.1);
+$progress-border-radius:            20px;
+$progress-bar-bg:                   var(--bs-primary);
+
+// Social Colors
+$facebook: #3b5998;
+$twitter: #1da1f2;
+$youtube: #FF0000;
+$google-plus: #db4439;
+$linkedin: #007bb6;
+$instagram: #c32aa3;
+$pinterest: #bd081c;
+$google: #4285f4;
+$snapchat: #fffc00;
+$whatsapp: #25d366;
+$tumblr: #35465d;
+$reddit: #ff4500;
+$spotify: #1ed760;
+$yahoo: #430297;
+$dribbble: #ea4c89;
+$skype: #00aff0;
+$quora: #aa2200;
+$riverBed: #4C585C;
+$vimeo: #1ab7ea;
+
+// RTL Change Value
+$dz-right: r;
+$dz-left: l;
+
+$dz-pos-right: right;
+$dz-pos-left:  left;
+$dz-tx: -50%;
+
+// Bs custom
+$white: #ffffff;
+
+:root{
+	--radius-xl: 30px;
+	--radius-lg: 20px;
+	--radius-md: 15px;
+	--radius-sm: 10px;
+	--radius: 6px;
+
+	--gradient: linear-gradient( to right, rgb(255,64,62) 0%, rgb(255,129,27) 100%);
+	--gradient-sec: linear-gradient( to right, rgb(57,26,166) 0%, rgb(6,163,245) 100%);
+	
+	--primary-hover: #{lighten($primary, 10)};
+	--font-family-base: #{$font-family-base};
+	--font-family-title: #{$font-family-title};
+	--border-radius-base: #{$border-radius-base};
+	--border-color: #{$border-color};	
+	--headings-font-weight:#{$headings-font-weight};
+	--headings-font-weight2:#{$headings-font-weight2};
+	--headings-font-weight3:#{$headings-font-weight3};
+	--white:var(--bs-heading-color);
+}

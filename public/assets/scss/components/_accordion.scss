@@ -1,0 +1,263 @@
+// dz-accordion
+.dz-accordion{
+	.accordion-button{
+		font-size: 18px;
+		font-weight: 500;
+		line-height: 1.35;
+		padding-right: calc(var(--bs-accordion-btn-padding-x) - 5px);
+		color: var(--bs-secondary);
+		
+		&::after{
+			background-image: none;
+			content: "\e844";
+			font-family: 'feather';
+			font-size: 20px;
+			line-height: 20px;
+			width: 20px;
+			height: 20px;
+		}
+		@include respond('tab-land'){
+			font-size: 16px;
+		}
+	}
+	&.style-1{
+		.accordion-item{
+			background-color: transparent;
+			border: 0;
+			
+			&:not(:last-child){
+				margin-bottom: 12px;
+			}		
+			.accordion-button{
+				border-radius: 6px;
+				background-color: var(--bs-light);
+				
+				&:not(.no-shadow){
+					box-shadow: 2px 2px 0 rgba(var(--bs-primary-rgb), 0.2);
+				}
+			}
+			.accordion-body{
+				border: 1px solid $border-color;
+				background-color: #fff;
+				border-radius: 6px;
+				
+				p:last-child{
+					margin-bottom: 0;
+				}
+			}
+			.accordion-collapse{
+				&::before{
+					content: "";
+					display: block;
+					height: 8px;
+				}
+			}
+		}
+		&.accordion-lg{
+			@include respond('phone-land-min'){				
+				--bs-accordion-btn-padding-x: 30px;
+				--bs-accordion-btn-padding-y: 23px;
+				--bs-accordion-body-padding-x: 30px;
+				--bs-accordion-body-padding-y: 30px;
+			}
+		}
+	}
+	&.style-2{
+		counter-reset: accordion-item;
+		
+		.accordion-item{
+			border: 0;
+			padding-bottom: 12px;
+			position: relative;
+			
+			.accordion-button{
+				background-color: var(--bs-secondary);
+				color: #fff;
+				font-size: 20px;
+				font-weight: 400;
+				border-radius: 15px !important;
+				transition: all 0.25s;
+				padding: 34px 30px;
+				line-height: 1.7;
+
+				&::after{
+					display: none;
+				}
+				&::before{
+					content: "0" counter(accordion-item);
+					counter-increment: accordion-item;
+					background-image: none !important;
+					font-size: 60px;
+					font-weight: 700;
+					color: #fff;
+					opacity: 0.1;
+					position: absolute;
+					right: 20px;
+					top: 15px;
+					line-height: 1.15;
+				}
+			}
+			&:nth-of-type(n + 10) .accordion-button::before{
+				content: counter(accordion-item);
+			}
+			.accordion-body{
+				border: 2px solid var(--bs-primary);
+				border-radius: 15px;
+				padding: 20px 20px 20px 30px;
+				background-color: #fff;
+				
+				p:last-child{
+					margin-bottom: 0;
+				}
+			}
+			.title{
+				font-size: 20px;
+				font-weight: 500;
+			}
+			.accordion-header{
+				.accordion-button:not(.collapsed){
+					padding: 0px 30px;
+					height: 0;
+					overflow: hidden;
+					box-shadow: none;
+					opacity: 0;
+				}
+			}
+			@include respond('tab-land'){
+				.accordion-button{
+					font-size: 18px;
+					padding: 20px 25px;
+					
+					&::before {
+						font-size: 40px;
+					}
+				}
+				.accordion-body {
+					padding: 20px 20px 20px 20px;
+					
+					p{
+						font-size: 15px;
+					}
+				}
+				.title{
+					font-size: 18px;
+				}
+			}
+		}
+	}
+	&.style-3{
+		.accordion-item{
+			background-color: transparent;
+			border: 0;
+			
+			&:last-child{
+				border-radius: 0;
+			}
+			.accordion-button{
+				background-color: transparent;
+				padding: 23px 0px 23px 0px;
+				color: var(--bs-secondary);
+				box-shadow: none;
+				border-radius: 0 !important;
+				border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+				
+				&.collapsed::after{
+					opacity: 0.3;
+				}
+				&:not(.collapsed)::after{
+					color: var(--bs-primary);
+				}
+			}
+			.accordion-body{
+				padding: 15px 0px 25px 0px;
+				
+				p:last-child{
+					margin-bottom: 0;
+				}
+			}
+			.accordion-collapse{
+				border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+				
+				&::before{
+					content: "";
+					display: block;
+					height: 8px;
+				}
+			}
+			@include respond('phone'){
+				.accordion-button{
+					padding: 18px 0px 18px 0px;
+				}
+			}
+		}
+	}
+	&.style-4{
+		.accordion-item{
+			background-color: transparent;
+			border: 0;
+			
+			&:not(:last-child){
+				margin-bottom: 12px;
+			}		
+			.accordion-button{
+				border-radius: 6px;
+				box-shadow: none;
+				
+				&:not(.collapsed){
+					background-color: var(--bs-primary);
+					color: #fff;
+				}
+			}
+			.accordion-body{
+				background-color: #fff;
+				border-radius: 6px;
+				padding: 25px 30px;
+				
+				p:last-child{
+					margin-bottom: 0;
+				}
+			}
+			.accordion-collapse{
+				&::before{
+					content: "";
+					display: block;
+					height: 8px;
+				}
+			}
+		}
+	}
+}
+.accordion{
+	@include respond('phone'){
+		--bs-accordion-body-padding-x: 20px;
+		--bs-accordion-body-padding-y: 20px;
+		--bs-accordion-btn-padding-x: 20px;
+		--bs-accordion-btn-padding-y: 15px;
+	}
+}
+.dzAccordion{
+	.dz-button{
+		background-color: var(--bs-secondary);
+		color: #fff;
+		font-size: 20px;
+		font-weight: 400;
+		border-radius: 15px !important;
+		padding: 30px;
+		line-height: 1.7;
+		width: 100%;
+		text-align: left;
+	}
+	.dz-item{
+		padding-bottom: 12px;
+		position: relative;
+	}
+	.dz-collapse{
+		border: 2px solid var(--bs-primary);
+		border-radius: 15px;
+		padding: 20px 20px 20px 30px;
+			
+		p:last-child{
+			margin-bottom: 0;
+		}
+	}
+}

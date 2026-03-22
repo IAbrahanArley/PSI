@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1774114143882,
+      "tag": "0000_curvy_the_anarchist",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1774177005299,
+      "tag": "0001_psychologist_specialty_crp_optional",
+      "breakpoints": true
+    }
+  ]
+}

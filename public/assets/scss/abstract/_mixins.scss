@@ -1,0 +1,259 @@
+//MEDIA QUERY MANAGER
+// 0 - 500: Phone 
+// 500 - 900: Tablet portrait
+// 900 - 1200: Tablet landscape
+// 1200 - 1800: Normal styles
+// 1800+ : Big Desktop
+// 1em = 16px
+// The smaller device rules always should write below the bigger device rules
+// Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Component
+
+@mixin respond($breakpoint) {
+    @if($breakpoint=="phone") {
+        @media only screen and (max-width: 575px) {
+            @content;
+        }
+    }
+    @if($breakpoint=="phone-land") {
+        @media only screen and (max-width: 767px) {
+            @content;
+        }
+    }
+	@if($breakpoint=="phone-land-min") {
+        @media only screen and (min-width: 767px) {
+            @content;
+        }
+    }
+    @if($breakpoint=="tab-port") {
+        @media only screen and (max-width: 991px) {
+            @content;
+        }
+    }
+	@if($breakpoint=="tab-port-min") {
+        @media only screen and (min-width: 991px) {
+            @content;
+        }
+    }
+    @if($breakpoint=="tab-land") {
+        @media only screen and (max-width: 1199px) {
+            @content;
+        }
+    }
+	@if($breakpoint=="tab-land-min") {
+        @media only screen and (min-width: 1199px) {
+            @content;
+        }
+    }
+	@if($breakpoint=="laptop") {
+        @media only screen and (max-width: 1480px) {
+            @content;
+        }
+    }	
+	@if($breakpoint=="laptop-min") {
+        @media only screen and (min-width: 1480px) {
+            @content;
+        }
+    }
+	@if($breakpoint=="wide-desktop") {
+        @media only screen and (max-width: 1680px) {
+            @content;
+        }
+    }
+	@if($breakpoint=="wide-desktop-min") {
+        @media only screen and (min-width: 1680px) {
+            @content;
+        }
+    }
+    @if($breakpoint=="big-desktop") {
+        @media only screen and (min-width: 1800px) {
+            @content;
+        }
+    }
+}
+
+// don't use it untill you need this too much
+@mixin custommq($min: null, $max: null) {
+    @if ($min !=null and $max !=null) {
+        @media only screen and (min-width: $min) and (max-width: $max) {
+            @content;
+        }
+    }
+    @if ($min==null and $max !=null) {
+        @media only screen and (max-width: $max) {
+            @content;
+        }
+    }
+    @if ($min !=null and $max==null) {
+        @media only screen and (min-width: $min) {
+            @content;
+        }
+    }
+}
+
+// transition
+@mixin transitionNone{
+	-webkit-transition: none;
+	-ms-transition: none;
+	transition: none;
+}
+@mixin transitionSlow{
+	-webkit-transition: all 1s;
+	-ms-transition: all 1s;
+	transition: all 1s;
+}
+@mixin transitionMedium{
+	-webkit-transition: all 0.5s;
+	-ms-transition: all 0.5s;
+	transition: all 0.5s;
+}
+@mixin transitionFast{
+	-webkit-transition: all 0.2s;
+	-ms-transition: all 0.2s;
+	transition: all 0.2s;
+}
+@mixin translateZ{
+	transform:translate(-50%, -50%);
+	-moz-transform:translate(-50%, -50%);
+	-webkit-transform:translate(-50%, -50%);
+	-ms-transform:translate(-50%, -50%);
+	-o-transform:translate(-50%, -50%);
+}
+@mixin transformScale{
+	transform:scale(1);
+	-moz-transform:scale(1);
+	-webkit-transform:scale(1);
+	-ms-transform:scale(1);
+	-o-transform:scale(1);
+}
+@mixin transformScaleXS{
+	transform:scale(0.8);
+	-moz-transform:scale(0.8);
+	-webkit-transform:scale(0.8);
+	-ms-transform:scale(0.8);
+	-o-transform:scale(0.8);
+}
+@mixin transformScaleXS1{
+	transform:scale(0.5);
+	-moz-transform:scale(0.5);
+	-webkit-transform:scale(0.5);
+	-ms-transform:scale(0.5);
+	-o-transform:scale(0.5);
+}
+@mixin transformScaleSM{
+	transform:scale(1.2);
+	-moz-transform:scale(1.2);
+	-webkit-transform:scale(1.2);
+	-ms-transform:scale(1.2);
+	-o-transform:scale(1.2);
+}
+@mixin transformScaleMD{
+	transform:scale(1.5);
+	-moz-transform:scale(1.5);
+	-webkit-transform:scale(1.5);
+	-ms-transform:scale(1.5);
+	-o-transform:scale(1.5);
+}
+@mixin translateZ50{
+	transform: translate(-50%, -50%);
+	-moz-transform: translate(-50%, -50%);
+	-webkit-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	-o-transform: translate(-50%, -50%);
+}
+
+@mixin btn{
+	display: inline-block;
+	padding: var(--bs-btn-padding-y) var(--bs-btn-padding-x);
+	font-family: var(--bs-btn-font-family);
+    font-size: var(--bs-btn-font-size);
+    font-weight: var(--bs-btn-font-weight);
+    line-height: var(--bs-btn-line-height);
+	text-align: center;
+	text-decoration: none;
+	color: var(--bs-btn-color);
+	border-radius: var(--bs-border-radius);
+	transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    background-color: var(--bs-btn-bg);
+	border: var(--bs-btn-border-width) solid var(--bs-btn-border-color);
+
+	&:hover,
+	&:hover,
+	&:focus{
+		color: var(--bs-btn-hover-color);
+		background-color: var(--bs-btn-hover-bg);
+		border-color: var(--bs-btn-hover-border-color);
+	}
+}
+@mixin btn-primary{
+	color: #fff;
+	background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+	
+	&:hover{
+		color:#fff;
+		background-color: var(--bs-btn-hover-bg);
+		border-color: var(--bs-btn-hover-border-color);
+	}
+}
+@mixin btn-secondary{
+	color: #fff;
+	background-color: var(--bs-secondary);
+    border-color: var(--bs-secondary);
+	
+	&:hover{
+		color:#fff;
+		background-color: var(--bs-btn-hover-bg);
+		border-color: var(--bs-btn-hover-border-color);
+	}
+}
+
+@mixin form-control{
+    height: 50px;
+    border: 0;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: 400;
+    color: #24262B;
+    transition: all 0.3s ease-in-out;
+    background: #fff;
+    border-radius: var(--bs-border-radius);
+	display: block;
+	width: 100%;
+	line-height: 1.6;
+	background-clip: padding-box;
+	border: var(--bs-border-width) solid var(--bs-border-color);
+	appearance: none;
+	border: 0;
+	color:#000;
+    border: 1px solid #000;
+	
+	&:focus{
+	    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.3);
+	}
+}
+
+@mixin form-select{
+	--bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    display: block;
+    width: 100%;
+    padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--bs-body-color);
+    background-color: #fff;
+    background-image: var(--bs-form-select-bg-img), var(--bs-form-select-bg-icon, none);
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    border:0;
+    border-radius: var(--bs-border-radius);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    appearance: none;
+	color:#000;
+    border: 1px solid #000;
+	
+	&:focus{
+	    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.3);
+	}
+}

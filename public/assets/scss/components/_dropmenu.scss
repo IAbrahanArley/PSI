@@ -1,0 +1,29 @@
+.dropdown-menu{
+    background-color: #fff;
+    border: 0;
+    border-radius: 10px;
+    width: 100%;
+    min-width: 200px;
+    box-shadow: 0 0 50px 0 rgba(0,0,0,0.1);
+	
+	.dropdown-item{
+	    padding: 8px 20px;
+		font-size: 15px; 
+	}
+	.dropdown-footer{
+		padding: 10px 20px 10px;
+	}
+	.dropdown-header{
+		padding: 10px 20px 10px;
+	}
+}
+.dropdown-item:hover,
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: var(--bs-light);
+    color: var(--bs-primary);
+}
+.bootstrap-select .dropdown-toggle:focus, 
+.bootstrap-select>select.mobile-device:focus+.dropdown-toggle{
+	outline:none !important;
+}

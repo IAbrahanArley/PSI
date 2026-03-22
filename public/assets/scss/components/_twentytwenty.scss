@@ -1,0 +1,201 @@
+.twentytwenty-box{
+    position: relative;
+	border-radius: 40px;
+    overflow: hidden;
+	
+	@include respond('phone-land'){
+		border-radius: 20px;
+	}
+	@include respond('phone'){
+		border-radius: 15px;
+	}
+}
+.twentytwenty-wrapper{
+	width: 100%;
+    overflow: hidden;
+	
+	.twentytwenty-overlay{
+		display:none;
+	}
+	.twentytwenty-container{
+		img {
+			width: 100%;
+		}
+        &::before,
+        &::after{
+			content: "BEFORE";
+			position: absolute;
+			top: 50%;
+			left: 30px;
+			z-index: 99;
+			padding: 34px 8px;
+			background-color: rgba(255, 255, 255, 0.2);
+			color: #fff;
+			font-size: 24px;
+			border-radius: 8px;
+			writing-mode: tb-rl;
+			transform: translateY(-50%) rotate(180deg);
+			height: 135px;
+			text-align: center;
+			width: 54px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			letter-spacing: 1px;
+        }
+        &::after{
+            content: "AFTER";
+            right: 30px;
+            left: auto;
+        }
+		@include respond('phone-land'){
+			&::before,
+			&::after{
+				font-size: 18px;
+				height: 95px;
+				width: 40px;
+			}
+			&::before{
+				left: 20px;
+			}
+			&::after{
+				right: 20px;
+			}
+		}
+		@include respond('phone'){
+			&::before,
+			&::after{
+				font-size: 15px;
+				height: 80px;
+				width: 32px;
+			}
+			&::before{
+				left: 10px;
+			}
+			&::after{
+				right: 10px;
+			}
+		}
+	}
+	.twentytwenty-handle{
+		height: 90px;
+		width: 90px;
+		border: 0;
+		transform: translate(-50%,-50%);
+		margin: 0;
+        box-shadow: none;
+		
+		&:after{
+			content: none;
+		}
+		&:before{
+			content: "";
+			top: -100%;
+			width: 6px;
+			margin: 0 0 0 -3px;
+			transform: translateY(-50%);
+			box-shadow: none;
+		}
+		.twentytwenty-left-arrow,
+		.twentytwenty-right-arrow{
+			border: 0;
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			width: auto;
+			height: auto;
+			&:before{
+				content: "";
+				font-family: "Font Awesome 6 Free";
+				color: #fff;
+				font-weight: 900;
+				font-size: 24px;
+			}				
+		}
+		.twentytwenty-left-arrow{
+			left: 0;
+			margin: 0 0 0 12px;
+			&:before{
+				content: "\f0d9";
+                font-size: 55px;
+			}
+		}
+		.twentytwenty-right-arrow{
+			right: 0;
+			margin: 0 12px 0 0;
+			&:before{
+				content: "\f0da";
+                font-size: 55px;
+			}
+		}
+		@include respond('phone-land'){
+			height: 65px;
+			width: 65px;
+			
+			.twentytwenty-left-arrow{
+				margin: 0 0 0 10px;
+				
+				&::before{
+					font-size: 40px;
+				}
+			}
+			.twentytwenty-right-arrow{
+				margin: 0 10px 0 0;
+				
+				&::before{
+					font-size: 40px;
+				}
+			}
+			&::before {
+				width: 4px;
+				margin: 0 0 0 -2px;
+			}
+		}
+	}
+}
+.twentytwenty-sm{
+	border-radius: 25px;
+	
+	.twentytwenty-wrapper{
+		.twentytwenty-container{
+			&::before,
+			&::after {
+				font-size: 18px;
+				height: 105px;
+				width: 45px;
+			}
+		}
+		.twentytwenty-handle{
+			width: 80px;
+				
+			&::before {
+				width: 4px;
+				margin: 0 0 0 -2px;
+			}
+			.twentytwenty-right-arrow:before {
+				font-size: 45px;
+			}
+			.twentytwenty-left-arrow:before {
+				font-size: 45px;
+			}
+		}
+	}
+}
+.twentytwenty-center{
+	margin-top: 70px;
+    margin-bottom: -280px;
+    position: relative;
+    z-index: 1;
+	
+	@include respond('tab-port'){
+		margin-top: 30px;
+		margin-bottom: -100px;
+	}
+}
+.twentytwenty-top-spacing{
+    padding-top: 350px;
+	
+	@include respond('tab-port'){
+		padding-top: 120px;
+	}
+}

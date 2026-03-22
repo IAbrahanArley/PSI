@@ -1,0 +1,167 @@
+.dz-coming-soon {
+	position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    overflow: hidden;
+	
+	.coming-soon-logo{
+		width: 180px;
+	}
+	.dz-title{
+		font-size: 80px;
+		font-weight: 600;
+		line-height: 1.1;
+		margin-bottom: 30px;
+	}
+	p{
+		font-size: 18px;
+	}
+	.dzSubscribe{
+		margin-top: 40px;
+	    margin-bottom: 40px;
+		max-width: 550px;
+	}
+	
+	@include respond('laptop'){
+		.dz-title{
+			font-size: 60px;
+		}
+		p{
+			font-size: 16px;
+		}
+	}
+	@include respond('tab-land'){
+	    .dz-title {
+			font-size: 40px;
+			margin-bottom: 15px;
+		}
+	}
+	@include respond('phone'){
+		.dz-title{
+			font-size: 32px;
+		}
+	}
+	.dz-coming-bx{
+		padding: 50px 100px 60px;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		
+		.top-wrapper{
+			max-width: 675px;
+		}
+		.dz-content{
+			margin-top: 150px;
+		}
+		@include respond('wide-desktop'){
+			padding: 50px 60px 30px;
+			
+			.dz-content{
+				margin-top: 100px;
+			}
+		}
+		@include respond('tab-land'){
+			padding: 40px 40px 30px;
+		}
+		@include respond('tab-port'){
+			.dz-content{
+				margin-top: 50px;
+			}
+		}
+		@include respond('phone'){
+			padding: 30px;
+		}
+	}
+	.dz-coming-media{
+		position: relative;
+		height: 100%;
+		
+		img{
+			height: 100%;
+			object-fit: cover;
+		}
+		&::before,
+		&::after{
+			content: "";
+			position: absolute;
+		}
+		&::before{
+			background-color: var(--bs-primary);
+			right: 0;
+			top: 0;
+			width: 150px;
+			height: 400px;
+		}
+		&::after{
+		    background-color: var(--bs-secondary);
+			width: 355px;
+			height: 285px;
+			bottom: 0;
+			left: -220px;
+		}
+		@include respond('wide-desktop'){
+			&::before{
+				width: 100px;
+				height: 300px;
+			}
+			&::after{
+				width: 250px;
+				height: 220px;
+				left: -150px;
+			}
+		}
+		@include respond('tab-land'){
+			&::before{
+				width: 50px;
+				height: 200px;
+			}
+			&::after {
+				width: 180px;
+				height: 140px;
+				left: -70px;
+			}
+		}
+	}
+}
+.countdown{
+	display: flex;
+	vertical-align: middle;
+	position: relative;
+	z-index: 1;
+	margin: 0 -25px 20px;
+	
+	.date{
+		padding:0 25px;
+		text-align: center;
+		
+		.time{
+			font-size: 60px;
+			vertical-align: middle;
+			color: var(--bs-primary);
+			font-weight: 600;
+			line-height: 1.1;
+		}
+		.text{
+			font-weight: 500;
+			font-size: 15px;
+			text-transform: uppercase;
+			display: block;
+		}
+	}
+	@include respond('tab-land'){
+		margin: 0 -15px 20px;
+		
+		.date {
+			padding: 0 15px;
+			
+			.time {
+				font-size: 40px;
+			}
+			.text {
+				font-size: 13px;
+			}
+		}
+	}
+}

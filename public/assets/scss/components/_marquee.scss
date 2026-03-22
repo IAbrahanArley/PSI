@@ -1,0 +1,183 @@
+.dz-marquee{
+	overflow: hidden;
+	
+	&.style-1{
+		position: relative;
+		background: var(--bs-secondary);
+		padding: 30px;
+		
+		.marquee-list{
+			margin-bottom: 0;
+			display: flex;
+			align-items: center;
+			flex-wrap: nowrap;
+			animation: ticker 0s linear infinite 0s normal;
+			animation-duration: 0s;
+			animation-duration: 15s;
+			
+			.item {
+				display: -ms-flexbox;
+				display: flex;
+				align-items: center;
+				color: $white;
+				font-size: 30px;
+				font-weight: 400;
+				display: flex;
+				justify-content: center;
+				margin: 0;
+				position: relative;
+				text-transform: capitalize;
+				
+				&:after{
+					content: "";
+					background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="31" height="30" viewBox="0 0 31 30" fill="none"><path d="M15.5918 0L17.7131 12.8787L30.5918 15L17.7131 17.1213L15.5918 30L13.4705 17.1213L0.591797 15L13.4705 12.8787L15.5918 0Z" fill="white"/></svg>');
+					height: 30px;
+					width: 30px;
+					background-position: center;
+					background-repeat: no-repeat;
+					margin: 0 50px;
+					background-size: 100%;
+				}
+			}
+		}
+		@include respond('laptop'){
+			padding: 20px;
+			
+			.marquee-list .item {
+				font-size: 24px;
+				
+				&:after{
+					height: 20px;
+					width: 20px;
+					margin: 0 25px;
+				}
+			}
+		}
+		@include respond('phone-land'){
+			.marquee-list .item {
+				font-size: 20px;
+				
+				&:after{
+					height: 18px;
+					width: 18px;
+					margin: 0 20px;
+				}
+			}
+		}
+		@include respond('phone'){
+			padding: 15px;
+			
+			.marquee-list .item{
+				font-size: 16px;
+				
+				&::after{
+					height: 15px;
+					width: 15px;
+					margin: 0 15px;
+				}
+			}
+		}
+		&:hover{
+			.marquee-list{
+				animation-play-state: paused;
+			}
+		}
+	}
+	&.style-2{
+        position: relative; 
+        z-index: 1;
+        background-color: transparent;
+        padding: 15px 0;
+		
+		.marquee-list{
+			margin-bottom: 0;
+			display: flex;
+			align-items: center;
+			flex-wrap: nowrap;
+			animation: ticker 0s linear infinite 0s normal;
+			animation-duration: 0s;
+			animation-duration: 32.9528s;
+			
+			.item {
+				display: -ms-flexbox;
+				display: flex;
+				align-items: center;
+				font-size: 80px;
+				line-height: 1.2;
+				font-weight: 700;
+				justify-content: center;
+				
+				&:after{
+					content: "";
+					background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="31" height="30" viewBox="0 0 31 30" fill="none"><path d="M15.5918 0L17.7131 12.8787L30.5918 15L17.7131 17.1213L15.5918 30L13.4705 17.1213L0.591797 15L13.4705 12.8787L15.5918 0Z" fill="%230A3366"/></svg>');
+					height: 60px;
+					width: 60px;
+					background-position: center;
+					background-repeat: no-repeat;
+					margin: 0 30px;
+					background-size: 100%;
+				}
+			}
+			.text-outline{
+				-webkit-text-stroke: 2px var(--bs-secondary);
+				color: transparent;
+				font-weight: 800;
+			}
+		}
+		@include respond('laptop'){
+			.marquee-list .item {
+				font-size: 60px;
+				
+				&:after{
+					height: 40px;
+					width: 40px;
+					margin: 0 25px;
+				}
+			}
+		}
+		@include respond('tab-port'){
+			.marquee-list .item {
+				font-size: 40px;
+				
+				&:after{
+					height: 30px;
+					width: 30px;
+				}
+			}
+		}
+		@include respond('phone-land'){
+			.marquee-list{
+				.item {
+					font-size: 25px;
+					
+					&:after{
+						height: 18px;
+						width: 18px;
+						margin: 0 15px;
+					}
+				}
+				.text-outline{
+					-webkit-text-stroke: 1px var(--bs-secondary);
+					font-weight: 700;
+					letter-spacing: 2px;
+				}
+			}
+		}
+		&:hover{
+			.marquee-list{
+				animation-play-state: paused;
+			}
+		}
+	} 
+	@keyframes ticker {
+		0% {
+			-webkit-transform: translateX(0);
+			transform: translateX(0);
+		}
+		
+		100% {
+			-webkit-transform: translateX(-100%);
+			transform: translateX(-100%);
+		}
+	}
+}

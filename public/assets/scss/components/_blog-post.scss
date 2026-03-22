@@ -1,0 +1,922 @@
+.post-video {
+	position: relative;
+
+	a {
+		display: block;
+		position: relative;
+	}
+
+	.post-video-icon {
+		width: 80px;
+		height: 80px;
+		position: absolute;
+		top: 50%;
+		#{$dz-pos-left}: 50%;
+		background: #fff;
+		@include translateZ50;
+		@include transitionMedium;
+		font-size: 30px;
+		text-align: center;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding-#{$dz-pos-left}: 5px;
+		border-radius: 4px;
+
+		&:hover {
+			background: var(--bs-primary);
+			color: #fff;
+		}
+	}
+
+	@include respond('phone') {
+		.post-video-icon {
+			width: 50px;
+			height: 50px;
+			font-size: 24px;
+			padding-#{$dz-pos-left}: 2px;
+		}
+	}
+}
+
+.dz-meta {
+	margin-bottom: 10px;
+}
+
+.dz-meta ul {
+	margin: 0;
+	padding: 0;
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 5px;
+
+	li {
+		display: inline-flex;
+		position: relative;
+		font-size: 14px;
+		font-weight: 400;
+		margin-#{$dz-pos-right}: 5px;
+		align-items: center;
+		gap: 4px;
+		flex-wrap: wrap;
+
+		i {
+			font-size: 15px;
+			margin-#{$dz-pos-right}: 2px;
+			color: var(--bs-secondary);
+			position: relative;
+			top: -1px;
+		}
+	}
+}
+
+.dz-card {
+	.dz-media {
+		img {
+			width: 100%;
+		}
+	}
+
+	.read-btn {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+
+		i {
+			font-size: 16px;
+		}
+	}
+
+	&.blog-half {
+		@include respond('phone-land-min') {
+			display: flex;
+		}
+
+		.dz-media {
+			min-width: 320px;
+			width: 320px;
+			min-height: 250px;
+			height: 100%;
+		}
+
+		@include respond('tab-land') {
+			.dz-media {
+				min-width: 280px;
+				width: 280px;
+			}
+		}
+
+		@include respond('phone-land') {
+			.dz-media {
+				min-width: 100%;
+				width: 100%;
+			}
+		}
+	}
+
+	&.style-1 {
+		position: relative;
+		z-index: 1;
+		padding: 20px;
+		filter: drop-shadow(0 0 50px rgba(var(--bs-secondary-rgb), 0.07));
+		height: 100%;
+		@include transitionFast;
+
+		&::after {
+			content: "";
+			background: #fff;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+			z-index: -1;
+			mask-image: url(/src/assets/images/bg02.svg);
+			mask-position: right bottom;
+			border-radius: 30px 30px 0 30px;
+			-webkit-transition: all 0.5s;
+			-ms-transition: all 0.5s;
+			transition: all 0.5s;
+		}
+
+		.dz-media {
+			border-radius: 15px;
+			height: 250px;
+			margin-bottom: 15px;
+
+			img {
+				height: 100%;
+				object-fit: cover;
+			}
+
+			@include respond('phone') {
+				height: 200px;
+			}
+		}
+
+		.btn-square {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+		}
+
+		p {
+			font-size: 15px;
+		}
+
+		.dz-info {
+			padding: 10px;
+
+			@include respond('tab-land') {
+				padding: 0;
+			}
+		}
+
+		.dz-meta {
+			margin-bottom: 0;
+			margin-top: 25px;
+			margin-right: 35px;
+
+			li {
+				background-color: var(--bs-primary);
+				color: #fff;
+				border-radius: 15px;
+				font-weight: 500;
+				font-size: 13px;
+				padding: 5px 15px 5px 23px;
+				line-height: 1.4;
+				position: relative;
+
+				a {
+					color: #fff;
+				}
+
+				&::after {
+					content: "";
+					position: absolute;
+					height: 6px;
+					width: 6px;
+					border-radius: 50%;
+					background-color: #fff;
+					left: 10px;
+				}
+			}
+
+			@include respond('phone') {
+				margin-top: 15px;
+			}
+		}
+
+		.btn-square {
+			height: 48px;
+			width: 48px;
+			min-width: 48px;
+		}
+
+		&.blog-half {
+			.dz-media {
+				margin-bottom: 0;
+				min-width: 320px;
+				width: 320px;
+				min-height: 250px;
+				height: 100%;
+			}
+
+			.dz-info {
+				padding: 20px;
+				align-self: center;
+			}
+
+			@include respond('tab-land') {
+				.dz-media {
+					min-width: 280px;
+					width: 280px;
+				}
+			}
+
+			@include respond('phone-land') {
+				.dz-media {
+					min-width: 100%;
+					width: 100%;
+					min-height: 250px;
+					height: 250px;
+				}
+
+				.dz-info {
+					padding: 15px 0 0;
+				}
+			}
+
+			@include respond('phone') {
+				.dz-media {
+					min-height: 200px;
+					height: 200px;
+				}
+			}
+		}
+
+		&.blog-half-2 {
+			padding: 0;
+			filter: none;
+
+			&::after {
+				content: none;
+			}
+
+			.btn-square {
+				position: static;
+			}
+
+			.dz-media {
+				min-width: 420px;
+				width: 420px;
+				min-height: 360px;
+				border-radius: 30px;
+			}
+
+			.info-bottom {
+				display: flex;
+				align-items: end;
+				justify-content: space-between;
+				gap: 15px;
+				margin-top: -10px;
+			}
+
+			.dz-title {
+				font-size: 28px;
+			}
+
+			.dz-info {
+				padding: 35px;
+				align-self: center;
+				box-shadow: 0 0 40px rgba(var(--bs-secondary-rgb), 0.1);
+				border-radius: 15px;
+				margin-left: -60px;
+				background-color: #fff;
+				margin-top: 40px;
+				margin-bottom: 40px;
+			}
+
+			@include respond('laptop') {
+				.dz-title {
+					font-size: 24px;
+				}
+
+				.dz-info {
+					padding: 25px;
+				}
+
+				.dz-media {
+					min-width: 350px;
+					width: 350px;
+					min-height: 280px;
+				}
+			}
+
+			@include respond('tab-port') {
+				.dz-media {
+					min-width: 280px;
+					width: 280px;
+					min-height: 250px;
+				}
+
+				.dz-info {
+					margin-top: 30px;
+					margin-bottom: 30px;
+				}
+			}
+
+			@include respond('phone-land') {
+				.dz-media {
+					min-width: 100%;
+					width: 100%;
+					min-height: 320px;
+				}
+
+				.dz-info {
+					margin-top: -30px;
+					margin-left: 20px;
+					margin-right: 20px;
+					margin-bottom: 0;
+				}
+			}
+
+			@include respond('phone') {
+				.dz-media {
+					min-height: 250px;
+				}
+
+				.dz-title {
+					font-size: 20px;
+				}
+
+				.dz-info {
+					padding: 20px;
+					margin-top: -20px;
+					margin-left: 0;
+					margin-right: 0;
+				}
+			}
+		}
+
+		&:hover {
+			transform: translateY(-8px);
+		}
+	}
+
+	&.style-2 {
+		position: relative;
+		overflow: hidden;
+
+		&.dz-card-overlay {
+			border-radius: var(--radius-xl);
+			height: 550px;
+			background-color: var(--bs-light);
+			background-size: cover;
+
+			&:not(.no-image):not(.overlay-none) {
+				&::after {
+					content: "";
+					background: linear-gradient(to top, rgba(var(--bs-secondary-rgb), 0.4) 0%, rgba(var(--bs-secondary-rgb), 0));
+					position: absolute;
+					height: 100%;
+					left: 0;
+					width: 100%;
+					top: 0;
+				}
+			}
+
+			.dz-info {
+				padding: 70px 30px 30px;
+				height: 100%;
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				z-index: 1;
+			}
+
+			.bottom-info {
+				display: flex;
+				align-items: flex-end;
+				gap: 30px;
+				flex: 1;
+				justify-content: space-between;
+			}
+
+			.dz-title {
+				font-size: 24px;
+				font-weight: 600;
+				margin-bottom: 0;
+				line-height: 1.6;
+
+				a {
+					color: #fff;
+				}
+			}
+
+			.post-date {
+				padding: 5px 15px;
+				position: absolute;
+				top: 30px;
+				left: 30px;
+				z-index: 1;
+				color: var(--bs-secondary);
+				background-color: #fff;
+				font-weight: 500;
+				font-size: 12px;
+				text-transform: uppercase;
+				border-radius: 50px;
+
+				&::before {
+					content: "\f111";
+					font-family: 'FontAwesome';
+					font-size: 7px;
+					transform: translateY(-2px);
+					display: inline-block;
+					margin-right: 6px;
+				}
+			}
+
+			.dz-meta {
+				margin-bottom: 5px;
+
+				ul {
+					margin-#{$dz-pos-right}: -10px;
+
+					li {
+						font-weight: 500;
+						font-size: 13px;
+						line-height: 28px;
+						text-transform: uppercase;
+						color: #0D775E;
+						line-height: 1.2;
+						padding: 0;
+						border-radius: 20px;
+
+						a {
+							color: var(--bs-primary);
+						}
+					}
+				}
+			}
+
+			@include respond('tab-land') {
+				height: 420px;
+
+				.dz-info {
+					padding: 60px 20px 20px;
+
+					.post-date {
+						top: 20px;
+						left: 20px;
+					}
+
+					.bottom-info {
+						gap: 15px;
+					}
+
+					.dz-title {
+						font-size: 20px;
+					}
+				}
+			}
+		}
+
+		.dz-info {
+			position: relative;
+		}
+
+		&.card-sm {
+			height: 265px;
+
+			.dz-info .dz-title {
+				font-size: 20px;
+				line-height: 1.5;
+			}
+		}
+
+		&.card-lg {
+			.dz-info .dz-title {
+				font-size: 30px;
+				line-height: 1.6;
+			}
+		}
+
+		&.overlay-none,
+		&.no-image {
+			.dz-info .dz-title a {
+				color: var(--bs-secondary);
+			}
+		}
+
+		.dz-media {
+			border-radius: var(--radius-xl);
+
+			img {
+				height: 100%;
+				object-fit: cover;
+			}
+		}
+
+		.dz-meta ul li {
+			font-size: 15px;
+			text-transform: uppercase;
+			font-weight: 500;
+			gap: 12px;
+
+			&:not(:last-child)::after {
+				content: "";
+				height: 6px;
+				width: 6px;
+				background-color: var(--bs-primary);
+				border-radius: 50%;
+			}
+
+			@include respond('tab-port') {
+				font-size: 13px;
+				gap: 10px;
+			}
+		}
+
+		&.blog-half {
+			gap: 30px;
+
+			.dz-media {
+				min-width: 420px;
+				width: 420px;
+				height: 300px;
+			}
+
+			.dz-title {
+				font-size: 28px;
+			}
+
+			.dz-info {
+				align-self: center;
+			}
+
+			@include respond('tab-port') {
+				gap: 20px;
+
+				.dz-media {
+					min-width: 300px;
+					width: 300px;
+					height: 215px;
+				}
+
+				.dz-title {
+					font-size: 22px;
+				}
+			}
+
+			@include respond('phone-land') {
+				.dz-media {
+					min-width: 100%;
+					width: 100%;
+					height: 350px;
+					margin-bottom: 20px;
+				}
+			}
+
+			@include respond('phone') {
+				.dz-media {
+					height: 250px;
+				}
+			}
+		}
+
+		.content-half {
+			max-width: 50%;
+		}
+	}
+
+	&.style-3 {
+		padding: 15px;
+		border-radius: var(--radius-lg);
+		border: 1px solid transparent;
+		transition: 0.3s;
+		height: 100%;
+
+		.dz-meta {
+			margin-bottom: 10px;
+
+			li {
+				background-color: rgba(var(--bs-primary-rgb), 0.1);
+				color: var(--bs-primary);
+				border-radius: 15px;
+				font-weight: 500;
+				font-size: 13px;
+				padding: 5px 15px 5px 23px;
+				line-height: 1.4;
+				position: relative;
+
+				a {
+					color: var(--bs-primary);
+				}
+
+				&::after {
+					content: "";
+					position: absolute;
+					height: 6px;
+					width: 6px;
+					border-radius: 50%;
+					background-color: var(--bs-primary);
+					left: 10px;
+				}
+			}
+		}
+
+		.dz-title {
+			font-size: 30px;
+			line-height: 1.25;
+			margin-bottom: 8px;
+		}
+
+		.dz-info {
+			p {
+				font-size: 15px;
+
+				&:last-child {
+					margin-bottom: 0;
+				}
+			}
+		}
+
+		.dz-media {
+			img {
+				border-radius: var(--radius-md);
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+		}
+
+		&.blog-half {
+			gap: 30px;
+			align-items: center;
+
+			.dz-media {
+				min-width: 310px;
+				width: 310px;
+				min-height: 200px;
+				height: 100%;
+			}
+		}
+
+		.swiper-slide-thumb-active &,
+		&:hover,
+		&.active {
+			border: 1px solid var(--bs-primary);
+		}
+
+		@include respond('laptop') {
+			.dz-title {
+				font-size: 24px;
+			}
+
+			&.blog-half .dz-media {
+				min-width: 280px;
+				width: 280px;
+				min-height: 180px;
+			}
+		}
+
+		@include respond('tab-land') {
+			&.blog-half {
+				gap: 15px;
+
+				.dz-media {
+					min-width: 235px;
+					width: 235px;
+					min-height: 150px;
+				}
+			}
+
+			.dz-title {
+				font-size: 20px;
+			}
+		}
+
+		@include respond('phone-land') {
+			&.blog-half {
+				.dz-media {
+					min-width: 100%;
+					width: 100%;
+					min-height: 100%;
+					height: auto;
+				}
+
+				.dz-info+.dz-media {
+					margin-top: 15px;
+				}
+			}
+		}
+
+		@include respond('phone') {
+			&.blog-half {}
+		}
+	}
+
+	&.style-4 {
+		position: relative;
+		z-index: 1;
+		padding: 30px;
+		height: 100%;
+		@include transitionFast;
+		background-color: #fff;
+		border-radius: var(--radius-xl);
+
+		@include respond('tab-port') {
+			padding: 20px;
+		}
+
+		.dz-media {
+			border-radius: 15px;
+			height: 250px;
+			margin-bottom: 25px;
+
+			img {
+				height: 100%;
+				object-fit: cover;
+			}
+
+			@include respond('phone') {
+				height: 200px;
+			}
+		}
+
+		p {
+			font-size: 15px;
+		}
+
+		.dz-title {
+			margin-bottom: 10px;
+		}
+
+		.dz-info {
+			.btn-link {
+				font-size: 15px;
+				font-weight: 500;
+				text-transform: capitalize;
+				text-decoration: none;
+			}
+		}
+
+		.dz-meta {
+			margin-bottom: 10px;
+
+			li {
+				background-color: rgba(var(--bs-primary-rgb), 0.1);
+				color: var(--bs-primary);
+				border-radius: 15px;
+				font-weight: 500;
+				font-size: 13px;
+				padding: 5px 15px 5px 23px;
+				line-height: 1.4;
+				position: relative;
+
+				a {
+					color: var(--bs-primary);
+				}
+
+				&::after {
+					content: "";
+					position: absolute;
+					height: 6px;
+					width: 6px;
+					border-radius: 50%;
+					background-color: var(--bs-primary);
+					left: 10px;
+				}
+			}
+		}
+
+		&.blog-half {
+			.dz-media {
+				margin-bottom: 0;
+				min-width: 320px;
+				width: 320px;
+				min-height: 250px;
+				height: 100%;
+			}
+
+			.dz-info {
+				padding: 20px 20px 20px 30px;
+				align-self: center;
+			}
+
+			.dz-title {
+				font-size: 30px;
+			}
+
+			@include respond('laptop') {
+				.dz-title {
+					font-size: 24px;
+				}
+			}
+
+			@include respond('tab-land') {
+				.dz-media {
+					min-width: 280px;
+					width: 280px;
+				}
+			}
+
+			@include respond('phone-land') {
+				.dz-media {
+					min-width: 100%;
+					width: 100%;
+					min-height: 250px;
+					height: 250px;
+				}
+
+				.dz-info {
+					padding: 25px 0 0;
+				}
+			}
+
+			@include respond('phone') {
+				.dz-media {
+					min-height: 200px;
+					height: 200px;
+				}
+
+				.dz-title {
+					font-size: 20px;
+				}
+			}
+		}
+	}
+}
+
+/* DZ Shine */
+.dz-card.style-1,
+.dz-card.style-2,
+.dz-card.style-3,
+.dz-card.style-4,
+.dz-card.style-5 {
+	.dz-media::before {
+		position: absolute;
+		top: 0;
+		#{$dz-pos-left}: -75%;
+		z-index: 0;
+		display: block;
+		content: '';
+		width: 50%;
+		height: 100%;
+		background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, .3) 100%);
+		background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, .3) 100%);
+		-webkit-transform: skewX(-25deg);
+		transform: skewX(-25deg);
+	}
+
+	&:hover {
+		.dz-media:before {
+			-webkit-animation: dzShine .75s;
+			animation: dzShine .75s;
+		}
+	}
+}
+
+@-webkit-keyframes dzShine {
+	100% {
+		#{$dz-pos-left}: 125%;
+	}
+}
+
+@keyframes dzShine {
+	100% {
+		#{$dz-pos-left}: 125%;
+	}
+}
+
+.dz-blog-swiper1-thumb {
+	height: 660px;
+}
+
+.dz-blog-swiper1 {
+	.swiper-wrapper {
+		.content-media {
+			margin-right: 32px;
+		}
+	}
+}
+
+@keyframes animationSignal2 {
+	0% {
+		opacity: .8;
+		transform: scale(.9)
+	}
+
+	100% {
+		transform: scale(1.9);
+		opacity: 0
+	}
+}
+
+.blog-list-view {
+	@media (min-width: 13800px) {
+		padding-right: 100px;
+	}
+}
