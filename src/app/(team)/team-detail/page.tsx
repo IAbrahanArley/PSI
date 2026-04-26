@@ -1,18 +1,36 @@
-import Link from "next/link";
-import PageBanner from "@/component/PageBanner";
-import { IMAGES } from "@/constant/theme";
-import Footer from "@/layout/Footer";
-import Header from "@/layout/Header";
-import Table from 'react-bootstrap/Table';
-import AppointForm from "./_componenets/AppointForm";
-import Image from "next/image";
+"use client";
 
-function TeamDetail() {   
+import { Suspense } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { IMAGES } from "@/constant/theme";
+//import Footer from "@/layout/Footer";
+import Header from "@/layout/Header";
+import Table from "react-bootstrap/Table";
+import { TeamDetailBookingSection } from "./_componenets/TeamDetailBookingSection";
+import { TeamDetailSidebar } from "./_componenets/TeamDetailSidebar";
+import Image from "next/image";
+import { usePsychologistBySlug } from "@/hooks/psychologists/queries";
+
+function TeamDetailContent() {
+    const searchParams = useSearchParams();
+    const slug = searchParams.get("slug") ?? undefined;
+    const { data, isLoading } = usePsychologistBySlug(slug);
+
+    const displayName = data?.professionalName || data?.fullName || "Especialista";
+    const primarySpecialty = data?.specialties[0] || "Psicologia";
+    const bio = data?.bio || "Perfil em atualização.";
+    const profileImageUrl = data?.profileImageUrl;
+    const skills = data?.skills?.length ? data.skills : ["Escuta ativa", "Acolhimento", "Atendimento online"];
+    const curriculumItems = data?.curriculum.sections.flatMap((sec) => sec.items).filter((it) => it.title) ?? [];
+    const awardsText = data?.awards?.length
+        ? data.awards.map((a) => a.title).join(" | ")
+        : "Sem prêmios cadastrados";
+
     return (
         <>
             <Header />
             <main className="page-content">
-                <PageBanner title="Team Detail" bnrimage={IMAGES.bnr2.src} />
                 <section className="content-inner">
                     <div className="container">
                         <div className="row">
@@ -21,7 +39,11 @@ function TeamDetail() {
                                     <div className="widget wow fadeInUp" data-wow-delay="0.1s" data-wow-duration="0.7s">
                                         <div className="dz-team style-5">
                                             <div className="dz-media">
-                                                <Image src={IMAGES.teampmg2} alt="/" />
+                                                {profileImageUrl ? (
+                                                    <img src={profileImageUrl} alt={displayName} className="w-100 h-auto" />
+                                                ) : (
+                                                    <Image src={IMAGES.teampmg2} alt={displayName} />
+                                                )}
                                             </div>
                                             <ul className="dz-social">
                                                 <li><Link href="https://www.linkedin.com/showcase/dexignzone" target="_blank"><i className="fa-brands fa-linkedin" /></Link></li>
@@ -32,109 +54,58 @@ function TeamDetail() {
                                             </ul>
                                         </div>
                                     </div>
-                                    <div className="widget widget_schedule bg-secondary text-white wow fadeInUp" data-wow-delay="0.2s" data-wow-duration="0.7s">
-                                        <div className="widget-title">
-                                            <h4 className="title text-white">My Time Schedule</h4>
-                                        </div>
-                                        <Table className="table table-border-bottom m-b0">
-                                            <thead>
-                                                <tr>
-                                                    <th>Monday - Friday</th>
-                                                    <td className="text-end">09:30 - 07:30</td>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <th>Saturday</th>
-                                                    <td className="text-end">09:30 - 04:30</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Sunday</th>
-                                                    <td className="text-end">09:30 - 04:30</td>
-                                                </tr>
-                                            </tbody>
-                                        </Table>
-                                    </div>
-                                    <div className="widget widget_info bg-light wow fadeInUp" data-wow-delay="0.3s" data-wow-duration="0.7s">
-                                        <div className="icon-bx-wraper style-1 m-b20">
-                                            <div className="icon-bx bg-primary">
-                                                <span className="icon-cell">
-                                                    <i className="feather icon-map-pin" />
-                                                </span>
-                                            </div>
-                                            <div className="icon-content">
-                                                <h5 className="dz-title fw-semibold">Address</h5>
-                                                <p className="fw-normal">234 Oak Drive, Villagetown, USA</p>
-                                            </div>
-                                        </div>
-                                        <div className="icon-bx-wraper style-1 m-b20">
-                                            <div className="icon-bx bg-primary">
-                                                <span className="icon-cell">
-                                                    <i className="feather icon-phone" />
-                                                </span>
-                                            </div>
-                                            <div className="icon-content">
-                                                <h5 className="dz-title fw-semibold">Call Us</h5>
-                                                <p className="fw-normal"><Link href="tel:+11234567890" className="text-body">+1 123 456 7890</Link></p>
-                                            </div>
-                                        </div>
-                                        <div className="icon-bx-wraper style-1 m-b15">
-                                            <div className="icon-bx bg-primary">
-                                                <span className="icon-cell">
-                                                    <i className="feather icon-mail" />
-                                                </span>
-                                            </div>
-                                            <div className="icon-content">
-                                                <h5 className="dz-title fw-semibold">Send us a Mail</h5>
-                                                <p className="fw-normal"><Link href="mailto:info@example.com" className="text-body">info@example.com</Link></p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <TeamDetailSidebar data={data} isLoading={isLoading} />
                                 </aside>
                             </div>
                             <div className="col-lg-8 ps-xl-5 m-b30">
                                 <div className="section-head style-1 mb-30">
-                                    <h2 className="titlev fw-semibold m-b0 wow fadeInUp" data-wow-delay="0.1s" data-wow-duration="0.7s">Dr. Danial Frankie</h2>
-                                    <p className="text-primary m-b20 fw-normal font-16 wow fadeInUp" data-wow-delay="0.2s" data-wow-duration="0.7s">MBBS (Village Town), USA (Cardiac Surgery)</p>
-                                    <p className="fw-normal m-b0 wow fadeInUp" data-wow-delay="0.3s" data-wow-duration="0.7s">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters,</p>
+                                    <h2 className="titlev fw-semibold m-b0 wow fadeInUp" data-wow-delay="0.1s" data-wow-duration="0.7s">
+                                        {isLoading ? "Carregando perfil..." : displayName}
+                                    </h2>
+                                    <p className="text-primary m-b20 fw-normal font-16 wow fadeInUp" data-wow-delay="0.2s" data-wow-duration="0.7s">
+                                        {data?.crp ? `CRP ${data.crp} (${primarySpecialty})` : primarySpecialty}
+                                    </p>
+                                    <p className="fw-normal m-b0 wow fadeInUp" data-wow-delay="0.3s" data-wow-duration="0.7s">{bio}</p>
                                 </div>
                                 <Table className="table table-striped table-striped-rounded m-b40 wow fadeInUp" data-wow-delay="0.4s" data-wow-duration="0.7s">
                                     <thead>
                                         <tr>
-                                            <th>Specialty</th>
-                                            <td>Orthodontist Surgeon Specialize</td>
+                                            <th>Especialidade</th>
+                                            <td>{data?.specialties?.join(", ") || "Psicologia"}</td>
                                         </tr>
                                     </thead>
                                     <tbody className="border-top-0">
                                         <tr>
-                                            <th>Degrees</th>
-                                            <td><Link href={"#"} scroll={false}>MBBS University of California</Link></td>
+                                            <th>Formação</th>
+                                            <td>
+                                                {curriculumItems.find((it) => it.subtitle)?.subtitle || "Não informado"}
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <th>Experience</th>
-                                            <td>7 years, New York Urgent Medical Care Serving California</td>
+                                            <th>Experiência</th>
+                                            <td>{curriculumItems.find((it) => it.description)?.description || "Não informado"}</td>
                                         </tr>
                                         <tr>
-                                            <th>Awards</th>
-                                            <td>2018 - 2019 : William Allan Award</td>
+                                            <th>Prêmios</th>
+                                            <td>{awardsText}</td>
                                         </tr>
                                     </tbody>
                                 </Table>
                                 <h3 className="font-20 m-b15 wow fadeInUp" data-wow-delay="0.5s" data-wow-duration="0.7s">Professional Skills</h3>
                                 <ul className="list-check-circle list-light text-secondary fw-medium grid-2 m-b40 wow fadeInUp" data-wow-delay="0.6s" data-wow-duration="0.7s">
-                                    <li>Radiant Skin Dermatology</li>
-                                    <li>Laser Resurfacing</li>
-                                    <li>Flawless Dermatology</li>
-                                    <li>Refined Skin Dermatology</li>
-                                    <li>Luminous Dermatology</li>
-                                    <li>Anti Aging</li>
+                                    {skills.map((skill) => (
+                                        <li key={skill}>{skill}</li>
+                                    ))}
                                 </ul>
                                 <div className="form-wrapper style-1 wow fadeInUp" data-wow-delay="0.7s" data-wow-duration="0.7s">
                                     <div className="form-body bg-primary background-blend-burn" style={{ backgroundImage: `url(${IMAGES.bg2png})` }}>
                                         <div className="title-head">
-                                            <h2 className="form-title m-b0">Make An <span>Appointment</span> Apply For Treatments</h2>
+                                            <h2 className="form-title m-b0">Faça um <span>Agendamento</span></h2>
+                                            <p className="text-white opacity-90 mt-2 mb-0 small">
+                                                Escolha o dia, um horário livre e preencha seus dados.
+                                            </p>
                                         </div>
-                                       <AppointForm />
+                                        <TeamDetailBookingSection slug={slug} />
                                     </div>
                                 </div>
                             </div>
@@ -142,8 +113,28 @@ function TeamDetail() {
                     </div>
                 </section>
             </main>
-            <Footer />            
+            {/* <Footer />             */}
         </>
     );
 }
-export default TeamDetail;
+
+function TeamDetailFallback() {
+    return (
+        <>
+            <Header />
+            <main className="page-content">
+                <section className="content-inner">
+                    <div className="container py-5 text-center text-muted">Carregando…</div>
+                </section>
+            </main>
+        </>
+    );
+}
+
+export default function TeamDetailPage() {
+    return (
+        <Suspense fallback={<TeamDetailFallback />}>
+            <TeamDetailContent />
+        </Suspense>
+    );
+}

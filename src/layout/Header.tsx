@@ -53,7 +53,7 @@ function Header() {
         <>
             <header className="site-header header style-1">
                 <div className={`sticky-header main-bar-wraper ${scroll ? 'is-fixed' : ''}`}>
-                    <div className="main-bar clearfix bg-secondary text-white">
+                    <div className="main-bar clearfix bg-primary text-white">
                         <div className="container-fluid clearfix inner-bar">
                          
                             <button onClick={() => handleclick(2)} className={`w3menu-toggler navicon ${show ? 'open' : ''}`} type="button" data-target="#W3Menu">
@@ -117,7 +117,7 @@ function Header() {
                                 <div className="extra-cell">
                                     <ul className="header-right">
                                         <li className="nav-item">
-                                            <Link href="/login/psi" className="btn btn-primary btn-hover1"> Já atua na área? </Link>
+                                            <Link href="/login/psi" className="btn btn-secondary btn-hover1"> Já atua na área? </Link>
                                         </li>
                                         <li className="nav-item">
                                            {/* <button onClick={() => handleclick(1)} type="button" className="toggle-nav-btn" data-bs-toggle="offcanvas" data-bs-target="#headerSidebar" aria-controls="offcanvasLeft">

@@ -16,6 +16,9 @@ import {
       .unique(),
   
     fullName: text("full_name").notNull(),
+
+    /** Contato para agendamento público / convidado (sem conta). */
+    email: text("email"),
   
     phone: text("phone"),
     whatsapp: text("whatsapp"),

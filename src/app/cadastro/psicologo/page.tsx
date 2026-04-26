@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import Header from "@/layout/Header";
-import SpecialtyCombobox from "@/componente/SpecialtyCombobox";
+import SpecialtyCombobox from "@/component/SpecialtyCombobox";
 import { formatBrazilPhone, stripPhoneDigits } from "@/lib/phone";
 
 export default function CadastroPsicologoPage() {
+  const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [specialty, setSpecialty] = useState("");
@@ -14,13 +17,11 @@ export default function CadastroPsicologoPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: "ok" | "err"; text: string } | null>(null);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setMessage(null);
     if (!specialty.trim()) {
-      setMessage({ type: "err", text: "Selecione uma especialidade na lista." });
+      toast.error("Selecione uma especialidade na lista.");
       return;
     }
     setLoading(true);
@@ -39,16 +40,13 @@ export default function CadastroPsicologoPage() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setMessage({ type: "err", text: data.error ?? "Erro ao cadastrar." });
+        toast.error(data.error ?? "Erro ao cadastrar.");
         return;
       }
-      setMessage({
-        type: "ok",
-        text: "Cadastro criado com sucesso. Você já pode acessar com seu e-mail e senha.",
-      });
       setPassword("");
+      router.push("/login?registered=1");
     } catch {
-      setMessage({ type: "err", text: "Falha de rede. Tente novamente." });
+      toast.error("Falha de rede. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -64,15 +62,6 @@ export default function CadastroPsicologoPage() {
               <div className="col-lg-8 col-xl-7">
                 <div className="card shadow-sm border-0">
                   <div className="card-body p-4 p-md-5">
-                    
-                    {message && (
-                      <div
-                        className={`alert ${message.type === "ok" ? "alert-success" : "alert-danger"}`}
-                        role="alert"
-                      >
-                        {message.text}
-                      </div>
-                    )}
                     <form onSubmit={onSubmit} noValidate>
                       <div className="row g-3">
                         <div className="col-md-6">
@@ -160,6 +149,9 @@ export default function CadastroPsicologoPage() {
                         <button type="submit" className="btn btn-primary btn-lg" disabled={loading}>
                           {loading ? "Cadastrando..." : "Criar conta"}
                         </button>
+                        <Link href="/login" className="btn btn-outline-primary btn-lg">
+                          Já tenho conta
+                        </Link>
                         <Link href="/" className="btn btn-outline-secondary btn-lg">
                           Voltar
                         </Link>

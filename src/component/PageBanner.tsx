@@ -9,7 +9,14 @@ interface Props{
 function PageBanner({ title, bnrimage } : Props) {
     return (
         <>
-            <div className="dz-bnr-inr dz-banner-dark overlay-secondary-middle dz-bnr-inr-md" style={{ backgroundImage: `url(${bnrimage})` }}>
+            <div
+                className="dz-bnr-inr dz-banner-dark overlay-black-middle dz-bnr-inr-md"
+                style={{
+                    backgroundImage: `url(${bnrimage})`,
+                    backgroundPosition: "center bottom",
+                    opacity: 0.95,
+                }}
+            >
                 <div className="container">
                     <div className="dz-bnr-inr-entry d-table-cell">
                         <h1 className="wow fadeInUp" data-wow-delay="0.2s" data-wow-duration="0.8s">{title}</h1>
@@ -26,25 +33,6 @@ function PageBanner({ title, bnrimage } : Props) {
                         </div>
                     </div>
                 </div>
-                <span className="text-vertical">24/7 EMERGENCY SERVICE</span>
-                <ul className="dz-social">
-                    <li><Link href="https://www.instagram.com/dexignzone" target="_blank"> 
-                            <i className="fa-brands fa-instagram" />
-                        </Link>
-                    </li>
-                    <li><Link href="https://www.facebook.com/dexignzone" target="_blank"> 
-                            <i className="fa-brands fa-facebook-f" />
-                        </Link>
-                    </li>
-                    <li><Link href="https://x.com/dexignzone" target="_blank"> 
-                            <i className="fa-brands fa-x-twitter" />
-                        </Link>
-                    </li>
-                    <li><Link href="https://www.youtube.com/@dexignzone" target="_blank"> 
-                            <i className="fa-brands fa-youtube" />
-                        </Link>
-                    </li>
-                </ul>
             </div>
         </>
     )

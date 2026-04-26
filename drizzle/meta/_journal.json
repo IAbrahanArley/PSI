@@ -15,6 +15,20 @@
       "when": 1774177005299,
       "tag": "0001_psychologist_specialty_crp_optional",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774207126480,
+      "tag": "0002_psychologist_profile_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1774374419551,
+      "tag": "0003_psychologist_agenda",
+      "breakpoints": true
     }
   ]
 }

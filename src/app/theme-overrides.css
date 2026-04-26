@@ -1,0 +1,40 @@
+/* Carregado por último — tokens Bootstrap / tema Mindzinho */
+html[data-theme-color="skin-1"] {
+  --bs-primary: #6c3a91;
+  --bs-secondary: #e2a9f1;
+  --bs-primary-rgb: 108, 58, 145;
+  --bs-secondary-rgb: 226, 169, 241;
+  --primary-hover: #5b2f7a;
+}
+
+:root {
+  --bs-body-color: #2e1a38;
+  --bs-heading-color: #2e1a38;
+  --bs-gray-500: #a6a6a6;
+  --bs-gray-600: #a6a6a6;
+  --bs-light: #eae2ef;
+  --bs-light-rgb: 234, 226, 239;
+}
+
+/* Painel do dashboard: fundo suave */
+[data-dashboard] {
+  background-color: rgba(234, 226, 239, 0.35);
+}
+
+/* Menu lateral: item ativo = mesmo roxo do btn-primary (evita cyan do list-group do tema) */
+[data-dashboard] nav .list-group-item.list-group-item-action.active,
+[data-dashboard] nav .list-group-item.list-group-item-action.active:focus-visible {
+  background-color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+  color: #fff !important;
+}
+
+[data-dashboard] nav .list-group-item.list-group-item-action.active:hover {
+  background-color: var(--primary-hover, #5b2f7a) !important;
+  border-color: var(--primary-hover, #5b2f7a) !important;
+  color: #fff !important;
+}
+
+[data-dashboard] nav .list-group-item.list-group-item-action.active svg {
+  color: inherit;
+}

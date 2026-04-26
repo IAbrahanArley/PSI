@@ -26,8 +26,8 @@ import {
       fullName: text("full_name").notNull(),
       professionalName: text("professional_name"),
 
-      /** Especialidade principal (cadastro / busca) */
-      specialty: text("specialty").notNull(),
+      /** Legado / primeira especialidade para busca; detalhes em psychologist_specialties */
+      specialty: text("specialty"),
   
       /** CRP pode ser preenchido depois da verificação; null no primeiro cadastro */
       crp: text("crp").unique(),
@@ -61,6 +61,12 @@ import {
       city: text("city"),
   
       status: psychologistStatusEnum("status").notNull().default("PENDING"),
+
+      /**
+       * Destaque publicitário (ex.: plano pago): aparece em blocos tipo “Meet the doctor” na página /team,
+       * intercalados com a grade normal.
+       */
+      advertisingHighlight: boolean("advertising_highlight").notNull().default(false),
   
       publishedAt: timestamp("published_at", { withTimezone: true }),
   

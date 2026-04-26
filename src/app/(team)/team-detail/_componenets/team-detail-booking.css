@@ -1,0 +1,168 @@
+/* Tema roxo — calendário e horários */
+.team-detail-rdp {
+  --team-booking-purple: #6d28d9;
+  --team-booking-purple-dark: #5b21b6;
+  --team-booking-purple-soft: #ede9fe;
+  --team-booking-purple-hover: #f5f3ff;
+
+  --rdp-accent-color: var(--team-booking-purple);
+  --rdp-accent-background-color: var(--team-booking-purple-soft);
+  --rdp-today-color: var(--team-booking-purple);
+
+  margin-inline: auto;
+}
+
+/* Barra do mês: rótulo entre as setas, mesma identidade roxa */
+.team-detail-rdp .rdp-month_caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  min-height: var(--rdp-nav-height);
+  margin-bottom: 0.75rem;
+  padding: 0.35rem 0.5rem;
+  background: linear-gradient(
+    135deg,
+    var(--team-booking-purple) 0%,
+    var(--team-booking-purple-dark) 100%
+  );
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(91, 33, 182, 0.25);
+}
+
+.team-detail-rdp .rdp-caption_label {
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* Setas — mesma faixa roxa, hover claro */
+.team-detail-rdp .rdp-button_previous,
+.team-detail-rdp .rdp-button_next {
+  border-radius: 50%;
+  color: #fff;
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.team-detail-rdp .rdp-button_previous:not(:disabled):hover,
+.team-detail-rdp .rdp-button_next:not(:disabled):hover {
+  background-color: rgba(255, 255, 255, 0.22);
+  transform: scale(1.06);
+}
+
+.team-detail-rdp .rdp-button_previous:not(:disabled):active,
+.team-detail-rdp .rdp-button_next:not(:disabled):active {
+  transform: scale(0.98);
+}
+
+.team-detail-rdp .rdp-chevron {
+  fill: #fff;
+}
+
+/* Dia selecionado — fundo roxo sólido */
+.team-detail-rdp .rdp-selected .rdp-day_button {
+  background-color: var(--team-booking-purple);
+  color: #fff;
+  border-color: var(--team-booking-purple);
+  font-weight: 700;
+}
+
+.team-detail-rdp .rdp-selected .rdp-day_button:not(:disabled):hover {
+  background-color: var(--team-booking-purple-dark);
+  color: #fff;
+  border-color: var(--team-booking-purple-dark);
+}
+
+/* Hover em dias clicáveis */
+.team-detail-rdp .rdp-day_button:not(:disabled):hover {
+  background-color: var(--team-booking-purple-hover);
+  border-color: rgba(109, 40, 217, 0.35);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.team-detail-rdp .rdp-today:not(.rdp-selected) .rdp-day_button:not(:disabled):hover {
+  background-color: var(--team-booking-purple-soft);
+}
+
+/* Tabelas de horários */
+.team-detail-slots-tables {
+  width: 100%;
+}
+
+.team-detail-slots-table {
+  margin-bottom: 0;
+  --bs-table-bg: rgba(255, 255, 255, 0.08);
+  --bs-table-color: #fff;
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.team-detail-slots-table thead th {
+  background-color: rgba(109, 40, 217, 0.35);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-color: rgba(255, 255, 255, 0.12);
+  padding: 0.5rem 0.65rem;
+}
+
+.team-detail-slots-table tbody td {
+  border-color: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 0.65rem;
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.team-detail-slots-table tbody tr.team-detail-slot-selectable {
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.team-detail-slots-table tbody tr.team-detail-slot-selectable:hover {
+  background-color: rgba(109, 40, 217, 0.25);
+}
+
+.team-detail-slots-table tbody tr.team-detail-slot-selected {
+  background-color: rgba(109, 40, 217, 0.35) !important;
+  box-shadow: inset 4px 0 0 #fff;
+}
+
+.team-detail-slots-table tbody tr.team-detail-slot-unavailable {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.team-detail-slots-table tbody tr.team-detail-slot-unavailable td {
+  text-decoration: line-through;
+  text-decoration-color: rgba(255, 255, 255, 0.35);
+}
+
+.team-detail-form-actions .btn-light {
+  transition:
+    background-color 0.18s ease,
+    transform 0.12s ease,
+    box-shadow 0.18s ease;
+}
+
+.team-detail-form-actions .btn-light:hover:not(:disabled) {
+  background-color: var(--team-booking-purple-soft);
+  color: var(--team-booking-purple-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(91, 33, 182, 0.2);
+}
+
+.team-detail-form-actions .btn-link:hover {
+  opacity: 0.85;
+  text-decoration: underline !important;
+}

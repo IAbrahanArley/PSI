@@ -4,7 +4,7 @@ import { psychologists, users } from "@/lib/db/schema";
 import { PSYCHOLOGY_SPECIALTIES } from "@/constant/psychologySpecialties";
 import { stripPhoneDigits } from "@/lib/phone";
 import { generatePsychologistSlug } from "@/lib/slug";
-import { supabaseServer } from "@/lib/db/supabase/server";
+import { supabaseAdmin } from "@/lib/db/supabase/admin";
 
 type Body = {
   firstName?: string;
@@ -18,9 +18,19 @@ type Body = {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(req: Request) {
+  if (!process.env.DATABASE_URL?.trim()) {
+    return NextResponse.json(
+      {
+        error:
+          "DATABASE_URL não configurada. No Supabase: Settings → Database → copie a Connection string (URI) para o .env.local (é o Postgres, não é a URL https do projeto).",
+      },
+      { status: 503 }
+    );
+  }
+
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
     return NextResponse.json(
-      { error: "Supabase não configurado (NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY)." },
+      { error: "Supabase Auth não configurado (NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY)." },
       { status: 503 }
     );
   }
@@ -66,10 +76,11 @@ export async function POST(req: Request) {
 
   const fullName = `${firstName} ${lastName}`.trim();
 
-  const { data: authData, error: authError } = await supabaseServer.auth.admin.createUser({
+  const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
     email,
     password,
     email_confirm: true,
+    app_metadata: { role: "PSYCHOLOGIST" },
   });
 
   if (authError || !authData.user) {
@@ -100,11 +111,13 @@ export async function POST(req: Request) {
         crp: null,
       });
     });
-  } catch (e) {
-    await supabaseServer.auth.admin.deleteUser(userId);
-    console.error("register-psychologist db error:", e);
+  } catch {
+    await supabaseAdmin.auth.admin.deleteUser(userId);
     return NextResponse.json(
-      { error: "Erro ao salvar cadastro. Tente novamente ou use outro e-mail." },
+      {
+        error:
+          "Falha ao gravar no PostgreSQL (tabelas users/psychologists). Confira DATABASE_URL, se rodou as migrations (`npm run db:push`) neste banco e se não há conflito com triggers no Supabase.",
+      },
       { status: 500 }
     );
   }
