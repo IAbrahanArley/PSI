@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { Badge, Button, Form, Spinner, Table } from "react-bootstrap";
 import { toast } from "sonner";
+import Link from "next/link";
 
 type PatientRow = {
   id: string;
@@ -130,9 +130,12 @@ export default function DashboardPsicologoPacientesPage() {
                     </Badge>
                   </td>
                   <td className="text-end">
-                    <Button as={Link} href={`/dashboard/psicologo/pacientes/${p.id}`} variant="outline-primary" size="sm">
+                    <Link
+                      href={`/dashboard/psicologo/pacientes/${p.id}`}
+                      className="btn btn-outline-primary btn-sm"
+                    >
                       Abrir prontuário
-                    </Button>
+                    </Link>
                   </td>
                 </tr>
               ))}
