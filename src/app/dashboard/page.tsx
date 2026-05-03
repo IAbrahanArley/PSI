@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getRoleFromUser } from "@/lib/auth/roles";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
   const supabase = await createSupabaseServerClient();
@@ -11,25 +11,25 @@ export default async function DashboardPage() {
 
   return (
     <div className="container-fluid px-0">
-      <h1 className="title text-secondary m-b20">Início</h1>
+      <h1 className="title text-secondary m-b20">Inicio do painel</h1>
       <p className="text-muted m-b30">
-        Olá{user?.email ? `, ${user.email}` : ""}. Papel:{" "}
-        <strong>{role ?? "—"}</strong>
+        Bem-vindo{user?.email ? `, ${user.email}` : ""}. Use os atalhos abaixo para acessar as areas disponiveis para o seu perfil.
       </p>
+
       <div className="d-flex flex-wrap gap-2">
         {(role === "ADMIN" || role === "PSYCHOLOGIST") && (
           <Link href="/dashboard/psicologo" className="btn btn-primary">
-            Área do psicólogo
+            Area do psicologo
           </Link>
         )}
         {(role === "ADMIN" || role === "PATIENT") && (
           <Link href="/dashboard/paciente" className="btn btn-secondary">
-            Área do paciente
+            Area do paciente
           </Link>
         )}
         {role === "ADMIN" && (
-          <Link href="/dashboard/admin" className="btn btn-outline-dark">
-            Administração
+          <Link href="/dashboard/admin" className="btn btn-outline-primary">
+            Administracao
           </Link>
         )}
       </div>

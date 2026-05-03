@@ -89,3 +89,11 @@ export const clinicalNoteTypeEnum = pgEnum("clinical_note_type", [
   /** Demais */
   "OTHER",
 ]);
+
+export const psychologistSocialNetworkEnum = pgEnum("psychologist_social_network", [
+  "INSTAGRAM",
+  "LINKEDIN",
+  "FACEBOOK",
+  "X",
+  "YOUTUBE",
+]);

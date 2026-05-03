@@ -128,7 +128,7 @@ export function PatientClinicalDetail() {
       if (e instanceof Error && e.message.includes("não encontrado")) {
         setNotFound(true);
       } else {
-        toast.error(e instanceof Error ? e.message : "Erro ao carregar.");
+        toast.error("Não foi possível carregar o prontuário agora.");
       }
     } finally {
       setLoading(false);
@@ -153,8 +153,8 @@ export function PatientClinicalDetail() {
       );
       setNotes((prev) => [...prev, ...data.notes]);
       setNextCursor(data.nextCursor);
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erro ao carregar mais.");
+    } catch {
+      toast.error("Não foi possível carregar mais anotações.");
     } finally {
       setLoadingMore(false);
     }
@@ -192,8 +192,8 @@ export function PatientClinicalDetail() {
       });
       setCare(data.care);
       toast.success("Resumo e status salvos.");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Falha ao salvar.");
+    } catch {
+      toast.error("Não foi possível salvar o resumo do caso.");
     } finally {
       setSavingCare(false);
     }
@@ -210,8 +210,8 @@ export function PatientClinicalDetail() {
       setTags((prev) => [...prev, data.tag].sort((a, b) => a.label.localeCompare(b.label)));
       setNewTagLabel("");
       toast.success("Tag criada.");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Falha ao criar tag.");
+    } catch {
+      toast.error("Não foi possível criar a tag agora.");
     }
   };
 
@@ -240,8 +240,8 @@ export function PatientClinicalDetail() {
       setSelectedTagIds([]);
       toast.success("Anotação criada.");
       await refreshNotesOnly();
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Falha ao salvar anotação.");
+    } catch {
+      toast.error("Não foi possível salvar a anotação.");
     } finally {
       setSavingNote(false);
     }
@@ -254,8 +254,8 @@ export function PatientClinicalDetail() {
         body: JSON.stringify({ pinned: !pinnedNow }),
       });
       await refreshNotesOnly();
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Falha ao fixar.");
+    } catch {
+      toast.error("Não foi possível atualizar a fixação da anotação.");
     }
   };
 
@@ -265,8 +265,8 @@ export function PatientClinicalDetail() {
       await jsonFetch(`/api/psychologist/clinical/notes/${noteId}`, { method: "DELETE" });
       toast.success("Anotação removida.");
       await refreshNotesOnly();
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Falha ao excluir.");
+    } catch {
+      toast.error("Não foi possível excluir a anotação.");
     }
   };
 
@@ -307,7 +307,7 @@ export function PatientClinicalDetail() {
             ← Pacientes
           </Link>
           <h1 className="h4 mt-1 mb-0 fw-semibold text-secondary">Prontuário</h1>
-          <p className="small text-muted mb-0">Registro clínico leve — siga ética e LGPD.</p>
+          <p className="small text-muted mb-0">Acompanhe evolução, resumo clínico e histórico de atendimento.</p>
         </div>
       </div>
 

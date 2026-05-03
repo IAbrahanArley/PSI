@@ -38,8 +38,8 @@ export function AgendaExceptionsView() {
         isActive: payload.isActive,
       });
       toast.success("Exceção criada.");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao criar exceção.");
+    } catch {
+      toast.error("Não foi possível criar a exceção agora.");
     }
   }
 

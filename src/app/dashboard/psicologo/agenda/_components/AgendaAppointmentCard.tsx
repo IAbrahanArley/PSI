@@ -36,8 +36,8 @@ export function AgendaAppointmentCard({ row, timeZone, localDateYmd }: Props) {
     try {
       await setStatus.mutateAsync({ appointmentId: row.id, status: "CONFIRMED" });
       toast.success("Consulta confirmada.");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Falha ao confirmar.");
+    } catch {
+      toast.error("Não foi possível confirmar esta consulta.");
     }
   }
 
@@ -45,8 +45,8 @@ export function AgendaAppointmentCard({ row, timeZone, localDateYmd }: Props) {
     try {
       await setStatus.mutateAsync({ appointmentId: row.id, status: "COMPLETED" });
       toast.success("Marcada como concluída.");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Falha ao concluir.");
+    } catch {
+      toast.error("Não foi possível concluir esta consulta.");
     }
   }
 
@@ -56,8 +56,8 @@ export function AgendaAppointmentCard({ row, timeZone, localDateYmd }: Props) {
       toast.success("Consulta cancelada.");
       setCancelOpen(false);
       setCancelReason("");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Falha ao cancelar.");
+    } catch {
+      toast.error("Não foi possível cancelar esta consulta.");
     }
   }
 
@@ -72,8 +72,8 @@ export function AgendaAppointmentCard({ row, timeZone, localDateYmd }: Props) {
       await reschedule.mutateAsync({ appointmentId: row.id, startsAt, endsAt });
       toast.success("Consulta remarcada.");
       setRescheduleOpen(false);
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Falha ao remarcar.");
+    } catch {
+      toast.error("Não foi possível remarcar esta consulta.");
     }
   }
 

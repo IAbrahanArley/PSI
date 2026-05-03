@@ -18,9 +18,11 @@ export default function FloatingPsychologistChatTeaser() {
       aria-label="Assistente para encontrar psicólogos (em breve)"
     >
       <div
-        className="info-widget style-4 move-4 position-relative shadow"
+        className="info-widget style-4 move-4 position-relative"
         style={{
           padding: "12px 12px 12px 100px",
+          backgroundColor: "transparent",
+          boxShadow: "none",
           margin: 0,
         }}
       >

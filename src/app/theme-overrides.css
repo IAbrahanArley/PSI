@@ -1,27 +1,36 @@
-/* Carregado por último — tokens Bootstrap / tema Mindzinho */
 html[data-theme-color="skin-1"] {
   --bs-primary: #6c3a91;
   --bs-secondary: #e2a9f1;
   --bs-primary-rgb: 108, 58, 145;
   --bs-secondary-rgb: 226, 169, 241;
   --primary-hover: #5b2f7a;
+  --bs-link-color: #6c3a91;
+  --bs-link-hover-color: #5b2f7a;
 }
 
 :root {
+  --bs-primary: #6c3a91;
+  --bs-secondary: #e2a9f1;
+  --bs-primary-rgb: 108, 58, 145;
+  --bs-secondary-rgb: 226, 169, 241;
+  --primary-hover: #5b2f7a;
   --bs-body-color: #2e1a38;
   --bs-heading-color: #2e1a38;
   --bs-gray-500: #a6a6a6;
   --bs-gray-600: #a6a6a6;
   --bs-light: #eae2ef;
   --bs-light-rgb: 234, 226, 239;
+  --field-border: #bda8cc;
+  --field-border-focus: #6c3a91;
+  --field-bg: #ffffff;
+  --bs-link-color: #6c3a91;
+  --bs-link-hover-color: #5b2f7a;
 }
 
-/* Painel do dashboard: fundo suave */
 [data-dashboard] {
   background-color: rgba(234, 226, 239, 0.35);
 }
 
-/* Menu lateral: item ativo = mesmo roxo do btn-primary (evita cyan do list-group do tema) */
 [data-dashboard] nav .list-group-item.list-group-item-action.active,
 [data-dashboard] nav .list-group-item.list-group-item-action.active:focus-visible {
   background-color: var(--bs-primary) !important;
@@ -30,11 +39,84 @@ html[data-theme-color="skin-1"] {
 }
 
 [data-dashboard] nav .list-group-item.list-group-item-action.active:hover {
-  background-color: var(--primary-hover, #5b2f7a) !important;
-  border-color: var(--primary-hover, #5b2f7a) !important;
+  background-color: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
   color: #fff !important;
 }
 
 [data-dashboard] nav .list-group-item.list-group-item-action.active svg {
   color: inherit;
+}
+
+.text-primary {
+  color: var(--bs-primary) !important;
+}
+
+.btn-primary,
+.btn.btn-primary {
+  background-color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus-visible,
+.btn-primary:active {
+  background-color: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+}
+
+.btn-outline-primary,
+.btn.btn-outline-primary {
+  color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus-visible,
+.btn-outline-primary:active {
+  color: #fff !important;
+  background-color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+}
+
+.btn-link,
+.btn.btn-link {
+  color: var(--bs-primary) !important;
+}
+
+.btn-link:hover,
+.btn-link:focus-visible,
+.btn.btn-link:hover,
+.btn.btn-link:focus-visible {
+  color: var(--primary-hover) !important;
+}
+
+.form-control,
+.form-select,
+.form-check-input {
+  border-color: var(--field-border) !important;
+  background-color: var(--field-bg);
+}
+
+.input-group-text {
+  border-color: var(--field-border) !important;
+  background-color: #fff;
+}
+
+.form-label {
+  color: #4a2d5e;
+  font-weight: 500;
+}
+
+.form-control::placeholder,
+.form-select::placeholder {
+  color: #8e8098;
+}
+
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+  border-color: var(--field-border-focus) !important;
+  box-shadow: 0 0 0 0.2rem rgba(108, 58, 145, 0.16) !important;
 }

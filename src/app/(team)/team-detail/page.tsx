@@ -11,6 +11,7 @@ import { TeamDetailBookingSection } from "./_componenets/TeamDetailBookingSectio
 import { TeamDetailSidebar } from "./_componenets/TeamDetailSidebar";
 import Image from "next/image";
 import { usePsychologistBySlug } from "@/hooks/psychologists/queries";
+import PsychologistSocialLinks from "@/component/PsychologistSocialLinks";
 
 function TeamDetailContent() {
     const searchParams = useSearchParams();
@@ -45,13 +46,7 @@ function TeamDetailContent() {
                                                     <Image src={IMAGES.teampmg2} alt={displayName} />
                                                 )}
                                             </div>
-                                            <ul className="dz-social">
-                                                <li><Link href="https://www.linkedin.com/showcase/dexignzone" target="_blank"><i className="fa-brands fa-linkedin" /></Link></li>
-                                                <li><Link href="https://www.instagram.com/dexignzone" target="_blank"><i className="fa-brands fa-instagram" /></Link></li>
-                                                <li><Link href="https://www.facebook.com/dexignzone" target="_blank"><i className="fa-brands fa-facebook-f" /></Link></li>
-                                                <li><Link href="https://x.com/dexignzone" target="_blank"><i className="fa-brands fa-x-twitter" /></Link></li>
-                                                <li><Link href="https://www.youtube.com/@dexignzone" target="_blank"><i className="fa-brands fa-youtube" /></Link></li>
-                                            </ul>
+                                            <PsychologistSocialLinks links={data?.socialLinks} iconClassName="" />
                                         </div>
                                     </div>
                                     <TeamDetailSidebar data={data} isLoading={isLoading} />

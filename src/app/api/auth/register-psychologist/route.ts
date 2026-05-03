@@ -1,7 +1,12 @@
+import { and, eq, inArray } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { psychologists, users } from "@/lib/db/schema";
-import { PSYCHOLOGY_SPECIALTIES } from "@/constant/psychologySpecialties";
+import {
+  catalogSpecialties,
+  psychologistSpecialties,
+  psychologists,
+  users,
+} from "@/lib/db/schema";
 import { stripPhoneDigits } from "@/lib/phone";
 import { generatePsychologistSlug } from "@/lib/slug";
 import { supabaseAdmin } from "@/lib/db/supabase/admin";
@@ -9,7 +14,8 @@ import { supabaseAdmin } from "@/lib/db/supabase/admin";
 type Body = {
   firstName?: string;
   lastName?: string;
-  specialty?: string;
+  /** Uma ou mais especialidades do catálogo (`catalog_specialties.id`). */
+  catalogSpecialtyIds?: string[];
   phone?: string;
   email?: string;
   password?: string;
@@ -31,7 +37,7 @@ export async function POST(req: Request) {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
     return NextResponse.json(
       { error: "Supabase Auth não configurado (NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY)." },
-      { status: 503 }
+      { status: 503 },
     );
   }
 
@@ -44,10 +50,12 @@ export async function POST(req: Request) {
 
   const firstName = (body.firstName ?? "").trim();
   const lastName = (body.lastName ?? "").trim();
-  const specialty = (body.specialty ?? "").trim();
   const phoneRaw = body.phone ?? "";
   const email = (body.email ?? "").trim().toLowerCase();
   const password = body.password ?? "";
+
+  const idsRaw = Array.isArray(body.catalogSpecialtyIds) ? body.catalogSpecialtyIds : [];
+  const normalizedIds = [...new Set(idsRaw.map((id) => String(id).trim()).filter(Boolean))];
 
   if (firstName.length < 2) {
     return NextResponse.json({ error: "Informe um nome válido." }, { status: 400 });
@@ -55,8 +63,29 @@ export async function POST(req: Request) {
   if (lastName.length < 2) {
     return NextResponse.json({ error: "Informe um sobrenome válido." }, { status: 400 });
   }
-  if (!PSYCHOLOGY_SPECIALTIES.includes(specialty as (typeof PSYCHOLOGY_SPECIALTIES)[number])) {
-    return NextResponse.json({ error: "Selecione uma especialidade válida." }, { status: 400 });
+
+  let catalogOrdered: Array<{ id: string; name: string }>;
+
+  if (normalizedIds.length > 0) {
+    const rows = await db
+      .select({ id: catalogSpecialties.id, name: catalogSpecialties.name })
+      .from(catalogSpecialties)
+      .where(and(inArray(catalogSpecialties.id, normalizedIds), eq(catalogSpecialties.isActive, true)));
+
+    if (rows.length !== normalizedIds.length) {
+      return NextResponse.json(
+        { error: "Uma ou mais especialidades são inválidas ou estão indisponíveis." },
+        { status: 400 },
+      );
+    }
+
+    const byId = new Map(rows.map((r) => [r.id, r] as const));
+    catalogOrdered = normalizedIds.map((id) => {
+      const r = byId.get(id)!;
+      return { id: r.id, name: r.name };
+    });
+  } else {
+    return NextResponse.json({ error: "Selecione ao menos uma especialidade do catálogo." }, { status: 400 });
   }
 
   const phoneDigits = stripPhoneDigits(phoneRaw);
@@ -75,6 +104,7 @@ export async function POST(req: Request) {
   }
 
   const fullName = `${firstName} ${lastName}`.trim();
+  const firstSpecialtyLabel = catalogOrdered[0]?.name ?? "";
 
   const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
     email,
@@ -102,23 +132,40 @@ export async function POST(req: Request) {
         role: "PSYCHOLOGIST",
       });
 
-      await tx.insert(psychologists).values({
-        userId,
-        slug,
-        fullName,
-        specialty,
-        phone: phoneDigits,
-        crp: null,
-      });
+      const [psy] = await tx
+        .insert(psychologists)
+        .values({
+          userId,
+          slug,
+          fullName,
+          specialty: firstSpecialtyLabel,
+          phone: phoneDigits,
+          crp: null,
+        })
+        .returning({ id: psychologists.id });
+
+      if (!psy) {
+        throw new Error("no psychologist id");
+      }
+
+      for (let i = 0; i < catalogOrdered.length; i++) {
+        const c = catalogOrdered[i];
+        await tx.insert(psychologistSpecialties).values({
+          psychologistId: psy.id,
+          catalogSpecialtyId: c.id,
+          label: c.name,
+          sortOrder: i,
+        });
+      }
     });
   } catch {
     await supabaseAdmin.auth.admin.deleteUser(userId);
     return NextResponse.json(
       {
         error:
-          "Falha ao gravar no PostgreSQL (tabelas users/psychologists). Confira DATABASE_URL, se rodou as migrations (`npm run db:push`) neste banco e se não há conflito com triggers no Supabase.",
+          "Falha ao gravar no PostgreSQL (tabelas users/psychologists/especialidades). Confira DATABASE_URL, se aplicou migrations (`npm run db:migrate` ou `npm run db:push`) neste banco.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 

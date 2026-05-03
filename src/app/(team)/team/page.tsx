@@ -6,7 +6,8 @@ import { TeamPsychologistCard } from "@/component/TeamPsychologistCard";
 import PageBanner from "@/component/PageBanner";
 import { IMAGES } from "@/constant/theme";
 import {
-  usePublicSpecialtyLabels,
+  usePublicCatalogSpecialtyOptions,
+  usePublicSearchFilters,
   useTeamAdvertisingPool,
   useTeamRegularInfinite,
 } from "@/hooks/psychologists/queries";
@@ -16,7 +17,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 const ROW_SIZE = 4;
 
-function parseEspecialidadeParam(raw: string | null): string | null {
+function parseListingParam(raw: string | null): string | null {
   if (!raw?.trim()) return null;
   const v = raw.trim();
   if (v.toLowerCase() === "todos") return null;
@@ -50,19 +51,22 @@ function TeamContent() {
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   const specialtyFilter = useMemo(
-    () => parseEspecialidadeParam(searchParams.get("especialidade")),
+    () => parseListingParam(searchParams.get("especialidade")),
     [searchParams],
   );
+  const cityFilter = useMemo(() => parseListingParam(searchParams.get("cidade")), [searchParams]);
 
-  const selectValue = specialtyFilter ?? "todos";
+  const selectSpecialtyValue = specialtyFilter ?? "todos";
+  const selectCityValue = cityFilter ?? "";
 
   useEffect(() => {
     featuredPickCache.current = new Map();
-  }, [specialtyFilter]);
+  }, [specialtyFilter, cityFilter]);
 
-  const { data: specialtyLabels = [], isLoading: labelsLoading } = usePublicSpecialtyLabels();
-  const regular = useTeamRegularInfinite(specialtyFilter, ROW_SIZE);
-  const advertising = useTeamAdvertisingPool(specialtyFilter);
+  const { data: specialtyOptions = [], isLoading: specialtiesLoading } = usePublicCatalogSpecialtyOptions();
+  const { data: searchFilters } = usePublicSearchFilters();
+  const regular = useTeamRegularInfinite(specialtyFilter, cityFilter, ROW_SIZE);
+  const advertising = useTeamAdvertisingPool(specialtyFilter, cityFilter);
 
   useEffect(() => {
     const el = loadMoreRef.current;
@@ -79,25 +83,51 @@ function TeamContent() {
     return () => obs.disconnect();
   }, [regular.hasNextPage, regular.isFetchingNextPage, regular.fetchNextPage]);
 
-  function onSpecialtyChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const v = e.target.value;
+  function syncQuery(nextEspecialidade: string | null, nextCidadeKey: string | null) {
     const next = new URLSearchParams(searchParams.toString());
-    if (v === "todos") {
-      next.delete("especialidade");
-    } else {
-      next.set("especialidade", v);
-    }
+    if (!nextEspecialidade) next.delete("especialidade");
+    else next.set("especialidade", nextEspecialidade);
+    if (!nextCidadeKey) next.delete("cidade");
+    else next.set("cidade", nextCidadeKey);
     const qs = next.toString();
     router.push(qs ? `/team?${qs}` : "/team");
   }
 
-  const bannerTitle = specialtyFilter ? `Especialistas — ${specialtyFilter}` : "Nossos especialistas";
+  function onSpecialtyChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const v = e.target.value;
+    syncQuery(v === "todos" ? null : v, cityFilter);
+  }
+
+  function onCityChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const v = e.target.value.trim();
+    syncQuery(specialtyFilter, v || null);
+  }
+
+  const specialtyDisplayName =
+    specialtyOptions.find((s) => s.slug === specialtyFilter)?.name ??
+    searchFilters?.specialties?.find((s) => s.slug === specialtyFilter)?.name ??
+    specialtyFilter;
+  const cityDisplayLabel =
+    searchFilters?.cities?.find((c) => c.key === cityFilter)?.label ??
+    cityFilter ??
+    "";
+
+  const bannerPieces: string[] = [];
+  bannerPieces.push("Especialistas");
+  if (specialtyDisplayName) bannerPieces.push(specialtyDisplayName);
+  if (cityDisplayLabel) bannerPieces.push(cityDisplayLabel);
+  const bannerTitle = bannerPieces.join(" — ");
 
   const pages = regular.data?.pages ?? [];
   const pool = advertising.data ?? [];
   const poolReady = !advertising.isLoading;
   const hasAnyRegular = pages.some((p) => p.items.length > 0);
   const initialLoading = regular.isLoading && pages.length === 0;
+  const labelsLoading = specialtiesLoading || !searchFilters;
+
+  const cityOptions = searchFilters?.cities ?? [];
+
+  const pageKeyPrefix = `${specialtyFilter ?? "all"}-${cityFilter ?? "all"}`;
 
   return (
     <>
@@ -106,7 +136,7 @@ function TeamContent() {
         <PageBanner title={bannerTitle} bnrimage={IMAGES.Banner01.src} />
         <section className="content-inner">
           <div className="container">
-            <div className="row m-b30 align-items-end">
+            <div className="row g-3 m-b30 align-items-end">
               <div className="col-md-4 mt-3 mt-md-0">
                 <label htmlFor="team-especialidade" className="form-label small mb-1">
                   Especialidade
@@ -114,14 +144,33 @@ function TeamContent() {
                 <select
                   id="team-especialidade"
                   className="form-select form-select-sm"
-                  value={selectValue}
+                  value={selectSpecialtyValue}
                   onChange={onSpecialtyChange}
                   disabled={labelsLoading}
                 >
                   <option value="todos">Todas as especialidades</option>
-                  {specialtyLabels.map((label) => (
-                    <option key={label} value={label}>
-                      {label}
+                  {specialtyOptions.map((o) => (
+                    <option key={o.slug} value={o.slug}>
+                      {o.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="col-md-4 mt-3 mt-md-0">
+                <label htmlFor="team-cidade" className="form-label small mb-1">
+                  Cidade
+                </label>
+                <select
+                  id="team-cidade"
+                  className="form-select form-select-sm"
+                  value={selectCityValue}
+                  onChange={onCityChange}
+                  disabled={labelsLoading}
+                >
+                  <option value="">Todas as cidades</option>
+                  {cityOptions.map((c) => (
+                    <option key={c.key} value={c.key}>
+                      {c.label}
                     </option>
                   ))}
                 </select>
@@ -130,9 +179,7 @@ function TeamContent() {
 
             {regular.isError ? (
               <div className="alert alert-danger" role="alert">
-                {regular.error instanceof Error
-                  ? regular.error.message
-                  : "Não foi possível carregar a lista."}
+                Não foi possível carregar a lista de especialistas agora.
               </div>
             ) : null}
 
@@ -156,14 +203,19 @@ function TeamContent() {
               </div>
             ) : !hasAnyRegular && pool.length === 0 ? (
               <div className="alert alert-info mb-0">
-                {specialtyFilter
-                  ? `Nenhum profissional encontrado para a especialidade “${specialtyFilter}”.`
-                  : "Nenhum profissional disponível no momento."}
+                {(specialtyFilter || cityFilter) ?
+                  <>
+                    Nenhum profissional encontrado para estes filtros
+                    {specialtyDisplayName ? ` — especialidade “${specialtyDisplayName}”` : ""}
+                    {cityDisplayLabel ? ` — cidade “${cityDisplayLabel}”` : ""}
+                    .
+                  </>
+                : "Nenhum profissional disponível no momento."}
               </div>
             ) : (
               <>
                 {pages.map((page, pageIndex) => (
-                  <Fragment key={`${specialtyFilter ?? "all"}-${pageIndex}`}>
+                  <Fragment key={`${pageKeyPrefix}-${pageIndex}`}>
                     <div className="row">
                       {page.items.map((item, i) => (
                         <TeamPsychologistCard
@@ -175,20 +227,20 @@ function TeamContent() {
                         />
                       ))}
                     </div>
-                    {poolReady && pool.length > 0 ? (
+                    {poolReady && pool.length > 0 ?
                       (() => {
                         const featured = pickFeaturedForPage(pool, pageIndex, featuredPickCache);
                         return featured ? <TeamFeaturedPsychologistSection psychologist={featured} /> : null;
                       })()
-                    ) : null}
+                    : null}
                   </Fragment>
                 ))}
                 <div ref={loadMoreRef} className="py-4 text-center text-muted small">
-                  {regular.isFetchingNextPage
-                    ? "Carregando mais profissionais…"
-                    : !regular.hasNextPage && hasAnyRegular
-                      ? "Você viu todos os profissionais desta lista."
-                      : null}
+                  {regular.isFetchingNextPage ?
+                    "Carregando mais profissionais…"
+                  : !regular.hasNextPage && hasAnyRegular ?
+                    "Você viu todos os profissionais desta lista."
+                  : null}
                 </div>
               </>
             )}

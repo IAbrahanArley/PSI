@@ -1,4 +1,5 @@
 import type { CurriculumContent } from "@/lib/types/psychologist-curriculum";
+import type { PsychologistSocialNetwork } from "@/lib/psychologist-social-links";
 
 export type PsychologistProfileData = {
   psychologist: {
@@ -10,6 +11,8 @@ export type PsychologistProfileData = {
     profileImageUrl: string | null;
     slug: string;
   };
+  /** Linhas vindas do catálogo (`catalog_specialties`). */
+  catalogSpecialtyIds: string[];
   specialties: string[];
   skills: string[];
   awards: Array<{ id: string; title: string; link: string | null; imageUrl: string | null }>;
@@ -21,6 +24,9 @@ export type SavePsychologistProfileInput = {
   bio?: string | null;
   crp?: string | null;
   profileImageUrl?: string | null;
+  /** Preferencial: atualiza vínculos com `catalog_specialties`. */
+  catalogSpecialtyIds?: string[];
+  /** Legado — usado apenas se `catalogSpecialtyIds` vier vazio/indicado pelo fluxo. */
   specialties?: string[];
   skills?: string[];
   awards?: Array<{ title: string; link?: string | null; imageUrl?: string | null }>;
@@ -51,5 +57,18 @@ export type SavePsychologistAddressesInput = {
     zipCode?: string | null;
     complement?: string | null;
     reference?: string | null;
+  }>;
+};
+
+export type PsychologistSocialLink = {
+  id: string;
+  network: PsychologistSocialNetwork;
+  url: string;
+};
+
+export type SavePsychologistSocialLinksInput = {
+  links: Array<{
+    network?: PsychologistSocialNetwork | string | null;
+    url?: string | null;
   }>;
 };

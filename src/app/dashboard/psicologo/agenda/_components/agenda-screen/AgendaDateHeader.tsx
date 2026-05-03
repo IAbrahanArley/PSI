@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatYmdAsDdMmYyyy } from "../agenda-utils";
 
@@ -9,7 +10,6 @@ type Props = {
   onPrevDay: () => void;
   onNextDay: () => void;
   onToday: () => void;
-  /** `yyyy-mm-dd` vindo do `<input type="date">`. */
   onPickDate: (ymd: string) => void;
   className?: string;
 };
@@ -35,8 +35,8 @@ export function AgendaDateHeader({
         </div>
 
         <div className="d-flex flex-wrap align-items-center gap-2">
-          <button type="button" onClick={onPrevDay} className="btn btn-outline-secondary btn-sm">
-            ←
+          <button type="button" onClick={onPrevDay} className="btn btn-outline-secondary btn-sm" aria-label="Dia anterior">
+            <ChevronLeft size={16} />
           </button>
           <input
             type="date"
@@ -48,10 +48,10 @@ export function AgendaDateHeader({
             className="form-control form-control-sm"
             style={{ width: "auto" }}
           />
-          <button type="button" onClick={onNextDay} className="btn btn-outline-secondary btn-sm">
-            →
+          <button type="button" onClick={onNextDay} className="btn btn-outline-secondary btn-sm" aria-label="Próximo dia">
+            <ChevronRight size={16} />
           </button>
-          <button type="button" onClick={onToday} className="btn btn-secondary btn-sm fw-semibold">
+          <button type="button" onClick={onToday} className="btn btn-outline-primary btn-sm fw-semibold">
             Hoje
           </button>
         </div>

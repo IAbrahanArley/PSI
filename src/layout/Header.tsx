@@ -41,12 +41,8 @@ function Header() {
         e.preventDefault(); 
         if (!form.current) return;
         emailjs.sendForm('service_61hny88', 'template_vvlidif', form.current, {publicKey: 'aYOgb_ORYkjD-hXhl',})
-        .then((result) => {
-            console.log('SUCCESS!', result.text);
-        },(error) => {
-            console.log('FAILED...', error.text);
-        },
-        );
+        .then(() => undefined)
+        .catch(() => undefined);
     };
 
     return (
@@ -120,11 +116,6 @@ function Header() {
                                             <Link href="/login/psi" className="btn btn-secondary btn-hover1"> Já atua na área? </Link>
                                         </li>
                                         <li className="nav-item">
-                                           {/* <button onClick={() => handleclick(1)} type="button" className="toggle-nav-btn" data-bs-toggle="offcanvas" data-bs-target="#headerSidebar" aria-controls="offcanvasLeft">
-                                                <span></span>
-                                                <span></span>
-                                                <span></span>
-                                            </button>*/}
                                         </li>
                                     </ul>
                                 </div>

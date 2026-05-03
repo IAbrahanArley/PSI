@@ -4,15 +4,15 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import PsychologistCatalogSpecialtiesField from "@/component/PsychologistCatalogSpecialtiesField";
 import Header from "@/layout/Header";
-import SpecialtyCombobox from "@/component/SpecialtyCombobox";
 import { formatBrazilPhone, stripPhoneDigits } from "@/lib/phone";
 
 export default function CadastroPsicologoPage() {
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [specialty, setSpecialty] = useState("");
+  const [catalogSpecialtyIds, setCatalogSpecialtyIds] = useState<string[]>([]);
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,8 +20,8 @@ export default function CadastroPsicologoPage() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!specialty.trim()) {
-      toast.error("Selecione uma especialidade na lista.");
+    if (!catalogSpecialtyIds.length) {
+      toast.error("Selecione ao menos uma especialidade do catálogo.");
       return;
     }
     setLoading(true);
@@ -32,7 +32,7 @@ export default function CadastroPsicologoPage() {
         body: JSON.stringify({
           firstName,
           lastName,
-          specialty,
+          catalogSpecialtyIds,
           phone: stripPhoneDigits(phone),
           email,
           password,
@@ -40,7 +40,7 @@ export default function CadastroPsicologoPage() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        toast.error(data.error ?? "Erro ao cadastrar.");
+        toast.error("Não foi possível concluir o cadastro. Revise os dados e tente novamente.");
         return;
       }
       setPassword("");
@@ -62,6 +62,10 @@ export default function CadastroPsicologoPage() {
               <div className="col-lg-8 col-xl-7">
                 <div className="card shadow-sm border-0">
                   <div className="card-body p-4 p-md-5">
+                    <h2 className="title text-secondary m-b20">Cadastro de psicólogo</h2>
+                    <p className="text-muted m-b30">
+                      Preencha seus dados para criar a conta e montar seu perfil profissional no painel.
+                    </p>
                     <form onSubmit={onSubmit} noValidate>
                       <div className="row g-3">
                         <div className="col-md-6">
@@ -93,10 +97,10 @@ export default function CadastroPsicologoPage() {
                           />
                         </div>
                         <div className="col-12">
-                          <SpecialtyCombobox value={specialty} onChange={setSpecialty} />
-                          <small className="text-muted">
-                            Use a busca e clique em uma opção da lista.
-                          </small>
+                          <PsychologistCatalogSpecialtiesField
+                            value={catalogSpecialtyIds}
+                            onChange={setCatalogSpecialtyIds}
+                          />
                         </div>
                         <div className="col-12">
                           <label className="form-label" htmlFor="phone">

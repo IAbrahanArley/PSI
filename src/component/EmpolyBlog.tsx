@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { IMAGES } from "@/constant/theme";
 import { usePublicPsychologists } from "@/hooks/psychologists/queries";
+import PsychologistSocialLinks from "@/component/PsychologistSocialLinks";
 
 const DELAYS = ["0.2s", "0.4s", "0.6s", "0.8s", "1.0s", "1.2s", "1.4s", "1.6s"];
 
@@ -100,33 +101,7 @@ function EmpolyBlog() {
                     <i className="feather text-primary icon-arrow-right" />
                   </Link>
                 </div>
-                <ul className="dz-social">
-                  <li>
-                    <Link href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer">
-                      <i className="fa-brands fa-linkedin text-primary" />
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
-                      <i className="fa-brands fa-instagram text-primary" />
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
-                      <i className="fa-brands fa-facebook-f text-primary" />
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="https://x.com" target="_blank" rel="noopener noreferrer">
-                      <i className="fa-brands fa-x-twitter text-primary" />
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="https://www.youtube.com" target="_blank" rel="noopener noreferrer">
-                      <i className="fa-brands fa-youtube text-primary" />
-                    </Link>
-                  </li>
-                </ul>
+                <PsychologistSocialLinks links={data.socialLinks} />
               </div>
             </div>
           );

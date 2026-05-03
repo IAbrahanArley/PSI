@@ -53,7 +53,7 @@ export function AgendaScreen({
   const [selectedDate, setSelectedDate] = useState(() => new Date());
   const localDate = useMemo(() => toLocalYmd(selectedDate), [selectedDate]);
 
-  const { data: snapshot, isLoading, isError, error, refetch, isFetching } = useAgendaDaySnapshot(
+  const { data: snapshot, isLoading, isError, refetch, isFetching } = useAgendaDaySnapshot(
     localDate,
     timeZone,
   );
@@ -83,7 +83,7 @@ export function AgendaScreen({
   const handleConfigure =
     onConfigureAvailability ?? (() => router.push("/dashboard/psicologo/agenda/configuracao"));
 
-  const handleBlock = onBlockTime ?? (() => toast.message("Em breve: bloqueio (server action + schedule_blocks)."));
+  const handleBlock = onBlockTime ?? (() => toast.message("Bloqueio de horário será liberado em breve."));
 
   const handleNew =
     onNewAppointment ?? (() => router.push("/dashboard/psicologo/agenda/novo"));
@@ -123,7 +123,7 @@ export function AgendaScreen({
       <AgendaScreenLayout sidebar={sidebar}>
         <div className="alert alert-danger">
           <p className="fw-medium mb-0">
-            {error instanceof Error ? error.message : "Não foi possível carregar a agenda."}
+            Não foi possível carregar sua agenda agora.
           </p>
           <button type="button" className="btn btn-outline-danger btn-sm mt-3" onClick={() => void refetch()}>
             Tentar novamente

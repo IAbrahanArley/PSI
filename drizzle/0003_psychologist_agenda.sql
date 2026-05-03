@@ -3,6 +3,23 @@ CREATE TYPE "public"."agenda_modality" AS ENUM('ONLINE', 'PRESENTIAL');--> state
 CREATE TYPE "public"."appointment_status" AS ENUM('SCHEDULED', 'CONFIRMED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'NO_SHOW');--> statement-breakpoint
 CREATE TYPE "public"."schedule_block_category" AS ENUM('BREAK', 'ADMIN', 'FOCUS', 'OTHER');--> statement-breakpoint
 CREATE TYPE "public"."weekly_agenda_rule_type" AS ENUM('AVAILABLE', 'UNAVAILABLE');--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "psychologist_addresses" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"psychologist_id" uuid NOT NULL,
+	"label" text NOT NULL,
+	"street" text,
+	"number" text,
+	"neighborhood" text,
+	"city" text,
+	"state" text,
+	"zip_code" text,
+	"complement" text,
+	"reference" text,
+	"sort_order" integer DEFAULT 0 NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "psychologist_agenda_exceptions" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"psychologist_id" uuid NOT NULL,
@@ -97,6 +114,12 @@ CREATE TABLE "psychologist_weekly_availability" (
 );
 --> statement-breakpoint
 ALTER TABLE "psychologist_agenda_exceptions" ADD CONSTRAINT "psychologist_agenda_exceptions_psychologist_id_psychologists_id_fk" FOREIGN KEY ("psychologist_id") REFERENCES "public"."psychologists"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "psychologist_addresses" ADD CONSTRAINT "psychologist_addresses_psychologist_id_psychologists_id_fk" FOREIGN KEY ("psychologist_id") REFERENCES "public"."psychologists"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
 ALTER TABLE "psychologist_agenda_exceptions" ADD CONSTRAINT "psychologist_agenda_exceptions_address_id_psychologist_addresses_id_fk" FOREIGN KEY ("address_id") REFERENCES "public"."psychologist_addresses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "psychologist_appointment_status_history" ADD CONSTRAINT "psychologist_appointment_status_history_appointment_id_psychologist_appointments_id_fk" FOREIGN KEY ("appointment_id") REFERENCES "public"."psychologist_appointments"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "psychologist_appointment_status_history" ADD CONSTRAINT "psychologist_appointment_status_history_changed_by_user_id_users_id_fk" FOREIGN KEY ("changed_by_user_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint

@@ -16,6 +16,7 @@ import {
   MapPin,
   Menu,
   Settings,
+  Share2,
   UserRound,
   Users,
   X,
@@ -35,7 +36,6 @@ export function DashboardShell({ children, userEmail, userAvatarUrl, role }: Pro
 
   const isActive = useCallback((href: string) => pathname === href, [pathname]);
   const isAgendaActive = pathname.startsWith("/dashboard/psicologo/agenda");
-  /** Rotas do submenu (perfil, endereços) — agenda fica em item próprio. */
   const isPsychologistSubActive =
     pathname.startsWith("/dashboard/psicologo") && !isAgendaActive;
   const [psychologistMenuOpen, setPsychologistMenuOpen] = useState(isPsychologistSubActive);
@@ -49,14 +49,14 @@ export function DashboardShell({ children, userEmail, userAvatarUrl, role }: Pro
     try {
       const { error } = await supabaseClient.auth.signOut();
       if (error) {
-        toast.error(error.message || "Não foi possível sair.");
+        toast.error("Nao foi possivel encerrar a sessao agora.");
         return;
       }
-      toast.success("Você saiu da conta.");
+      toast.success("Sessao encerrada com sucesso.");
       router.push("/login");
       router.refresh();
     } catch {
-      toast.error("Erro ao encerrar sessão.");
+      toast.error("Nao foi possivel encerrar a sessao agora.");
     } finally {
       setLoggingOut(false);
     }
@@ -151,6 +151,12 @@ export function DashboardShell({ children, userEmail, userAvatarUrl, role }: Pro
                       label="Endereços"
                       active={isActive("/dashboard/psicologo/enderecos")}
                       icon={<MapPin size={16} />}
+                    />
+                    <NavItem
+                      href="/dashboard/psicologo/redes-sociais"
+                      label="Redes sociais"
+                      active={isActive("/dashboard/psicologo/redes-sociais")}
+                      icon={<Share2 size={16} />}
                     />
                     <NavItem
                       href="/dashboard/psicologo/pacientes"

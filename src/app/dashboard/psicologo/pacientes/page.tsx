@@ -48,8 +48,8 @@ export default function DashboardPsicologoPacientesPage() {
         : "/api/psychologist/clinical/patients";
       const data = await jsonFetch<{ patients: PatientRow[] }>(url);
       setPatients(data.patients);
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Falha ao carregar pacientes.");
+    } catch {
+      toast.error("Não foi possível carregar os pacientes. Tente novamente.");
       setPatients([]);
     } finally {
       setLoading(false);

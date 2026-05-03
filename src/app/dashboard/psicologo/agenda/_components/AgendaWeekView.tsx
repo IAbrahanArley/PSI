@@ -11,7 +11,7 @@ type Props = {
 };
 
 export function AgendaWeekView({ anchorLocalYmd, timeZone }: Props) {
-  const { data = [], isLoading, isError, error } = useAgendaAppointmentsWeek(anchorLocalYmd, timeZone);
+  const { data = [], isLoading, isError } = useAgendaAppointmentsWeek(anchorLocalYmd, timeZone);
   const ymds = weekDayYmds(anchorLocalYmd, timeZone);
   const byDay = groupWeekAppointmentsByDay(data, timeZone);
 
@@ -26,7 +26,7 @@ export function AgendaWeekView({ anchorLocalYmd, timeZone }: Props) {
   if (isError) {
     return (
       <div className="alert alert-danger mb-0" role="alert">
-        {error instanceof Error ? error.message : "Não foi possível carregar a semana."}
+        Não foi possível carregar os atendimentos da semana.
       </div>
     );
   }

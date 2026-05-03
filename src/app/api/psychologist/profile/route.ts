@@ -1,7 +1,8 @@
+import { and, asc, eq, inArray } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { asc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import {
+  catalogSpecialties,
   psychologistAwards,
   psychologistCurriculum,
   psychologistSkills,
@@ -67,6 +68,10 @@ export async function GET() {
     specialtyList = [psy.specialty];
   }
 
+  const catalogSpecialtyIds = specialties
+    .map((s) => s.catalogSpecialtyId)
+    .filter((id): id is string => typeof id === "string" && id.length > 0);
+
   const curriculum = (cvRow?.content as CurriculumContent | undefined) ?? emptyCurriculum();
 
   return NextResponse.json({
@@ -79,6 +84,7 @@ export async function GET() {
       profileImageUrl: psy.profileImageUrl,
       slug: psy.slug,
     },
+    catalogSpecialtyIds,
     specialties: specialtyList,
     skills: skills.map((s) => s.label),
     awards: awards.map((a) => ({
@@ -96,6 +102,7 @@ type PutBody = {
   bio?: string | null;
   crp?: string | null;
   profileImageUrl?: string | null;
+  catalogSpecialtyIds?: string[];
   specialties?: string[];
   skills?: string[];
   awards?: Array<{ title: string; link?: string | null; imageUrl?: string | null }>;
@@ -126,14 +133,49 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: "Perfil de psicólogo não encontrado." }, { status: 404 });
   }
 
-  const specialties = (body.specialties ?? []).map((s) => String(s).trim()).filter(Boolean);
+  const legacySpecialties = (body.specialties ?? []).map((s) => String(s).trim()).filter(Boolean);
   const skills = (body.skills ?? []).map((s) => String(s).trim()).filter(Boolean);
   const awardsIn = body.awards ?? [];
   const curriculum = body.curriculum ?? emptyCurriculum();
 
-  const firstSpecialty = specialties[0] ?? psy.specialty ?? null;
+  let firstSpecialtyLabel: string | null;
+  let specialtyInserts: Array<{ catalogSpecialtyId: string | null; label: string }>;
+
+  const catalogIncoming = body.catalogSpecialtyIds;
+  const useExplicitCatalogPayload = catalogIncoming !== undefined;
 
   try {
+    if (useExplicitCatalogPayload) {
+      const normalizedIds = [...new Set(catalogIncoming!.map((id) => String(id).trim()).filter(Boolean))];
+      if (!normalizedIds.length) {
+        return NextResponse.json({ error: "Selecione ao menos uma especialidade do catálogo." }, { status: 400 });
+      }
+      const rows = await db
+        .select({ id: catalogSpecialties.id, name: catalogSpecialties.name })
+        .from(catalogSpecialties)
+        .where(and(inArray(catalogSpecialties.id, normalizedIds), eq(catalogSpecialties.isActive, true)));
+
+      if (rows.length !== normalizedIds.length) {
+        return NextResponse.json(
+          { error: "Uma ou mais especialidades são inválidas ou estão indisponíveis." },
+          { status: 400 },
+        );
+      }
+
+      const byId = new Map(rows.map((r) => [r.id, r] as const));
+      specialtyInserts = normalizedIds.map((id) => {
+        const r = byId.get(id)!;
+        return { catalogSpecialtyId: r.id, label: r.name };
+      });
+      firstSpecialtyLabel = specialtyInserts[0]?.label ?? psy.specialty ?? null;
+    } else if (legacySpecialties.length > 0) {
+      specialtyInserts = legacySpecialties.map((label) => ({ catalogSpecialtyId: null, label }));
+      firstSpecialtyLabel = legacySpecialties[0] ?? psy.specialty ?? null;
+    } else {
+      firstSpecialtyLabel = psy.specialty ?? null;
+      specialtyInserts = [];
+    }
+
     await db.transaction(async (tx) => {
       await tx
         .update(psychologists)
@@ -142,16 +184,18 @@ export async function PUT(req: Request) {
           bio: body.bio ?? null,
           crp: body.crp?.trim() || null,
           profileImageUrl: body.profileImageUrl ?? null,
-          specialty: firstSpecialty,
+          specialty: firstSpecialtyLabel,
           updatedAt: new Date(),
         })
         .where(eq(psychologists.id, psy.id));
 
       await tx.delete(psychologistSpecialties).where(eq(psychologistSpecialties.psychologistId, psy.id));
-      for (let i = 0; i < specialties.length; i++) {
+      for (let i = 0; i < specialtyInserts.length; i++) {
+        const row = specialtyInserts[i];
         await tx.insert(psychologistSpecialties).values({
           psychologistId: psy.id,
-          label: specialties[i],
+          catalogSpecialtyId: row.catalogSpecialtyId,
+          label: row.label,
           sortOrder: i,
         });
       }

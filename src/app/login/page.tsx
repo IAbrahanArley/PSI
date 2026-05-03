@@ -47,18 +47,13 @@ function LoginForm() {
       });
 
       if (error) {
-        toast.error(error.message || "Não foi possível entrar. Verifique e-mail e senha.");
+        toast.error("Não foi possível entrar. Verifique e-mail e senha.");
         return;
       }
 
       const syncRes = await fetch("/api/auth/sync-role", { method: "POST" });
-      const syncBody = await syncRes.json().catch(() => ({}));
       if (!syncRes.ok) {
-        toast.error(
-          typeof syncBody.error === "string"
-            ? syncBody.error
-            : "Não foi possível sincronizar seu perfil com o banco."
-        );
+        toast.error("Não foi possível concluir seu login agora. Tente novamente.");
         await supabaseClient.auth.signOut();
         return;
       }
@@ -80,9 +75,7 @@ function LoginForm() {
     <div className="card shadow-sm border-0">
       <div className="card-body p-4 p-md-5">
         <h2 className="title text-secondary m-b20">Entrar</h2>
-        <p className="text-muted m-b30">
-          Acesse com o mesmo e-mail e senha usados no cadastro (Supabase Auth).
-        </p>
+        <p className="text-muted m-b30">Entre com o e-mail e a senha da sua conta para acessar o painel.</p>
         <form onSubmit={onSubmit} noValidate>
           <div className="row g-3">
             <div className="col-12">
@@ -118,7 +111,7 @@ function LoginForm() {
             <button type="submit" className="btn btn-primary btn-lg" disabled={loading}>
               {loading ? "Entrando..." : "Entrar"}
             </button>
-            <Link href="/cadastro/psicologo" className="btn btn-outline-secondary btn-lg">
+            <Link href="/cadastro/psicologo" className="btn btn-outline-primary btn-lg">
               Cadastro de psicólogo
             </Link>
             <Link href="/" className="btn btn-link">

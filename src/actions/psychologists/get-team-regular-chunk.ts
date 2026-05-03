@@ -4,7 +4,9 @@ import { and, asc, eq, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { psychologistSpecialties, psychologists } from "@/lib/db/schema";
 import type { PublicPsychologist } from "./types";
-import { publicTeamPsychologistBaseWhere } from "./team-feed-where";
+import { normalizeListingCity } from "@/lib/listing-city";
+import { publicPsychologistListingWhere } from "./team-feed-where";
+import { getPublicSocialLinksByPsychologistIds } from "./social-links";
 
 export type TeamRegularChunk = {
   items: PublicPsychologist[];
@@ -21,6 +23,8 @@ function normalizeSpecialty(raw: string | null | undefined): string | null {
 
 export async function getTeamRegularChunk(input: {
   specialty?: string | null;
+  /** Valor para filtro `lower(trim(psychologists.city))`. */
+  city?: string | null;
   offset: number;
   limit: number;
 }): Promise<TeamRegularChunk> {
@@ -29,11 +33,15 @@ export async function getTeamRegularChunk(input: {
   }
 
   const specialty = normalizeSpecialty(input.specialty ?? null);
+  const cityKey = normalizeListingCity(input.city ?? null);
   const offset = Math.max(0, input.offset);
   const limit = Math.min(Math.max(1, input.limit), 24);
   const fetchN = limit + 1;
 
-  const base = publicTeamPsychologistBaseWhere(specialty);
+  const base = await publicPsychologistListingWhere({
+    specialtyParam: specialty,
+    cityParam: cityKey,
+  });
   const whereClause = and(base, eq(psychologists.advertisingHighlight, false));
 
   const rows = await db
@@ -55,6 +63,7 @@ export async function getTeamRegularChunk(input: {
   const slice = rows.slice(0, limit);
   const ids = slice.map((r) => r.id);
   const firstSpecByPsy = new Map<string, string>();
+  const socialLinksByPsy = await getPublicSocialLinksByPsychologistIds(ids);
 
   if (ids.length > 0) {
     const specs = await db
@@ -77,6 +86,7 @@ export async function getTeamRegularChunk(input: {
     displayName: (r.professionalName?.trim() || r.fullName).trim(),
     specialty: firstSpecByPsy.get(r.id) ?? r.specialty ?? "",
     profileImageUrl: r.profileImageUrl,
+    socialLinks: socialLinksByPsy.get(r.id) ?? [],
   }));
 
   return {

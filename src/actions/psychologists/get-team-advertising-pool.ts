@@ -4,7 +4,9 @@ import { and, asc, eq, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { psychologistSkills, psychologistSpecialties, psychologists } from "@/lib/db/schema";
 import type { TeamFeaturedPsychologist } from "./types";
-import { publicTeamPsychologistBaseWhere } from "./team-feed-where";
+import { normalizeListingCity } from "@/lib/listing-city";
+import { publicPsychologistListingWhere } from "./team-feed-where";
+import { getPublicSocialLinksByPsychologistIds } from "./social-links";
 
 function normalizeSpecialty(raw: string | null | undefined): string | null {
   if (raw == null) return null;
@@ -14,11 +16,19 @@ function normalizeSpecialty(raw: string | null | undefined): string | null {
 }
 
 /** Todos os psicólogos com destaque publicitário (para sortear um por “fileira” na /team). */
-export async function getTeamAdvertisingPool(specialty?: string | null): Promise<TeamFeaturedPsychologist[]> {
+export async function getTeamAdvertisingPool(input?: {
+  specialty?: string | null;
+  city?: string | null;
+}): Promise<TeamFeaturedPsychologist[]> {
   if (!process.env.DATABASE_URL?.trim()) return [];
 
-  const specialtyNorm = normalizeSpecialty(specialty ?? null);
-  const base = publicTeamPsychologistBaseWhere(specialtyNorm);
+  const specialtyNorm = normalizeSpecialty(input?.specialty ?? null);
+  const cityKey = normalizeListingCity(input?.city ?? null);
+
+  const base = await publicPsychologistListingWhere({
+    specialtyParam: specialtyNorm,
+    cityParam: cityKey,
+  });
   const whereClause = and(base, eq(psychologists.advertisingHighlight, true));
 
   const rows = await db
@@ -38,6 +48,7 @@ export async function getTeamAdvertisingPool(specialty?: string | null): Promise
   const ids = rows.map((r) => r.id);
   const firstSpecByPsy = new Map<string, string>();
   const skillsByPsy = new Map<string, string[]>();
+  const socialLinksByPsy = await getPublicSocialLinksByPsychologistIds(ids);
 
   if (ids.length > 0) {
     const [specs, skills] = await Promise.all([
@@ -75,6 +86,7 @@ export async function getTeamAdvertisingPool(specialty?: string | null): Promise
     displayName: (r.professionalName?.trim() || r.fullName).trim(),
     specialty: firstSpecByPsy.get(r.id) ?? r.specialty ?? "",
     profileImageUrl: r.profileImageUrl,
+    socialLinks: socialLinksByPsy.get(r.id) ?? [],
     bio: r.bio,
     skills: skillsByPsy.get(r.id) ?? [],
   }));

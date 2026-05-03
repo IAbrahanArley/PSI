@@ -7,6 +7,7 @@ import {
   psychologistCurriculum,
   psychologistSkills,
   psychologistSpecialties,
+  psychologistSocialLinks,
   psychologistAddresses,
   psychologistWeeklyAvailability,
   psychologists,
@@ -22,7 +23,7 @@ export async function getPsychologistBySlug(slug?: string): Promise<Psychologist
   const [psy] = await db.select().from(psychologists).where(eq(psychologists.slug, slug)).limit(1);
   if (!psy) return null;
 
-  const [userRow, specialties, skills, awards, cvRow, addresses, weeklyRules] = await Promise.all([
+  const [userRow, specialties, skills, awards, cvRow, addresses, socialLinks, weeklyRules] = await Promise.all([
     db.select({ email: users.email }).from(users).where(eq(users.id, psy.userId)).limit(1),
     db
       .select()
@@ -49,6 +50,14 @@ export async function getPsychologistBySlug(slug?: string): Promise<Psychologist
       .from(psychologistAddresses)
       .where(eq(psychologistAddresses.psychologistId, psy.id))
       .orderBy(asc(psychologistAddresses.sortOrder)),
+    db
+      .select({
+        network: psychologistSocialLinks.network,
+        url: psychologistSocialLinks.url,
+      })
+      .from(psychologistSocialLinks)
+      .where(eq(psychologistSocialLinks.psychologistId, psy.id))
+      .orderBy(asc(psychologistSocialLinks.sortOrder)),
     db
       .select({
         weekday: psychologistWeeklyAvailability.weekday,
@@ -96,6 +105,7 @@ export async function getPsychologistBySlug(slug?: string): Promise<Psychologist
     contactEmail: userRow[0]?.email ?? null,
     phone: psy.phone,
     whatsapp: psy.whatsapp,
+    socialLinks,
     addresses: publicAddresses,
     weeklySchedule,
     city: psy.city,

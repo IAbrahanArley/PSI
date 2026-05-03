@@ -41,27 +41,31 @@ export default function DashboardPsicologoEnderecosPage() {
       return;
     }
     if (!data) return;
+
     setNotFound(false);
-    setAddresses(Array.isArray(data) ? data.map((a) => ({
-      label: a.label ?? "",
-      street: a.street ?? "",
-      number: a.number ?? "",
-      neighborhood: a.neighborhood ?? "",
-      city: a.city ?? "",
-      state: a.state ?? "",
-      zipCode: a.zipCode ?? "",
-      complement: a.complement ?? "",
-      reference: a.reference ?? "",
-    })) : []);
+    setAddresses(
+      Array.isArray(data)
+        ? data.map((a) => ({
+            label: a.label ?? "",
+            street: a.street ?? "",
+            number: a.number ?? "",
+            neighborhood: a.neighborhood ?? "",
+            city: a.city ?? "",
+            state: a.state ?? "",
+            zipCode: a.zipCode ?? "",
+            complement: a.complement ?? "",
+            reference: a.reference ?? "",
+          }))
+        : [],
+    );
   }, [data]);
 
   async function onSave() {
     try {
       await saveAddressesMutation.mutateAsync({ addresses });
-      toast.success("Endereços salvos com sucesso!");
-    } catch (error) {
-      const msg = error instanceof Error ? error.message : "Falha ao salvar endereços.";
-      toast.error(msg);
+      toast.success("Enderecos salvos com sucesso.");
+    } catch {
+      toast.error("Nao foi possivel salvar os enderecos. Tente novamente.");
     }
   }
 
@@ -100,37 +104,35 @@ export default function DashboardPsicologoEnderecosPage() {
   if (loading) return <LoadingSkeleton />;
 
   if (notFound) {
-    return (
-      <div className="alert alert-info">
-        Não encontramos um cadastro de psicólogo vinculado a esta conta.
-      </div>
-    );
+    return <div className="alert alert-info">Nao encontramos um cadastro de psicologo vinculado a esta conta.</div>;
   }
 
   return (
     <div>
-      <h1 className="title m-b20">Endereços de atendimento</h1>
-      <p className="text-muted m-b30">Cadastre seus endereços de atendimento.</p>
+      <h1 className="title m-b20">Enderecos de atendimento</h1>
+      <p className="text-muted m-b30">
+        Cadastre os locais onde voce atende presencialmente. Esses dados ajudam o paciente a escolher o melhor ponto de atendimento.
+      </p>
 
       <div className="d-flex justify-content-end m-b20">
         <button
           type="button"
-          className="btn btn-outline-primary text-primary btn-sm"
+          className="btn btn-outline-primary btn-sm"
           onClick={() => setAddresses((prev) => [...prev, emptyAddress()])}
         >
-          + Adicionar endereço
+          + Adicionar endereco
         </button>
       </div>
 
       {addresses.length === 0 ? (
         <div className="card border-0 shadow-sm m-b30">
-          <div className="card-body text-muted">Nenhum endereço cadastrado ainda.</div>
+          <div className="card-body text-muted">Nenhum endereco cadastrado ainda.</div>
         </div>
       ) : (
         addresses.map((addr, idx) => (
           <div key={idx} className="card border-0 shadow-sm m-b20">
             <div className="card-header bg-white d-flex justify-content-between align-items-center">
-              <span className="fw-semibold">Endereço #{idx + 1}</span>
+              <span className="fw-semibold">Endereco #{idx + 1}</span>
               <button
                 type="button"
                 className="btn btn-sm btn-outline-danger"
@@ -148,12 +150,12 @@ export default function DashboardPsicologoEnderecosPage() {
                     value={addr.label}
                     onChange={(e) =>
                       setAddresses((prev) => {
-                        const n = [...prev];
-                        n[idx] = { ...n[idx], label: e.target.value };
-                        return n;
+                        const next = [...prev];
+                        next[idx] = { ...next[idx], label: e.target.value };
+                        return next;
                       })
                     }
-                    placeholder="Ex.: Clínica Centro"
+                    placeholder="Ex.: Clinica Centro"
                   />
                 </div>
                 <div className="col-md-5">
@@ -163,23 +165,23 @@ export default function DashboardPsicologoEnderecosPage() {
                     value={addr.street}
                     onChange={(e) =>
                       setAddresses((prev) => {
-                        const n = [...prev];
-                        n[idx] = { ...n[idx], street: e.target.value };
-                        return n;
+                        const next = [...prev];
+                        next[idx] = { ...next[idx], street: e.target.value };
+                        return next;
                       })
                     }
                   />
                 </div>
                 <div className="col-md-3">
-                  <label className="form-label">Número</label>
+                  <label className="form-label">Numero</label>
                   <input
                     className="form-control"
                     value={addr.number}
                     onChange={(e) =>
                       setAddresses((prev) => {
-                        const n = [...prev];
-                        n[idx] = { ...n[idx], number: e.target.value };
-                        return n;
+                        const next = [...prev];
+                        next[idx] = { ...next[idx], number: e.target.value };
+                        return next;
                       })
                     }
                   />
@@ -191,9 +193,9 @@ export default function DashboardPsicologoEnderecosPage() {
                     value={addr.neighborhood}
                     onChange={(e) =>
                       setAddresses((prev) => {
-                        const n = [...prev];
-                        n[idx] = { ...n[idx], neighborhood: e.target.value };
-                        return n;
+                        const next = [...prev];
+                        next[idx] = { ...next[idx], neighborhood: e.target.value };
+                        return next;
                       })
                     }
                   />
@@ -205,9 +207,9 @@ export default function DashboardPsicologoEnderecosPage() {
                     value={addr.city}
                     onChange={(e) =>
                       setAddresses((prev) => {
-                        const n = [...prev];
-                        n[idx] = { ...n[idx], city: e.target.value };
-                        return n;
+                        const next = [...prev];
+                        next[idx] = { ...next[idx], city: e.target.value };
+                        return next;
                       })
                     }
                   />
@@ -219,9 +221,9 @@ export default function DashboardPsicologoEnderecosPage() {
                     value={addr.state}
                     onChange={(e) =>
                       setAddresses((prev) => {
-                        const n = [...prev];
-                        n[idx] = { ...n[idx], state: e.target.value.toUpperCase() };
-                        return n;
+                        const next = [...prev];
+                        next[idx] = { ...next[idx], state: e.target.value.toUpperCase() };
+                        return next;
                       })
                     }
                     maxLength={2}
@@ -234,9 +236,9 @@ export default function DashboardPsicologoEnderecosPage() {
                     value={addr.zipCode}
                     onChange={(e) =>
                       setAddresses((prev) => {
-                        const n = [...prev];
-                        n[idx] = { ...n[idx], zipCode: e.target.value };
-                        return n;
+                        const next = [...prev];
+                        next[idx] = { ...next[idx], zipCode: e.target.value };
+                        return next;
                       })
                     }
                   />
@@ -248,23 +250,23 @@ export default function DashboardPsicologoEnderecosPage() {
                     value={addr.complement}
                     onChange={(e) =>
                       setAddresses((prev) => {
-                        const n = [...prev];
-                        n[idx] = { ...n[idx], complement: e.target.value };
-                        return n;
+                        const next = [...prev];
+                        next[idx] = { ...next[idx], complement: e.target.value };
+                        return next;
                       })
                     }
                   />
                 </div>
                 <div className="col-md-6">
-                  <label className="form-label">Referência</label>
+                  <label className="form-label">Referencia</label>
                   <input
                     className="form-control"
                     value={addr.reference}
                     onChange={(e) =>
                       setAddresses((prev) => {
-                        const n = [...prev];
-                        n[idx] = { ...n[idx], reference: e.target.value };
-                        return n;
+                        const next = [...prev];
+                        next[idx] = { ...next[idx], reference: e.target.value };
+                        return next;
                       })
                     }
                   />
@@ -275,8 +277,13 @@ export default function DashboardPsicologoEnderecosPage() {
         ))
       )}
 
-      <button type="button" className="btn btn-primary" onClick={() => void onSave()} disabled={saveAddressesMutation.isPending}>
-        {saveAddressesMutation.isPending ? "Salvando..." : "Salvar endereços"}
+      <button
+        type="button"
+        className="btn btn-primary"
+        onClick={() => void onSave()}
+        disabled={saveAddressesMutation.isPending}
+      >
+        {saveAddressesMutation.isPending ? "Salvando..." : "Salvar enderecos"}
       </button>
     </div>
   );

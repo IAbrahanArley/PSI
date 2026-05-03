@@ -11,7 +11,7 @@ export default function AgendaConfiguracaoPage() {
             ← Voltar à agenda
           </Link>
           <h1 className="title mb-0">Disponibilidade e exceções</h1>
-          <p className="mt-1 small text-muted mb-0">Blocos semanais e exceções (integrado ao backend).</p>
+          <p className="mt-1 small text-muted mb-0">Defina seus horários recorrentes e ajustes pontuais do calendário.</p>
         </div>
       </div>
 

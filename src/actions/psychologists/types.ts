@@ -1,4 +1,10 @@
 import type { CurriculumContent } from "@/lib/types/psychologist-curriculum";
+import type { PsychologistSocialNetwork } from "@/lib/psychologist-social-links";
+
+export type PublicPsychologistSocialLink = {
+  network: PsychologistSocialNetwork;
+  url: string;
+};
 
 export type PublicPsychologist = {
   id: string;
@@ -6,6 +12,7 @@ export type PublicPsychologist = {
   displayName: string;
   specialty: string;
   profileImageUrl: string | null;
+  socialLinks: PublicPsychologistSocialLink[];
 };
 
 /** Psicólogo em destaque publicitário (bloco largo na página /team). */
@@ -45,6 +52,7 @@ export type PsychologistDetail = {
   contactEmail: string | null;
   phone: string | null;
   whatsapp: string | null;
+  socialLinks: PublicPsychologistSocialLink[];
   addresses: PsychologistPublicAddress[];
   /** Blocos semanais AVAILABLE ativos, agrupados por dia. */
   weeklySchedule: PsychologistWeeklyRow[];

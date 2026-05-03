@@ -3,10 +3,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getPsychologistAddresses, savePsychologistAddresses } from "@/actions/psychologist/addresses";
 import { getPsychologistProfile, savePsychologistProfile } from "@/actions/psychologist/profile";
-import type { SavePsychologistAddressesInput, SavePsychologistProfileInput } from "@/actions/psychologist/types";
+import { getPsychologistSocialLinks, savePsychologistSocialLinks } from "@/actions/psychologist/social-links";
+import type {
+  SavePsychologistAddressesInput,
+  SavePsychologistProfileInput,
+  SavePsychologistSocialLinksInput,
+} from "@/actions/psychologist/types";
 
 export const getPsychologistProfileQueryKey = () => ["psychologist-profile"] as const;
 export const getPsychologistAddressesQueryKey = () => ["psychologist-addresses"] as const;
+export const getPsychologistSocialLinksQueryKey = () => ["psychologist-social-links"] as const;
 
 export function usePsychologistProfile() {
   return useQuery({
@@ -40,6 +46,24 @@ export function useSavePsychologistAddresses() {
     mutationFn: (input: SavePsychologistAddressesInput) => savePsychologistAddresses(input),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: getPsychologistAddressesQueryKey() });
+    },
+  });
+}
+
+export function usePsychologistSocialLinks() {
+  return useQuery({
+    queryKey: getPsychologistSocialLinksQueryKey(),
+    queryFn: () => getPsychologistSocialLinks(),
+  });
+}
+
+export function useSavePsychologistSocialLinks() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["save-psychologist-social-links"],
+    mutationFn: (input: SavePsychologistSocialLinksInput) => savePsychologistSocialLinks(input),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: getPsychologistSocialLinksQueryKey() });
     },
   });
 }

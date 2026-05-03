@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import type { CurriculumContent, CurriculumItem, CurriculumSection } from "@/lib/types/psychologist-curriculum";
 import { emptyCurriculum } from "@/lib/types/psychologist-curriculum";
 import { BootstrapSkeleton } from "@/components/BootstrapSkeleton";
+import PsychologistCatalogSpecialtiesField from "@/component/PsychologistCatalogSpecialtiesField";
 import { usePsychologistProfile, useSavePsychologistProfile } from "@/hooks/psychologist/data";
 
 type AwardDraft = { title: string; link: string; imageUrl: string };
@@ -23,8 +24,7 @@ export default function PsychologistProfileEditor() {
   const [crp, setCrp] = useState("");
   const [profileImageUrl, setProfileImageUrl] = useState("");
 
-  const [specialties, setSpecialties] = useState<string[]>([]);
-  const [specialtyInput, setSpecialtyInput] = useState("");
+  const [catalogSpecialtyIds, setCatalogSpecialtyIds] = useState<string[]>([]);
 
   const [skills, setSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState("");
@@ -45,7 +45,9 @@ export default function PsychologistProfileEditor() {
     setBio(profileData.psychologist?.bio ?? "");
     setCrp(profileData.psychologist?.crp ?? "");
     setProfileImageUrl(profileData.psychologist?.profileImageUrl ?? "");
-    setSpecialties(Array.isArray(profileData.specialties) ? profileData.specialties : []);
+    setCatalogSpecialtyIds(
+      Array.isArray(profileData.catalogSpecialtyIds) ? profileData.catalogSpecialtyIds : []
+    );
     setSkills(Array.isArray(profileData.skills) ? profileData.skills : []);
     setAwards(
       Array.isArray(profileData.awards)
@@ -61,7 +63,7 @@ export default function PsychologistProfileEditor() {
     const res = await fetch("/api/psychologist/upload", { method: "POST", body: fd });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      toast.error(data.error ?? "Falha no upload.");
+      toast.error("Nao foi possivel enviar a imagem. Tente novamente.");
       return null;
     }
     return typeof data.url === "string" ? data.url : null;
@@ -91,13 +93,6 @@ export default function PsychologistProfileEditor() {
       toast.success("Imagem do prêmio enviada.");
     }
     e.target.value = "";
-  }
-
-  function addSpecialty() {
-    const t = specialtyInput.trim();
-    if (!t) return;
-    setSpecialties((s) => [...s, t]);
-    setSpecialtyInput("");
   }
 
   function addSkill() {
@@ -164,15 +159,14 @@ export default function PsychologistProfileEditor() {
           bio,
           crp,
           profileImageUrl,
-          specialties,
+          catalogSpecialtyIds,
           skills,
           awards: awards.filter((a) => a.title.trim()),
           curriculum,
       });
       toast.success("Perfil salvo com sucesso!");
-    } catch (error) {
-      const msg = error instanceof Error ? error.message : "Falha ao salvar perfil.";
-      toast.error(msg);
+    } catch {
+      toast.error("Nao foi possivel salvar o perfil. Revise os campos e tente novamente.");
     }
   }
 
@@ -231,17 +225,17 @@ export default function PsychologistProfileEditor() {
   if (notFound) {
     return (
       <div className="alert alert-info">
-        Não encontramos um cadastro de psicólogo vinculado a esta conta. Se você é administrador, esta área é
-        apenas para profissionais com perfil de psicólogo.
+        Nao encontramos um cadastro de psicologo vinculado a esta conta.
+
       </div>
     );
   }
 
   return (
     <form onSubmit={onSave} className="container-fluid px-0">
-      <h1 className="title  m-b20">Perfil e currículo</h1>
+      <h1 className="title  m-b20">Perfil profissional</h1>
       <p className="text-muted m-b30">
-        Preencha suas informações profissionais.
+        Atualize seus dados publicos, competencias e historico para fortalecer sua apresentacao para novos pacientes.
       </p>
 
       <div className="card border-0 shadow-sm m-b30">
@@ -314,35 +308,12 @@ export default function PsychologistProfileEditor() {
       <div className="card border-0 shadow-sm m-b30">
         <div className="card-header bg-white fw-semibold">Especialidades</div>
         <div className="card-body">
-          <div className="input-group m-b15">
-            <input
-              className="form-control"
-              value={specialtyInput}
-              onChange={(e) => setSpecialtyInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSpecialty())}
-              placeholder="Digite e adicione (pode haver várias)"
-            />
-            <button type="button" className="btn btn-secondary" onClick={addSpecialty}>
-              Adicionar
-            </button>
-          </div>
-          <ul className="list-group">
-            {specialties.map((s, i) => (
-              <li
-                key={`${s}-${i}`}
-                className="list-group-item d-flex justify-content-between align-items-center"
-              >
-                {s}
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline-danger"
-                  onClick={() => setSpecialties((x) => x.filter((_, j) => j !== i))}
-                >
-                  Remover
-                </button>
-              </li>
-            ))}
-          </ul>
+          <PsychologistCatalogSpecialtiesField
+            helper="Essas especialidades aparecem na busca pública quando o paciente escolher o mesmo item no catálogo."
+            value={catalogSpecialtyIds}
+            onChange={setCatalogSpecialtyIds}
+            disabled={saveProfileMutation.isPending}
+          />
         </div>
       </div>
 
@@ -357,7 +328,7 @@ export default function PsychologistProfileEditor() {
               onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSkill())}
               placeholder="Ex.: TCC, escuta ativa, grupos terapêuticos"
             />
-            <button type="button" className="btn btn-secondary" onClick={addSkill}>
+            <button type="button" className="btn btn-outline-primary" onClick={addSkill}>
               Adicionar
             </button>
           </div>

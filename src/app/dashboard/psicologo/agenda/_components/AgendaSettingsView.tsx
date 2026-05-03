@@ -51,8 +51,8 @@ export function AgendaSettingsView() {
         ),
       );
       toast.success("Configuração semanal salva.");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Não foi possível salvar.");
+    } catch {
+      toast.error("Não foi possível salvar a configuração semanal.");
     } finally {
       setIsSavingForm(false);
     }
@@ -63,8 +63,8 @@ export function AgendaSettingsView() {
     try {
       await deleteRule.mutateAsync({ id });
       toast.success("Removido.");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Falha ao remover.");
+    } catch {
+      toast.error("Não foi possível remover o bloco selecionado.");
     }
   }
 

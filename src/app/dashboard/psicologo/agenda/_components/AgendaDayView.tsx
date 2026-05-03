@@ -12,7 +12,7 @@ type Props = {
 };
 
 export function AgendaDayView({ localDateYmd, timeZone }: Props) {
-  const { data = [], isLoading, isError, error } = useAgendaAppointmentsDay(localDateYmd, timeZone);
+  const { data = [], isLoading, isError } = useAgendaAppointmentsDay(localDateYmd, timeZone);
 
   if (isLoading) {
     return (
@@ -26,7 +26,7 @@ export function AgendaDayView({ localDateYmd, timeZone }: Props) {
   if (isError) {
     return (
       <div className="alert alert-danger mb-0" role="alert">
-        {error instanceof Error ? error.message : "Não foi possível carregar a agenda."}
+        Não foi possível carregar os atendimentos deste dia.
       </div>
     );
   }
