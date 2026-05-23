@@ -8,7 +8,18 @@ function isPublicPath(pathname: string): boolean {
   if (pathname.startsWith("/assets")) return true;
   if (/\.(ico|png|jpg|jpeg|gif|webp|svg|mp4|woff2?|css|js)$/i.test(pathname)) return true;
 
-  const publicExact = new Set(["/", "/login", "/cadastro/psicologo", "/home"]);
+  const publicExact = new Set([
+    "/",
+    "/login",
+    "/login/paciente",
+    "/login/psicologo",
+    "/login/psi",
+    "/cadastro/psicologo",
+    "/cadastro/paciente",
+    "/recuperar-senha",
+    "/redefinir-senha",
+    "/home",
+  ]);
   if (publicExact.has(pathname)) return true;
   if (pathname.startsWith("/team")) return true;
 
@@ -48,7 +59,7 @@ export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   if (isPublicPath(pathname)) {
-    if (user && pathname === "/login") {
+    if (user && (pathname === "/login" || pathname.startsWith("/login/"))) {
       const role = getRoleFromUser(user);
       if (role) {
         const url = request.nextUrl.clone();

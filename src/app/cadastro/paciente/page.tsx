@@ -4,15 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import PsychologistCatalogSpecialtiesField from "@/component/PsychologistCatalogSpecialtiesField";
 import Header from "@/layout/Header";
 import { formatBrazilPhone, stripPhoneDigits } from "@/lib/phone";
 
-export default function CadastroPsicologoPage() {
+export default function CadastroPacientePage() {
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [catalogSpecialtyIds, setCatalogSpecialtyIds] = useState<string[]>([]);
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,31 +18,25 @@ export default function CadastroPsicologoPage() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!catalogSpecialtyIds.length) {
-      toast.error("Selecione ao menos uma especialidade do catálogo.");
-      return;
-    }
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/register-psychologist", {
+      const res = await fetch("/api/auth/register-patient", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           firstName,
           lastName,
-          catalogSpecialtyIds,
           phone: stripPhoneDigits(phone),
           email,
           password,
         }),
       });
-      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        toast.error("Não foi possível concluir o cadastro. Revise os dados e tente novamente.");
+        toast.error("Nao foi possivel concluir o cadastro. Revise os dados e tente novamente.");
         return;
       }
       setPassword("");
-      router.push("/login/psicologo?registered=1");
+      router.push("/login/paciente?registered=1");
     } catch {
       toast.error("Falha de rede. Tente novamente.");
     } finally {
@@ -62,9 +54,9 @@ export default function CadastroPsicologoPage() {
               <div className="col-lg-8 col-xl-7">
                 <div className="card shadow-sm border-0">
                   <div className="card-body p-4 p-md-5">
-                    <h2 className="title text-secondary m-b20">Cadastro de psicologo</h2>
+                    <h1 className="title text-secondary m-b20">Cadastro de paciente</h1>
                     <p className="text-muted m-b30">
-                      Preencha seus dados para criar a conta e montar seu perfil profissional no painel.
+                      Crie sua conta para acompanhar seus atendimentos no painel de paciente.
                     </p>
                     <form onSubmit={onSubmit} noValidate>
                       <div className="row g-3">
@@ -94,13 +86,6 @@ export default function CadastroPsicologoPage() {
                             required
                             minLength={2}
                             autoComplete="family-name"
-                          />
-                        </div>
-                        <div className="col-12">
-                          <PsychologistCatalogSpecialtiesField
-                            label="Especialidades do catalogo"
-                            value={catalogSpecialtyIds}
-                            onChange={setCatalogSpecialtyIds}
                           />
                         </div>
                         <div className="col-12">
@@ -154,7 +139,7 @@ export default function CadastroPsicologoPage() {
                         <button type="submit" className="btn btn-primary btn-lg" disabled={loading}>
                           {loading ? "Cadastrando..." : "Criar conta"}
                         </button>
-                        <Link href="/login/psicologo" className="btn btn-outline-primary btn-lg">
+                        <Link href="/login/paciente" className="btn btn-outline-primary btn-lg">
                           Ja tenho conta
                         </Link>
                         <Link href="/" className="btn btn-outline-secondary btn-lg">

@@ -14,3 +14,29 @@
  GET /team 200 in 10370ms
  GET /login 200 in 8078ms
  GET /home 200 in 7133ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1758ms (1668 modules)
+ GET / 200 in 4282ms
+ ○ Compiling /api/public/search-filters ...
+ ✓ Compiled /api/public/search-filters in 1285ms (1690 modules)
+ GET /api/public/search-filters 200 in 3238ms
+ POST / 200 in 3862ms
+ ✓ Compiled in 1516ms (1613 modules)
+ ✓ Compiled in 906ms (1613 modules)
+ ✓ Compiled in 894ms (1613 modules)
+ ✓ Compiled in 754ms (1613 modules)
+ ✓ Compiled in 686ms (1613 modules)
+ ✓ Compiled in 1198ms (1613 modules)
+ ✓ Compiled in 798ms (1613 modules)
+ ✓ Compiled in 705ms (1613 modules)
+ ✓ Compiled in 717ms (1613 modules)
+ ✓ Compiled in 525ms (1613 modules)
+ ✓ Compiled in 758ms (1613 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 910ms (1617 modules)
+ ○ Compiling /team ...
+ ✓ Compiled /team in 707ms (1078 modules)
+ POST /team 200 in 3247ms
+ POST / 404 in 4534ms
+ POST / 200 in 6594ms
+ POST / 200 in 1149ms

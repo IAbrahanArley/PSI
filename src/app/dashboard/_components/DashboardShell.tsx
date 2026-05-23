@@ -33,16 +33,49 @@ export function DashboardShell({ children, userEmail, userAvatarUrl, role }: Pro
   const pathname = usePathname();
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const isPsychologist = role === "PSYCHOLOGIST";
+  const isPatient = role === "PATIENT";
+  const isAdmin = role === "ADMIN";
 
   const isActive = useCallback((href: string) => pathname === href, [pathname]);
-  const isAgendaActive = pathname.startsWith("/dashboard/psicologo/agenda");
+  const isRouteOrChild = useCallback(
+    (href: string) => pathname === href || pathname.startsWith(`${href}/`),
+    [pathname],
+  );
+
+  const isAgendaActive = isRouteOrChild("/dashboard/psicologo/agenda");
+  const isPsychologistPatientsActive = isRouteOrChild("/dashboard/psicologo/pacientes");
+  const isPsychologistProfileActive = isRouteOrChild("/dashboard/psicologo/perfil");
+  const isPsychologistAddressesActive = isRouteOrChild("/dashboard/psicologo/enderecos");
+  const isPsychologistSocialActive = isRouteOrChild("/dashboard/psicologo/redes-sociais");
   const isPsychologistSubActive =
-    pathname.startsWith("/dashboard/psicologo") && !isAgendaActive;
+    isPsychologistProfileActive || isPsychologistAddressesActive || isPsychologistSocialActive;
+  const isPatientDashboardActive = isRouteOrChild("/dashboard/paciente");
+  const isAdminDashboardActive = isRouteOrChild("/dashboard/admin");
+
   const [psychologistMenuOpen, setPsychologistMenuOpen] = useState(isPsychologistSubActive);
 
   useEffect(() => {
     if (isPsychologistSubActive) setPsychologistMenuOpen(true);
   }, [isPsychologistSubActive]);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [mobileOpen]);
+
+  const closeMobile = () => setMobileOpen(false);
+  const initial = (userEmail?.charAt(0) ?? "?").toUpperCase();
 
   const handleLogout = async () => {
     setLoggingOut(true);
@@ -61,14 +94,6 @@ export function DashboardShell({ children, userEmail, userAvatarUrl, role }: Pro
       setLoggingOut(false);
     }
   };
-
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const initial = (userEmail?.charAt(0) ?? "?").toUpperCase();
-  const closeMobile = () => setMobileOpen(false);
-
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
 
   const NavItem = ({
     href,
@@ -94,141 +119,155 @@ export function DashboardShell({ children, userEmail, userAvatarUrl, role }: Pro
     </Link>
   );
 
-  const MenuContent = (
-    <div className="d-flex flex-column h-100 bg-white">
-      <div className="border-bottom p-3">
-        <Link href="/dashboard" className="text-decoration-none" onClick={closeMobile}>
-          <span className="h5 mb-0 text-secondary fw-bold">Mindzinho</span>
-        </Link>
-        <p className="small text-muted mb-0 mt-1">Painel</p>
-      </div>
-
-      <nav className="flex-grow-1 p-2 list-group list-group-flush">
-        <NavItem href="/dashboard" label="Início" active={isActive("/dashboard")} icon={<Home size={16} />} />
-
-        {(role === "ADMIN" || role === "PSYCHOLOGIST") && (
-          <>
-            <NavItem
-              href="/dashboard/psicologo/agenda"
-              label="Agenda"
-              active={isAgendaActive}
-              icon={<CalendarDays size={16} />}
-            />
-            <div className="mb-1">
-              <button
-                type="button"
-                className={cn(
-                  "btn w-100 text-start d-flex align-items-center justify-content-between py-2 px-3 small rounded-0 border-0",
-                  isPsychologistSubActive ? "btn-primary" : "btn-light",
-                )}
-                onClick={() => setPsychologistMenuOpen((prev) => !prev)}
-                aria-expanded={psychologistMenuOpen}
-              >
-                <span className="d-flex align-items-center gap-2">
-                  <UserRound size={16} />
-                  Psicólogo
-                </span>
-                <ChevronDown
-                  size={16}
-                  className="flex-shrink-0"
-                  style={{
-                    transition: "transform 0.2s",
-                    transform: psychologistMenuOpen ? "rotate(180deg)" : "none",
-                  }}
-                />
-              </button>
-              {psychologistMenuOpen && (
-                <div className="ms-2 ps-2 border-start border-2 mt-1" style={{ borderColor: "var(--bs-border-color)" }}>
-                  <div className="list-group list-group-flush">
-                    <NavItem
-                      href="/dashboard/psicologo/perfil"
-                      label="Perfil"
-                      active={isActive("/dashboard/psicologo/perfil")}
-                      icon={<UserRound size={16} />}
-                    />
-                    <NavItem
-                      href="/dashboard/psicologo/enderecos"
-                      label="Endereços"
-                      active={isActive("/dashboard/psicologo/enderecos")}
-                      icon={<MapPin size={16} />}
-                    />
-                    <NavItem
-                      href="/dashboard/psicologo/redes-sociais"
-                      label="Redes sociais"
-                      active={isActive("/dashboard/psicologo/redes-sociais")}
-                      icon={<Share2 size={16} />}
-                    />
-                    <NavItem
-                      href="/dashboard/psicologo/pacientes"
-                      label="Pacientes"
-                      active={pathname.startsWith("/dashboard/psicologo/pacientes")}
-                      icon={<FileText size={16} />}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          </>
-        )}
-
-        {(role === "ADMIN" || role === "PATIENT") && (
-          <NavItem
-            href="/dashboard/paciente"
-            label="Paciente"
-            active={isActive("/dashboard/paciente")}
-            icon={<Users size={16} />}
-          />
-        )}
-
-        {role === "ADMIN" && (
-          <NavItem
-            href="/dashboard/admin"
-            label="Administração"
-            active={isActive("/dashboard/admin")}
-            icon={<Settings size={16} />}
-          />
-        )}
-      </nav>
-
-      <div className="border-top p-3 mt-auto">
-        <div className="d-flex align-items-center gap-3 mb-3">
-          {userAvatarUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={userAvatarUrl}
-              alt=""
-              width={40}
-              height={40}
-              className="rounded-circle border object-fit-cover"
-            />
-          ) : (
-            <div
-              className="d-flex align-items-center justify-content-center rounded-circle border bg-primary text-white fw-semibold"
-              style={{ width: 40, height: 40 }}
-            >
-              {initial}
-            </div>
-          )}
-          <div className="text-truncate flex-grow-1 small text-muted" title={userEmail ?? undefined}>
-            {userEmail ?? "Usuário"}
+  function MenuContent({ mobile = false }: { mobile?: boolean }) {
+    return (
+      <div className="d-flex flex-column h-100 bg-white">
+        <div className="border-bottom p-3 d-flex align-items-start justify-content-between gap-2">
+          <div>
+            <Link href="/dashboard" className="text-decoration-none" onClick={closeMobile}>
+              <span className="h5 mb-0 text-secondary fw-bold">Mindzinho</span>
+            </Link>
+            <p className="small text-muted mb-0 mt-1">Painel</p>
           </div>
+          {mobile ? (
+            <button
+              type="button"
+              className="btn btn-light btn-sm d-inline-flex align-items-center justify-content-center"
+              onClick={closeMobile}
+              aria-label="Fechar menu"
+            >
+              <X size={18} />
+            </button>
+          ) : null}
         </div>
-        <button
-          type="button"
-          className="btn btn-outline-secondary btn-sm w-100 d-flex align-items-center justify-content-center gap-2"
-          disabled={loggingOut}
-          onClick={handleLogout}
-        >
-          <LogOut size={14} />
-          {loggingOut ? "Saindo..." : "Sair"}
-        </button>
+
+        <nav className="flex-grow-1 p-2 list-group list-group-flush">
+          <NavItem href="/dashboard" label="Inicio" active={isActive("/dashboard")} icon={<Home size={16} />} />
+
+          {isPsychologist ? (
+            <>
+              <NavItem
+                href="/dashboard/psicologo/agenda"
+                label="Agenda"
+                active={isAgendaActive}
+                icon={<CalendarDays size={16} />}
+              />
+              <NavItem
+                href="/dashboard/psicologo/pacientes"
+                label="Pacientes"
+                active={isPsychologistPatientsActive}
+                icon={<FileText size={16} />}
+              />
+              <div className="mb-1">
+                <button
+                  type="button"
+                  className={cn(
+                    "btn w-100 text-start d-flex align-items-center justify-content-between py-2 px-3 small rounded-0 border-0",
+                    isPsychologistSubActive ? "btn-primary" : "btn-light",
+                  )}
+                  onClick={() => setPsychologistMenuOpen((prev) => !prev)}
+                  aria-expanded={psychologistMenuOpen}
+                >
+                  <span className="d-flex align-items-center gap-2">
+                    <UserRound size={16} />
+                    Psicologo
+                  </span>
+                  <ChevronDown
+                    size={16}
+                    className="flex-shrink-0"
+                    style={{
+                      transition: "transform 0.2s",
+                      transform: psychologistMenuOpen ? "rotate(180deg)" : "none",
+                    }}
+                  />
+                </button>
+                {psychologistMenuOpen ? (
+                  <div className="ms-2 ps-2 border-start border-2 mt-1" style={{ borderColor: "var(--bs-border-color)" }}>
+                    <div className="list-group list-group-flush">
+                      <NavItem
+                        href="/dashboard/psicologo/perfil"
+                        label="Perfil"
+                        active={isPsychologistProfileActive}
+                        icon={<UserRound size={16} />}
+                      />
+                      <NavItem
+                        href="/dashboard/psicologo/enderecos"
+                        label="Enderecos"
+                        active={isPsychologistAddressesActive}
+                        icon={<MapPin size={16} />}
+                      />
+                      <NavItem
+                        href="/dashboard/psicologo/redes-sociais"
+                        label="Redes sociais"
+                        active={isPsychologistSocialActive}
+                        icon={<Share2 size={16} />}
+                      />
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            </>
+          ) : null}
+
+          {isPatient ? (
+            <NavItem
+              href="/dashboard/paciente"
+              label="Paciente"
+              active={isPatientDashboardActive}
+              icon={<Users size={16} />}
+            />
+          ) : null}
+
+          {isAdmin ? (
+            <NavItem
+              href="/dashboard/admin"
+              label="Administracao"
+              active={isAdminDashboardActive}
+              icon={<Settings size={16} />}
+            />
+          ) : null}
+        </nav>
+
+        <div className="border-top p-3 mt-auto">
+          <div className="d-flex align-items-center gap-3 mb-3">
+            {userAvatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={userAvatarUrl}
+                alt=""
+                width={40}
+                height={40}
+                className="rounded-circle border object-fit-cover"
+              />
+            ) : (
+              <div
+                className="d-flex align-items-center justify-content-center rounded-circle border bg-primary text-white fw-semibold"
+                style={{ width: 40, height: 40 }}
+              >
+                {initial}
+              </div>
+            )}
+            <div className="text-truncate flex-grow-1 small text-muted" title={userEmail ?? undefined}>
+              {userEmail ?? "Usuario"}
+            </div>
+          </div>
+          <button
+            type="button"
+            className="btn btn-outline-secondary btn-sm w-100 d-flex align-items-center justify-content-center gap-2"
+            disabled={loggingOut}
+            onClick={handleLogout}
+          >
+            <LogOut size={14} />
+            {loggingOut ? "Saindo..." : "Sair"}
+          </button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 
   return (
     <div className="min-vh-100" data-dashboard>
-      <header className="sticky-top border-bottom bg-white py-2 px-3 d-lg-none" style={{ zIndex: 1030 }}>
+      <header className="position-sticky top-0 border-bottom bg-white py-2 px-3 d-lg-none" style={{ zIndex: 1030 }}>
         <button
           type="button"
           className="btn btn-outline-secondary btn-sm d-inline-flex align-items-center justify-content-center"
@@ -241,12 +280,15 @@ export function DashboardShell({ children, userEmail, userAvatarUrl, role }: Pro
       </header>
 
       <div className="d-flex min-vh-100">
-        <aside className="d-none d-lg-block border-end bg-white" style={{ width: 280 }}>
-          {MenuContent}
+        <aside
+          className="d-none d-lg-block border-end bg-white flex-shrink-0"
+          style={{ width: 280, minHeight: "100vh" }}
+        >
+          <MenuContent />
         </aside>
 
-        {mobileOpen && (
-          <div className="position-fixed top-0 start-0 w-100 h-100" style={{ zIndex: 1050 }}>
+        {mobileOpen ? (
+          <div className="position-fixed top-0 start-0 w-100 h-100 d-lg-none" style={{ zIndex: 1050 }}>
             <button
               type="button"
               aria-label="Fechar menu"
@@ -254,16 +296,14 @@ export function DashboardShell({ children, userEmail, userAvatarUrl, role }: Pro
               style={{ background: "rgba(0,0,0,0.5)" }}
               onClick={closeMobile}
             />
-            <aside className="position-absolute top-0 start-0 h-100 bg-white border-end shadow" style={{ width: 280 }}>
-              <div className="d-flex justify-content-end border-bottom p-2">
-                <button type="button" className="btn btn-light btn-sm" onClick={closeMobile} aria-label="Fechar menu">
-                  <X size={18} />
-                </button>
-              </div>
-              {MenuContent}
+            <aside
+              className="position-fixed top-0 start-0 bottom-0 bg-white border-end shadow d-flex flex-column"
+              style={{ width: "min(86vw, 320px)", zIndex: 1051 }}
+            >
+              <MenuContent mobile />
             </aside>
           </div>
-        )}
+        ) : null}
 
         <main className="flex-grow-1 p-3 p-lg-4">{children}</main>
       </div>

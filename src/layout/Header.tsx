@@ -113,7 +113,7 @@ function Header() {
                                 <div className="extra-cell">
                                     <ul className="header-right">
                                         <li className="nav-item">
-                                            <Link href="/login/psi" className="btn btn-secondary btn-hover1"> Já atua na área? </Link>
+                                            <Link href="/login/psicologo" className="btn btn-secondary btn-hover1"> Já atua na área? </Link>
                                         </li>
                                         <li className="nav-item">
                                         </li>
