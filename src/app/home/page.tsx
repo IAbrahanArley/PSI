@@ -7,6 +7,7 @@ import { IMAGES } from "@/constant/theme";
 import Header from "@/layout/Header";
 import Image from "next/image";
 import Link from "next/link";
+import Howitwork from "@/component/Howitwork";
 
 export default async function HomePage() {
   const serviceItems = await listPublicCatalogSpecialtiesForHome();
@@ -100,6 +101,7 @@ export default async function HomePage() {
             <EmpolyBlog />
           </div>
         </section>
+        <Howitwork />
       </main>
       <FloatingPsychologistChatTeaser />
     </>

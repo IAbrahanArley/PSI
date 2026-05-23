@@ -226,12 +226,12 @@ export const accordiondata = [
     { delay: '0.7s', key: "2", title: 'How do i book my appointment ?' },
     { delay: '0.8s', key: "3", title: 'Can i cancel my appointment ?' },
 ]
-// howitwork 
+// howitwork
 export const howitworkdata = [
-    { delay: '0.2s', icon: <i className="feather icon-clock" />, title: 'Book an Appointment', },
-    { delay: '0.4s', icon: <i className="flaticon-list" />, title: 'Conduct Checkup', },
-    { delay: '0.6s', icon: <i className="flaticon-stethoscope" />, title: 'Perform Treatment', },
-    { delay: '0.8s', icon: <i className="flaticon-hand-holding-usd" />, title: 'Prescribe & Payment', },
+    { delay: '0.2s', icon: <i className="feather icon-user-plus" />, title: 'Crie sua conta', },
+    { delay: '0.4s', icon: <i className="feather icon-search" />, title: 'Escolha seu psicólogo', },
+    { delay: '0.6s', icon: <i className="feather icon-calendar" />, title: 'Agende sua sessão', },
+    { delay: '0.8s', icon: <i className="feather icon-heart" />, title: 'Inicie sua jornada', },
 ]
 // inspirational 
 export const inspirationaldata = [

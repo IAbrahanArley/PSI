@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClinicMaster — Diagrama UML</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+    header {
+      padding: 20px 32px;
+      background: #1a1d27;
+      border-bottom: 1px solid #2d3148;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    header h1 { font-size: 1.25rem; font-weight: 600; color: #a78bfa; }
+    header span { font-size: 0.85rem; color: #64748b; }
+    .legend {
+      display: flex;
+      gap: 24px;
+      padding: 12px 32px;
+      background: #141620;
+      border-bottom: 1px solid #2d3148;
+      flex-wrap: wrap;
+    }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: #94a3b8; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .dot-auth    { background: #38bdf8; }
+    .dot-profile { background: #a78bfa; }
+    .dot-agenda  { background: #34d399; }
+    .dot-clinic  { background: #f97316; }
+    .dot-catalog { background: #facc15; }
+    main {
+      padding: 32px;
+      overflow-x: auto;
+    }
+    .mermaid {
+      background: #1a1d27;
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid #2d3148;
+    }
+    .note {
+      margin-top: 24px;
+      padding: 16px 20px;
+      background: #1a1d27;
+      border-left: 3px solid #a78bfa;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.82rem;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+    .note strong { color: #c4b5fd; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>ClinicMaster</h1>
+  <span>Diagrama de Entidade-Relacionamento (UML/ER) — gerado em 2026-05-23</span>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><div class="dot dot-auth"></div> Auth / Usuários</div>
+  <div class="legend-item"><div class="dot dot-profile"></div> Perfil do Psicólogo</div>
+  <div class="legend-item"><div class="dot dot-agenda"></div> Agenda &amp; Consultas</div>
+  <div class="legend-item"><div class="dot dot-clinic"></div> Prontuário Clínico</div>
+  <div class="legend-item"><div class="dot dot-catalog"></div> Catálogo (Admin)</div>
+</div>
+
+<main>
+  <div class="mermaid">
+erDiagram
+
+  %% ─── AUTH / USUÁRIOS ──────────────────────────────────────────
+  users {
+    uuid     id          PK
+    text     email       "UNIQUE, NOT NULL"
+    text     full_name
+    text     avatar_url
+    enum     role        "ADMIN | PATIENT | PSYCHOLOGIST"
+    boolean  is_active
+    boolean  is_onboarded
+    ts       created_at
+    ts       updated_at
+  }
+
+  %% ─── PACIENTE ─────────────────────────────────────────────────
+  patients {
+    uuid id             PK
+    uuid user_id        FK "nullable — paciente sem conta"
+    text full_name      "NOT NULL"
+    text email
+    text phone
+    text whatsapp
+    date birth_date
+    enum gender         "MALE | FEMALE | OTHER | PREFER_NOT_TO_SAY"
+    text state
+    text city
+    text avatar_url
+    ts   created_at
+    ts   updated_at
+  }
+
+  %% ─── PSICÓLOGO (perfil principal) ────────────────────────────
+  psychologists {
+    uuid    id                      PK
+    uuid    user_id                 FK "UNIQUE"
+    text    slug                    "UNIQUE"
+    text    full_name               "NOT NULL"
+    text    professional_name
+    text    crp                     "UNIQUE"
+    text    bio
+    text    approach
+    enum    gender
+    text    phone
+    text    whatsapp
+    text    profile_image_url
+    text    cover_image_url
+    boolean offers_online
+    boolean offers_presential
+    numeric session_price
+    int     session_duration_minutes "default 50"
+    text[]  languages
+    text    state
+    text    city
+    enum    status                  "PENDING|ACTIVE|INACTIVE|REJECTED"
+    boolean advertising_highlight
+    ts      published_at
+    ts      created_at
+    ts      updated_at
+  }
+
+  %% ─── CATÁLOGO (admin) ─────────────────────────────────────────
+  catalog_specialties {
+    uuid    id          PK
+    text    slug        "UNIQUE"
+    text    name        "NOT NULL"
+    text    description
+    text    image_url
+    int     sort_order
+    boolean is_active
+    ts      created_at
+    ts      updated_at
+  }
+
+  %% ─── PERFIL DO PSICÓLOGO (detalhe) ───────────────────────────
+  psychologist_specialties {
+    uuid id                  PK
+    uuid psychologist_id     FK
+    uuid catalog_specialty_id FK "nullable"
+    text label               "NOT NULL"
+    int  sort_order
+  }
+
+  psychologist_skills {
+    uuid id              PK
+    uuid psychologist_id FK
+    text label           "NOT NULL"
+    int  sort_order
+  }
+
+  psychologist_awards {
+    uuid id              PK
+    uuid psychologist_id FK
+    text title           "NOT NULL"
+    text link
+    text image_url
+    int  sort_order
+    ts   created_at
+  }
+
+  psychologist_curriculum {
+    uuid  psychologist_id PK "FK"
+    jsonb content         "NOT NULL"
+    ts    updated_at
+  }
+
+  psychologist_addresses {
+    uuid id              PK
+    uuid psychologist_id FK
+    text label           "NOT NULL"
+    text street
+    text number
+    text neighborhood
+    text city
+    text state
+    text zip_code
+    text complement
+    text reference
+    int  sort_order
+    ts   created_at
+    ts   updated_at
+  }
+
+  psychologist_social_links {
+    uuid id              PK
+    uuid psychologist_id FK
+    enum network         "INSTAGRAM|LINKEDIN|FACEBOOK|X|YOUTUBE"
+    text url             "NOT NULL"
+    int  sort_order
+    ts   created_at
+    ts   updated_at
+  }
+
+  %% ─── AGENDA ───────────────────────────────────────────────────
+  psychologist_weekly_availability {
+    uuid     id              PK
+    uuid     psychologist_id FK
+    smallint weekday         "0=Dom … 6=Sáb"
+    time     start_time      "NOT NULL"
+    time     end_time        "NOT NULL"
+    enum     rule_type       "AVAILABLE | UNAVAILABLE"
+    enum     modality        "ONLINE | PRESENTIAL"
+    uuid     address_id      FK "null se ONLINE"
+    smallint sort_order
+    boolean  is_active
+    ts       created_at
+    ts       updated_at
+  }
+
+  psychologist_agenda_exceptions {
+    uuid id              PK
+    uuid psychologist_id FK
+    date exception_date  "NOT NULL"
+    enum kind            "INACTIVE_DAY|INACTIVE_INTERVAL|ACTIVE_OVERRIDE_INTERVAL"
+    time start_time      "null se INACTIVE_DAY"
+    time end_time        "null se INACTIVE_DAY"
+    uuid address_id      FK "nullable"
+    text note
+    boolean is_active
+    ts   created_at
+    ts   updated_at
+  }
+
+  psychologist_appointments {
+    uuid id                  PK
+    uuid psychologist_id     FK
+    uuid patient_id          FK
+    enum modality            "ONLINE | PRESENTIAL"
+    uuid address_id          FK "null se ONLINE"
+    ts   starts_at           "NOT NULL"
+    ts   ends_at             "NOT NULL"
+    enum status              "SCHEDULED|CONFIRMED|IN_PROGRESS|COMPLETED|CANCELLED|NO_SHOW"
+    text title
+    text notes
+    text cancellation_reason
+    ts   cancelled_at
+    ts   created_at
+    ts   updated_at
+  }
+
+  psychologist_schedule_blocks {
+    uuid id              PK
+    uuid psychologist_id FK
+    ts   starts_at       "NOT NULL"
+    ts   ends_at         "NOT NULL"
+    enum modality        "ONLINE | PRESENTIAL"
+    uuid address_id      FK "nullable"
+    enum category        "BREAK|ADMIN|FOCUS|OTHER"
+    text reason
+    boolean is_active
+    ts   created_at
+    ts   updated_at
+  }
+
+  psychologist_appointment_status_history {
+    uuid id               PK
+    uuid appointment_id   FK
+    enum from_status      "nullable (criação)"
+    enum to_status        "NOT NULL"
+    uuid changed_by_user_id FK "nullable"
+    text note
+    ts   created_at
+  }
+
+  %% ─── PRONTUÁRIO CLÍNICO ───────────────────────────────────────
+  psychologist_patient_care {
+    uuid id              PK
+    uuid psychologist_id FK
+    uuid patient_id      FK
+    enum status          "ACTIVE | PAUSED | DISCHARGED"
+    text clinical_summary
+    ts   paused_at
+    ts   discharged_at
+    ts   created_at
+    ts   updated_at
+  }
+
+  psychologist_clinical_tags {
+    uuid     id              PK
+    uuid     psychologist_id FK
+    text     label           "NOT NULL"
+    text     color
+    smallint sort_order
+    ts       created_at
+  }
+
+  psychologist_patient_clinical_notes {
+    uuid    id              PK
+    uuid    psychologist_id FK
+    uuid    patient_id      FK
+    uuid    author_user_id  FK
+    uuid    appointment_id  FK "nullable"
+    text    title
+    text    body            "NOT NULL"
+    enum    note_type       "PROGRESS|SESSION|ADMINISTRATIVE|RISK_OR_SAFETY|OTHER"
+    boolean is_pinned
+    ts      pinned_at
+    ts      deleted_at      "soft delete"
+    ts      created_at
+    ts      updated_at
+  }
+
+  psychologist_clinical_note_tags {
+    uuid note_id    PK "FK"
+    uuid tag_id     PK "FK"
+    ts   created_at
+  }
+
+  %% ─── RELACIONAMENTOS ──────────────────────────────────────────
+
+  users                              ||--o| psychologists                       : "é psicólogo"
+  users                              ||--o| patients                            : "é paciente"
+
+  psychologists                      ||--o{ psychologist_specialties            : "tem especialidades"
+  catalog_specialties                ||--o{ psychologist_specialties            : "referenciada em"
+
+  psychologists                      ||--o{ psychologist_skills                 : "tem skills"
+  psychologists                      ||--o{ psychologist_awards                 : "tem prêmios"
+  psychologists                      ||--o| psychologist_curriculum             : "tem currículo"
+  psychologists                      ||--o{ psychologist_addresses              : "tem endereços"
+  psychologists                      ||--o{ psychologist_social_links           : "tem redes sociais"
+
+  psychologists                      ||--o{ psychologist_weekly_availability    : "grade semanal"
+  psychologist_addresses             ||--o{ psychologist_weekly_availability    : "local do bloco"
+
+  psychologists                      ||--o{ psychologist_agenda_exceptions      : "exceções de agenda"
+  psychologist_addresses             ||--o{ psychologist_agenda_exceptions      : "local da exceção"
+
+  psychologists                      ||--o{ psychologist_appointments           : "realiza consultas"
+  patients                           ||--o{ psychologist_appointments           : "participa de"
+  psychologist_addresses             ||--o{ psychologist_appointments           : "local da consulta"
+
+  psychologist_appointments          ||--o{ psychologist_appointment_status_history : "histórico de status"
+  users                              ||--o{ psychologist_appointment_status_history : "alterou status"
+
+  psychologists                      ||--o{ psychologist_schedule_blocks        : "bloqueios de horário"
+  psychologist_addresses             ||--o{ psychologist_schedule_blocks        : "local do bloqueio"
+
+  psychologists                      ||--o{ psychologist_patient_care           : "caso clínico"
+  patients                           ||--o{ psychologist_patient_care           : "é atendido"
+
+  psychologists                      ||--o{ psychologist_clinical_tags          : "tags clínicas"
+  psychologists                      ||--o{ psychologist_patient_clinical_notes : "escreve notas"
+  patients                           ||--o{ psychologist_patient_clinical_notes : "tem notas"
+  users                              ||--o{ psychologist_patient_clinical_notes : "autora da nota"
+  psychologist_appointments          ||--o{ psychologist_patient_clinical_notes : "nota da sessão"
+
+  psychologist_patient_clinical_notes ||--o{ psychologist_clinical_note_tags   : "tem tags"
+  psychologist_clinical_tags          ||--o{ psychologist_clinical_note_tags   : "usada em notas"
+  </div>
+
+  <div class="note">
+    <strong>Enums do sistema:</strong>
+    &nbsp;|&nbsp; <strong>user_role:</strong> ADMIN · PATIENT · PSYCHOLOGIST
+    &nbsp;|&nbsp; <strong>psychologist_status:</strong> PENDING · ACTIVE · INACTIVE · REJECTED
+    &nbsp;|&nbsp; <strong>appointment_status:</strong> SCHEDULED · CONFIRMED · IN_PROGRESS · COMPLETED · CANCELLED · NO_SHOW
+    &nbsp;|&nbsp; <strong>patient_care_status:</strong> ACTIVE · PAUSED · DISCHARGED
+    &nbsp;|&nbsp; <strong>clinical_note_type:</strong> PROGRESS · SESSION · ADMINISTRATIVE · RISK_OR_SAFETY · OTHER
+    &nbsp;|&nbsp; <strong>agenda_modality:</strong> ONLINE · PRESENTIAL
+    &nbsp;|&nbsp; <strong>agenda_exception_kind:</strong> INACTIVE_DAY · INACTIVE_INTERVAL · ACTIVE_OVERRIDE_INTERVAL
+  </div>
+</main>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    er: { diagramPadding: 30, layoutDirection: 'TB', minEntityWidth: 100, minEntityHeight: 75, entityPadding: 15, useMaxWidth: false },
+    themeVariables: {
+      background: '#1a1d27',
+      primaryColor: '#2d3148',
+      primaryTextColor: '#e2e8f0',
+      primaryBorderColor: '#4a5180',
+      lineColor: '#64748b',
+      secondaryColor: '#1e2235',
+      tertiaryColor: '#252840',
+      fontSize: '13px'
+    }
+  });
+</script>
+</body>
+</html>

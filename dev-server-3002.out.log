@@ -40,3 +40,9 @@
  POST / 404 in 4534ms
  POST / 200 in 6594ms
  POST / 200 in 1149ms
+ ✓ Compiled in 3.3s (1619 modules)
+ ✓ Compiled in 1140ms (1619 modules)
+ ✓ Compiled in 468ms (1619 modules)
+ ✓ Compiled in 433ms (1619 modules)
+ ✓ Compiled in 475ms (1619 modules)
+ ✓ Compiled in 716ms (1619 modules)

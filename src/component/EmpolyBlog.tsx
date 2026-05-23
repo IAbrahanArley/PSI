@@ -86,7 +86,7 @@ function EmpolyBlog() {
                       />
                     )}
                   </div>
-                  <Link href="/appointment" className="btn btn-secondary">
+                  <Link href={`/team-detail?slug=${encodeURIComponent(data.slug)}`} className="btn btn-secondary">
                     <i className="feather icon-calendar m-r5" /> Agendar agora
                   </Link>
                 </div>
