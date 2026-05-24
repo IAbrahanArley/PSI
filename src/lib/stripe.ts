@@ -1,16 +1,40 @@
 import Stripe from "stripe";
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error("STRIPE_SECRET_KEY não configurado no .env.local");
+/**
+ * Singleton lazy do cliente Stripe.
+ * A instância só é criada na primeira chamada a `getStripe()`,
+ * evitando erros de variável ausente durante o build estático da Vercel.
+ */
+let _stripe: Stripe | null = null;
+
+function getStripe(): Stripe {
+  if (_stripe) return _stripe;
+
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) {
+    throw new Error(
+      "STRIPE_SECRET_KEY não configurado. " +
+      "Adicione a variável de ambiente no painel da Vercel (Settings → Environment Variables).",
+    );
+  }
+
+  _stripe = new Stripe(key, {
+    apiVersion: "2026-04-22.dahlia",
+    typescript: true,
+  });
+
+  return _stripe;
 }
 
 /**
- * Singleton do cliente Stripe para uso em Server Components, API Routes e Server Actions.
- * Nunca importe este módulo em código cliente ("use client").
+ * Proxy que se comporta como o objeto `stripe` mas inicializa de forma lazy.
+ * Use `stripe.checkout.sessions.create(...)` normalmente — o cliente
+ * só é instanciado quando a primeira chamada de API ocorre em runtime.
  */
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2026-04-22.dahlia",
-  typescript: true,
+export const stripe = new Proxy({} as Stripe, {
+  get(_target, prop) {
+    return (getStripe() as unknown as Record<string | symbol, unknown>)[prop];
+  },
 });
 
 // ─── Mapa de price IDs por plano e período ────────────────────────────────────
