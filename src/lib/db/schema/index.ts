@@ -6,3 +6,4 @@ export * from "./psychologist-profile";
 export * from "./psychologist-agenda";
 export * from "./patients";
 export * from "./psychologist-clinical";
+export * from "./subscriptions";

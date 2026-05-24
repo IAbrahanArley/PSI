@@ -97,3 +97,20 @@ export const psychologistSocialNetworkEnum = pgEnum("psychologist_social_network
   "X",
   "YOUTUBE",
 ]);
+
+/**
+ * Status da assinatura do psicólogo.
+ *
+ * - TRIAL      : período de teste ativo (só plano Start, 7 dias).
+ * - ACTIVE     : assinatura paga e vigente.
+ * - PAST_DUE   : pagamento atrasado — acesso mantido brevemente até resolução.
+ * - CANCELLED  : cancelada pelo psicólogo ou pelo admin; acesso até fim do período.
+ * - EXPIRED    : trial ou período encerrado sem renovação — acesso bloqueado.
+ */
+export const subscriptionStatusEnum = pgEnum("subscription_status", [
+  "TRIAL",
+  "ACTIVE",
+  "PAST_DUE",
+  "CANCELLED",
+  "EXPIRED",
+]);

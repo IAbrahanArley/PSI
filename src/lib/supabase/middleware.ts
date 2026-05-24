@@ -22,6 +22,10 @@ function isPublicPath(pathname: string): boolean {
   ]);
   if (publicExact.has(pathname)) return true;
   if (pathname.startsWith("/team")) return true;
+  // Página de upgrade — acessível mesmo com assinatura expirada
+  if (pathname.startsWith("/assinar")) return true;
+  // Páginas pós-checkout (sucesso / cancelado)
+  if (pathname.startsWith("/checkout")) return true;
 
   return false;
 }

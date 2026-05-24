@@ -112,10 +112,12 @@ import comingsoon from '../../public/assets/images/coming-soon.jpg'
 import callaction from '../../public/assets/images/call-action.webp'
 import Banner01 from '../../public/assets/images/Banner01.jpeg'
 import Banner02 from '../../public/assets/images/Banner02.png'
+import sessaoPsi from '../../public/assets/images/sessaoPsi.png'
 
 export const IMAGES = {
     Banner01: Banner01,
     Banner02: Banner02,
+    sessaoPsi: sessaoPsi,
     bg1: bg1,
     bg2: bg2,
     bg3: bg3,

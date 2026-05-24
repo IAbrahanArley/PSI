@@ -34,7 +34,7 @@ function Howitwork() {
                         <div className="col-xl-8">
                             <div className="content-media">
                                 <div className="dz-media">
-                                    <Image src={IMAGES.about4} alt="" />
+                                    <Image src={IMAGES.sessaoPsi} alt="Sessão de psicologia online" />
                                     <div className="dz-btn">
                                         <Link href="/cadastro" className="btn btn-lg btn-icon btn-secondary btn-shadow">
                                             Agendar sessão <span className="right-icon"><i className="feather icon-arrow-right" /></span>

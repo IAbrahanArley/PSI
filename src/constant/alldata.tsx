@@ -79,28 +79,27 @@ export const headerdata : HeaderItem[] = [
     { title: "Contato", to: "/contato", },
     { title: "Entrar", to: "/login", },
 ]
-// footer 
+// footer
 export const footerdata1 = [
-    { delay: '0.4s', icon: <i className="feather icon-phone" />, title: 'Call Us', paragraph: <Link href="tel:+11234567890" className="text-body">+1 123 456 7890</Link>, },
-    { delay: '0.6s', icon: <i className="feather icon-mail" />, title: 'Send us a Mail', paragraph: <Link href="mailto:info@example.com" className="text-body">info@example.com</Link>, },
-    { delay: '0.8s', icon: <i className="feather icon-clock" />, title: 'Opening Time', paragraph: "Mon -Sat: 7:00 - 17:00", },
+    { delay: '0.4s', icon: <i className="feather icon-phone" />, title: 'WhatsApp', paragraph: <Link href="https://wa.me/5583995775365" className="text-body">(83) 99577-5365</Link>, },
+    { delay: '0.6s', icon: <i className="feather icon-mail" />, title: 'Envie um e-mail', paragraph: <Link href="mailto:info@clinicmaster.com.br" className="text-body">info@clinicmaster.com.br</Link>, },
+    { delay: '0.8s', icon: <i className="feather icon-clock" />, title: 'Suporte', paragraph: "Seg–Sex: 8h às 20h", },
 ]
 export const footerdata2 = [
     {
-        title: 'Our Services', span1: 'Emergency Care', span2: 'Operation Theater', span3: 'Medical Checkup', span4: 'Diagnostic Center', span5: 'Outdoor Checkup',
-        link1: '/service-detail', link2: '/service-detail', link3: '/service-detail', link4: '/service-detail', link5: '/service-detail', delay: '0.4s',
+        title: 'Nossos Serviços',
+        span1: 'Terapia Individual', span2: 'Terapia Online', span3: 'Psicoterapia', span4: 'Avaliação Psicológica', span5: 'Para Psicólogos',
+        link1: '/team', link2: '/team', link3: '/team', link4: '/team', link5: '/cadastro', delay: '0.4s',
     },
     {
-        title: 'Useful Links', span1: 'Privacy Policy', span2: 'Terms & Conditions', span3: 'Contact Us', span4: 'Latest News', span5: 'Our Sitemap',
-        link1: '#', link2: '#', link3: '/contact-us', link4: '/blog-grid', link5: '#', delay: '0.6s',
+        title: 'Links Úteis',
+        span1: 'Política de Privacidade', span2: 'Termos de Uso', span3: 'Contato', span4: 'Blog', span5: 'Perguntas Frequentes',
+        link1: '#', link2: '#', link3: '/contato', link4: '#', link5: '#', delay: '0.6s',
     },
     {
-        title: 'Our Stores', span1: 'New York', span2: 'London SF', span3: 'Edinburgh', span4: 'Los Angeles', span5: 'Las Vegas',
-        link1: '#', link2: '#', link3: '#', link4: '#', link5: '#', delay: '0.8s',
-    },
-    {
-        title: 'Quick Links', span1: 'About Us', span2: 'Our Services', span3: 'Our Team', span4: 'Appointments', span5: 'Contact Us',
-        link1: '/about-us', link2: '/services', link3: '/team', link4: '/appointment', link5: '/contact-us', delay: '1.0s',
+        title: 'Acesso Rápido',
+        span1: 'Início', span2: 'Psicólogos', span3: 'Agendar Sessão', span4: 'Entrar', span5: 'Cadastrar-se',
+        link1: '/', link2: '/team', link3: '/cadastro', link4: '/login', link5: '/cadastro', delay: '0.8s',
     },
 ]
 // pages 

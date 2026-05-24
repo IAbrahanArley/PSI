@@ -17,6 +17,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 const ROW_SIZE = 4;
 
+/** Quantos destaques aparecem antes de cada fileira de psicólogos regulares. */
+const FEATURED_PER_ROW = 2;
+
 function parseListingParam(raw: string | null): string | null {
   if (!raw?.trim()) return null;
   const v = raw.trim();
@@ -24,30 +27,43 @@ function parseListingParam(raw: string | null): string | null {
   return v;
 }
 
-function pickFeaturedForPage(
+/**
+ * Seleciona até `FEATURED_PER_ROW` psicólogos distintos do pool para um dado pageIndex.
+ * O resultado é cacheado por pageIndex para não mudar ao rolar a página.
+ * Quando o pool é resetado (filtro muda), o cache é limpo externamente.
+ */
+function pickFeaturedPair(
   pool: TeamFeaturedPsychologist[],
   pageIndex: number,
-  cache: React.MutableRefObject<Map<number, string>>,
-): TeamFeaturedPsychologist | null {
-  if (!pool.length) return null;
-  let id = cache.current.get(pageIndex);
-  if (id && !pool.some((p) => p.id === id)) {
-    cache.current.delete(pageIndex);
-    id = undefined;
+  cache: React.MutableRefObject<Map<number, string[]>>,
+): TeamFeaturedPsychologist[] {
+  if (!pool.length) return [];
+
+  // Valida o cache contra o pool atual (pode ter mudado com filtros)
+  let ids = cache.current.get(pageIndex);
+  if (ids) {
+    ids = ids.filter((id) => pool.some((p) => p.id === id));
+    if (ids.length === 0) {
+      cache.current.delete(pageIndex);
+      ids = undefined;
+    }
   }
-  if (!id) {
-    const idx = Math.floor(Math.random() * pool.length);
-    id = pool[idx].id;
-    cache.current.set(pageIndex, id);
+
+  if (!ids) {
+    // Embaralha o pool e pega os primeiros FEATURED_PER_ROW distintos
+    const shuffled = [...pool].sort(() => Math.random() - 0.5);
+    ids = shuffled.slice(0, FEATURED_PER_ROW).map((p) => p.id);
+    cache.current.set(pageIndex, ids);
   }
-  return pool.find((p) => p.id === id) ?? null;
+
+  return ids.map((id) => pool.find((p) => p.id === id)!).filter(Boolean);
 }
 
 function TeamContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [active, setActive] = useState<string | null>(null);
-  const featuredPickCache = useRef<Map<number, string>>(new Map());
+  const featuredPickCache = useRef<Map<number, string[]>>(new Map());
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   const specialtyFilter = useMemo(
@@ -216,6 +232,15 @@ function TeamContent() {
               <>
                 {pages.map((page, pageIndex) => (
                   <Fragment key={`${pageKeyPrefix}-${pageIndex}`}>
+
+                    {/* ── Par de destaques (aparece ANTES da fileira normal) ── */}
+                    {poolReady && pool.length > 0 &&
+                      pickFeaturedPair(pool, pageIndex, featuredPickCache).map((featured) => (
+                        <TeamFeaturedPsychologistSection key={`feat-${pageIndex}-${featured.id}`} psychologist={featured} />
+                      ))
+                    }
+
+                    {/* ── Fileira de psicólogos regulares ── */}
                     <div className="row">
                       {page.items.map((item, i) => (
                         <TeamPsychologistCard
@@ -227,12 +252,7 @@ function TeamContent() {
                         />
                       ))}
                     </div>
-                    {poolReady && pool.length > 0 ?
-                      (() => {
-                        const featured = pickFeaturedForPage(pool, pageIndex, featuredPickCache);
-                        return featured ? <TeamFeaturedPsychologistSection psychologist={featured} /> : null;
-                      })()
-                    : null}
+
                   </Fragment>
                 ))}
                 <div ref={loadMoreRef} className="py-4 text-center text-muted small">

@@ -6,6 +6,7 @@ import {
 } from "@/lib/db/queries/psychologist-clinical.queries";
 import type { PsychologistSessionContext } from "@/server/auth/require-psychologist";
 import type { updatePatientCareSchema } from "@/lib/validation/clinical/clinical.schema";
+import { assertPatientLimitService } from "@/services/subscriptions/subscription.service";
 import type { z } from "zod";
 
 export async function getPatientCareService(ctx: PsychologistSessionContext, patientId: string) {
@@ -13,13 +14,18 @@ export async function getPatientCareService(ctx: PsychologistSessionContext, pat
   if (!linked) {
     throw new Error("Paciente não encontrado ou sem vínculo com sua prática.");
   }
-  let row = await dbGetCareByPsychologistPatient(ctx.psychologistId, patientId);
-  if (!row) {
-    row = await dbUpsertPsychologistPatientCare({
-      psychologistId: ctx.psychologistId,
-      patientId,
-    });
+
+  // Verifica se já existe vínculo antes de checar o limite:
+  // o limite só se aplica ao criar um vínculo NOVO.
+  const existing = await dbGetCareByPsychologistPatient(ctx.psychologistId, patientId);
+  if (!existing) {
+    await assertPatientLimitService(ctx.psychologistId);
   }
+
+  const row = existing ?? await dbUpsertPsychologistPatientCare({
+    psychologistId: ctx.psychologistId,
+    patientId,
+  });
   return row;
 }
 

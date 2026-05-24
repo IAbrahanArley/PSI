@@ -43,6 +43,13 @@
       "when": 1777817737887,
       "tag": "0005_psychologist_social_links",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1779630689558,
+      "tag": "0006_subscriptions",
+      "breakpoints": true
     }
   ]
 }

@@ -8,6 +8,8 @@ import Header from "@/layout/Header";
 import Image from "next/image";
 import Link from "next/link";
 import Howitwork from "@/component/Howitwork";
+import PricingPlans from "@/component/PricingPlans";
+import Footer from "@/layout/Footer";
 
 export default async function HomePage() {
   const serviceItems = await listPublicCatalogSpecialtiesForHome();
@@ -102,8 +104,10 @@ export default async function HomePage() {
           </div>
         </section>
         <Howitwork />
+        <PricingPlans />
       </main>
       <FloatingPsychologistChatTeaser />
+      <Footer />
     </>
   );
 }
