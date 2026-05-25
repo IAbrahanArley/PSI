@@ -1,47 +1,71 @@
 import Link from "next/link";
-import Header from "@/layout/Header";
+import { AuthSplitLayout } from "./_components/AuthSplitLayout";
 
 export default function LoginHubPage() {
   return (
-    <>
-      <Header />
-      <main className="page-content">
-        <section className="content-inner bg-light">
-          <div className="container">
-            <div className="row justify-content-center">
-              <div className="col-lg-8 col-xl-7">
-                <div className="card shadow-sm border-0">
-                  <div className="card-body p-4 p-md-5">
-                    <h1 className="title text-secondary m-b20">Acesso ao sistema</h1>
-                    <p className="text-muted m-b30">
-                      Escolha o perfil de acesso para entrar na area correta do painel.
-                    </p>
-                    <div className="d-flex flex-column gap-2">
-                      <Link href="/login/psicologo" className="btn btn-primary btn-lg">
-                        Entrar como psicologo
-                      </Link>
-                      <Link href="/login/paciente" className="btn btn-outline-primary btn-lg">
-                        Entrar como paciente
-                      </Link>
-                    </div>
-                    <div className="d-flex flex-wrap gap-2 mt-4">
-                      <Link href="/cadastro/psicologo" className="btn btn-outline-secondary">
-                        Cadastro de psicologo
-                      </Link>
-                      <Link href="/cadastro/paciente" className="btn btn-outline-secondary">
-                        Cadastro de paciente
-                      </Link>
-                      <Link href="/" className="btn btn-link">
-                        Voltar ao inicio
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-    </>
+    <AuthSplitLayout role="paciente">
+      <h2 className="fw-bold mb-2" style={{ fontSize: "1.75rem", color: "#1a1a2e" }}>
+        Acesse sua conta
+      </h2>
+      <p className="text-muted mb-4" style={{ fontSize: "0.92rem" }}>
+        Escolha seu perfil para entrar na área correta do painel.
+      </p>
+
+      <div className="d-flex flex-column gap-3 mb-4">
+        <Link
+          href="/login/psicologo"
+          className="btn btn-primary btn-lg fw-semibold d-flex align-items-center gap-3"
+          style={{ borderRadius: 10, height: 56, fontSize: "0.97rem" }}
+        >
+          <span
+            className="d-inline-flex align-items-center justify-content-center rounded-circle bg-white"
+            style={{ width: 34, height: 34, flexShrink: 0 }}
+          >
+            <i className="feather icon-briefcase text-primary" style={{ fontSize: "1rem" }} />
+          </span>
+          <span>Entrar como psicólogo</span>
+          <i className="feather icon-arrow-right ms-auto" />
+        </Link>
+
+        <Link
+          href="/login/paciente"
+          className="btn btn-outline-primary btn-lg fw-semibold d-flex align-items-center gap-3"
+          style={{ borderRadius: 10, height: 56, fontSize: "0.97rem" }}
+        >
+          <span
+            className="d-inline-flex align-items-center justify-content-center rounded-circle"
+            style={{ width: 34, height: 34, flexShrink: 0, background: "rgba(var(--bs-primary-rgb),0.08)" }}
+          >
+            <i className="feather icon-user text-primary" style={{ fontSize: "1rem" }} />
+          </span>
+          <span>Entrar como paciente</span>
+          <i className="feather icon-arrow-right ms-auto" />
+        </Link>
+      </div>
+
+      <div
+        className="d-flex align-items-center gap-3 my-4"
+        style={{ color: "#d1d5db" }}
+      >
+        <hr className="flex-grow-1 m-0" />
+        <span className="small text-muted">ou crie sua conta</span>
+        <hr className="flex-grow-1 m-0" />
+      </div>
+
+      <div className="d-flex gap-2">
+        <Link href="/cadastro/psicologo" className="btn btn-outline-secondary flex-grow-1" style={{ borderRadius: 10 }}>
+          Cadastro psicólogo
+        </Link>
+        <Link href="/cadastro/paciente" className="btn btn-outline-secondary flex-grow-1" style={{ borderRadius: 10 }}>
+          Cadastro paciente
+        </Link>
+      </div>
+
+      <div className="text-center mt-4">
+        <Link href="/" className="small text-muted text-decoration-none">
+          ← Voltar ao início
+        </Link>
+      </div>
+    </AuthSplitLayout>
   );
 }

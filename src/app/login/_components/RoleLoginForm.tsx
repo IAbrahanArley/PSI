@@ -11,16 +11,12 @@ type LoginRole = "PATIENT" | "PSYCHOLOGIST";
 
 type Props = {
   expectedRole: LoginRole;
-  title: string;
-  description: string;
-  signupHref: string;
-  signupLabel: string;
+  signupHref:   string;
   alternateHref: string;
-  alternateLabel: string;
 };
 
 const defaultRedirectByRole: Record<LoginRole, string> = {
-  PATIENT: "/dashboard/paciente",
+  PATIENT:      "/dashboard/paciente",
   PSYCHOLOGIST: "/dashboard/psicologo",
 };
 
@@ -36,35 +32,29 @@ function safeRedirect(role: LoginRole, requestedPath: string | null): string {
   return isAllowedRedirect(role, requestedPath) ? requestedPath : fallback;
 }
 
-export function RoleLoginForm({
-  expectedRole,
-  title,
-  description,
-  signupHref,
-  signupLabel,
-  alternateHref,
-  alternateLabel,
-}: Props) {
-  const router = useRouter();
+export function RoleLoginForm({ expectedRole, signupHref, alternateHref }: Props) {
+  const router       = useRouter();
   const searchParams = useSearchParams();
-  const registeredToastShown = useRef(false);
-  const missingRoleToastShown = useRef(false);
-  const [email, setEmail] = useState("");
+  const registeredRef   = useRef(false);
+  const missingRoleRef  = useRef(false);
+
+  const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [showPass, setShowPass] = useState(false);
+  const [loading,  setLoading]  = useState(false);
+
+  const isPsi = expectedRole === "PSYCHOLOGIST";
 
   useEffect(() => {
-    if (registeredToastShown.current) return;
-    if (searchParams.get("registered") === "1") {
-      registeredToastShown.current = true;
-      toast.success("Cadastro concluido! Entre com seu e-mail e senha.");
+    if (!registeredRef.current && searchParams.get("registered") === "1") {
+      registeredRef.current = true;
+      toast.success("Cadastro concluído! Entre com seu e-mail e senha.");
     }
   }, [searchParams]);
 
   useEffect(() => {
-    if (missingRoleToastShown.current) return;
-    if (searchParams.get("error") === "missing_role") {
-      missingRoleToastShown.current = true;
+    if (!missingRoleRef.current && searchParams.get("error") === "missing_role") {
+      missingRoleRef.current = true;
       toast.info("Entre novamente para concluir o acesso ao painel.", { duration: 6000 });
     }
   }, [searchParams]);
@@ -74,18 +64,19 @@ export function RoleLoginForm({
     setLoading(true);
     try {
       const { error } = await supabaseClient.auth.signInWithPassword({
-        email: email.trim().toLowerCase(),
+        email:    email.trim().toLowerCase(),
         password,
       });
       if (error) {
-        toast.error("Nao foi possivel entrar. Verifique e-mail e senha.");
+        toast.error("E-mail ou senha incorretos. Verifique e tente novamente.");
         return;
       }
 
-      const syncRes = await fetch("/api/auth/sync-role", { method: "POST" });
+      const syncRes  = await fetch("/api/auth/sync-role", { method: "POST" });
       const syncBody = (await syncRes.json().catch(() => ({}))) as { role?: UserRole; error?: string };
+
       if (!syncRes.ok || !syncBody.role) {
-        toast.error("Nao foi possivel concluir seu login agora. Tente novamente.");
+        toast.error("Não foi possível concluir seu login. Tente novamente.");
         await supabaseClient.auth.signOut();
         return;
       }
@@ -94,88 +85,155 @@ export function RoleLoginForm({
       if (syncedRole !== expectedRole && syncedRole !== "ADMIN") {
         await supabaseClient.auth.signOut();
         toast.error(
-          expectedRole === "PATIENT"
-            ? "Esta conta nao tem acesso de paciente. Use o login de psicologo."
-            : "Esta conta nao tem acesso de psicologo. Use o login de paciente.",
+          isPsi
+            ? "Esta conta não tem acesso de psicólogo. Use o login de paciente."
+            : "Esta conta não tem acesso de paciente. Use o login de psicólogo.",
         );
         return;
       }
 
       await supabaseClient.auth.refreshSession();
-      toast.success("Login realizado com sucesso!");
+      toast.success("Bem-vindo de volta!");
 
       const requested = searchParams.get("redirect");
       const next = syncedRole === "ADMIN" ? "/dashboard" : safeRedirect(expectedRole, requested);
       router.push(next);
       router.refresh();
     } catch {
-      toast.error("Erro de conexao. Tente novamente.");
+      toast.error("Erro de conexão. Verifique sua internet e tente novamente.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="card shadow-sm border-0">
-      <div className="card-body p-4 p-md-5">
-        <h2 className="title text-secondary m-b20">{title}</h2>
-        <p className="text-muted m-b30">{description}</p>
-        <form onSubmit={onSubmit} noValidate>
-          <div className="row g-3">
-            <div className="col-12">
-              <label className="form-label" htmlFor={`${expectedRole}-login-email`}>
-                E-mail
-              </label>
-              <input
-                id={`${expectedRole}-login-email`}
-                type="email"
-                className="form-control"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-              />
-            </div>
-            <div className="col-12">
-              <label className="form-label" htmlFor={`${expectedRole}-login-password`}>
-                Senha
-              </label>
-              <input
-                id={`${expectedRole}-login-password`}
-                type="password"
-                className="form-control"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                autoComplete="current-password"
-              />
-            </div>
-          </div>
+    <div>
+      {/* ── Tabs de alternância ── */}
+      <div
+        className="d-flex rounded-3 mb-4 p-1"
+        style={{ background: "#f3f4f8" }}
+      >
+        <Link
+          href="/login/paciente"
+          className={`flex-grow-1 text-center text-decoration-none py-2 rounded-2 fw-semibold small transition-all ${
+            !isPsi ? "bg-white text-primary shadow-sm" : "text-muted"
+          }`}
+          style={{ fontSize: "0.88rem" }}
+        >
+          Sou paciente
+        </Link>
+        <Link
+          href="/login/psicologo"
+          className={`flex-grow-1 text-center text-decoration-none py-2 rounded-2 fw-semibold small ${
+            isPsi ? "bg-white text-primary shadow-sm" : "text-muted"
+          }`}
+          style={{ fontSize: "0.88rem" }}
+        >
+          Sou psicólogo
+        </Link>
+      </div>
 
-          <div className="d-flex flex-wrap gap-2 align-items-center mt-4">
-            <button type="submit" className="btn btn-primary btn-lg" disabled={loading}>
-              {loading ? "Entrando..." : "Entrar"}
-            </button>
-            <Link href={signupHref} className="btn btn-outline-primary btn-lg">
-              {signupLabel}
-            </Link>
-            <Link href={alternateHref} className="btn btn-outline-secondary btn-lg">
-              {alternateLabel}
-            </Link>
-          </div>
+      {/* ── Cabeçalho ── */}
+      <h2 className="fw-bold mb-1" style={{ fontSize: "1.75rem", color: "#1a1a2e" }}>
+        Bem-vindo de volta!
+      </h2>
+      <p className="text-muted mb-4" style={{ fontSize: "0.92rem" }}>
+        Não tem conta?{" "}
+        <Link href={signupHref} className="text-primary fw-semibold text-decoration-none">
+          Criar conta agora, é grátis
+        </Link>
+        .
+      </p>
 
-          <div className="d-flex flex-wrap gap-3 mt-3">
-            <Link
-              href={`/recuperar-senha?perfil=${expectedRole === "PATIENT" ? "paciente" : "psicologo"}`}
-              className="small text-decoration-none"
+      {/* ── Formulário ── */}
+      <form onSubmit={onSubmit} noValidate>
+        {/* E-mail */}
+        <div className="mb-3">
+          <label className="form-label fw-semibold small" htmlFor={`${expectedRole}-email`}
+            style={{ color: "#374151" }}>
+            E-mail
+          </label>
+          <input
+            id={`${expectedRole}-email`}
+            type="email"
+            className="form-control form-control-lg"
+            placeholder="seu@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            autoComplete="email"
+            style={{ borderRadius: 10, border: "1.5px solid #e5e7eb", fontSize: "0.95rem" }}
+          />
+        </div>
+
+        {/* Senha */}
+        <div className="mb-1">
+          <label className="form-label fw-semibold small" htmlFor={`${expectedRole}-password`}
+            style={{ color: "#374151" }}>
+            Senha
+          </label>
+          <div className="input-group">
+            <input
+              id={`${expectedRole}-password`}
+              type={showPass ? "text" : "password"}
+              className="form-control form-control-lg"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+              style={{
+                borderRadius: "10px 0 0 10px",
+                border: "1.5px solid #e5e7eb",
+                borderRight: "none",
+                fontSize: "0.95rem",
+              }}
+            />
+            <button
+              type="button"
+              className="btn btn-outline-secondary"
+              onClick={() => setShowPass((p) => !p)}
+              tabIndex={-1}
+              style={{ borderRadius: "0 10px 10px 0", border: "1.5px solid #e5e7eb", borderLeft: "none" }}
             >
-              Esqueci minha senha
-            </Link>
-            <Link href="/" className="small text-decoration-none">
-              Voltar ao inicio
-            </Link>
+              <i className={`feather ${showPass ? "icon-eye-off" : "icon-eye"}`} />
+            </button>
           </div>
-        </form>
+        </div>
+
+        {/* Esqueci a senha */}
+        <div className="text-end mb-4">
+          <Link
+            href={`/recuperar-senha?perfil=${isPsi ? "psicologo" : "paciente"}`}
+            className="small text-primary text-decoration-none"
+          >
+            Esqueci minha senha
+          </Link>
+        </div>
+
+        {/* Botão entrar */}
+        <button
+          type="submit"
+          className="btn btn-primary btn-lg w-100 fw-semibold"
+          disabled={loading}
+          style={{ borderRadius: 10, fontSize: "1rem", height: 52 }}
+        >
+          {loading ? (
+            <>
+              <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden />
+              Entrando…
+            </>
+          ) : (
+            "Entrar agora"
+          )}
+        </button>
+      </form>
+
+      {/* ── Rodapé ── */}
+      <div className="text-center mt-4">
+        <Link href="/" className="small text-muted text-decoration-none">
+          ← Voltar ao início
+        </Link>
       </div>
     </div>
   );
