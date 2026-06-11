@@ -68,6 +68,8 @@ export async function getPsychologistProfile(): Promise<PsychologistProfileData 
       crp: psy.crp,
       profileImageUrl: psy.profileImageUrl,
       slug: psy.slug,
+      city: psy.city,
+      state: psy.state,
     },
     catalogSpecialtyIds,
     specialties: specialtyList,
@@ -134,6 +136,8 @@ export async function savePsychologistProfile(input: SavePsychologistProfileInpu
         bio: input.bio ?? null,
         crp: input.crp?.trim() || null,
         profileImageUrl: input.profileImageUrl ?? null,
+        city: input.city?.trim() || null,
+        state: input.state?.trim() || null,
         specialty: firstSpecialtyLabel,
         updatedAt: new Date(),
       })

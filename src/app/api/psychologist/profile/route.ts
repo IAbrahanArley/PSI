@@ -83,6 +83,8 @@ export async function GET() {
       crp: psy.crp,
       profileImageUrl: psy.profileImageUrl,
       slug: psy.slug,
+      city: psy.city,
+      state: psy.state,
     },
     catalogSpecialtyIds,
     specialties: specialtyList,
@@ -102,6 +104,8 @@ type PutBody = {
   bio?: string | null;
   crp?: string | null;
   profileImageUrl?: string | null;
+  city?: string | null;
+  state?: string | null;
   catalogSpecialtyIds?: string[];
   specialties?: string[];
   skills?: string[];
@@ -184,6 +188,8 @@ export async function PUT(req: Request) {
           bio: body.bio ?? null,
           crp: body.crp?.trim() || null,
           profileImageUrl: body.profileImageUrl ?? null,
+          city: body.city?.trim() || null,
+          state: body.state?.trim() || null,
           specialty: firstSpecialtyLabel,
           updatedAt: new Date(),
         })

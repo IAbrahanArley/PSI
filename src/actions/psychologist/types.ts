@@ -10,6 +10,8 @@ export type PsychologistProfileData = {
     crp: string | null;
     profileImageUrl: string | null;
     slug: string;
+    city: string | null;
+    state: string | null;
   };
   /** Linhas vindas do catálogo (`catalog_specialties`). */
   catalogSpecialtyIds: string[];
@@ -24,6 +26,8 @@ export type SavePsychologistProfileInput = {
   bio?: string | null;
   crp?: string | null;
   profileImageUrl?: string | null;
+  city?: string | null;
+  state?: string | null;
   /** Preferencial: atualiza vínculos com `catalog_specialties`. */
   catalogSpecialtyIds?: string[];
   /** Legado — usado apenas se `catalogSpecialtyIds` vier vazio/indicado pelo fluxo. */

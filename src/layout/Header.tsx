@@ -411,7 +411,7 @@ function Header() {
                   {!authLoading && !authUser && (
                     <li>
                       <Link href="/login/paciente">
-                        <span>Entrar</span>
+                        <span>Painel</span>
                       </Link>
                     </li>
                   )}

@@ -80,11 +80,11 @@ export default async function HomePage() {
             <ServiceBox items={serviceItems} />
           </div>
         </section>
-        <section className="content-inner">
+        <section className="content-inner pb-0">
           <div className="container">
             <div className="section-head style-1 m-b30 row align-items-end">
               <div className="col-sm-7 wow fadeInUp" data-wow-delay="0.2s" data-wow-duration="0.8s">
-                <h2 className="title m-b0">Conheca nossos especialistas</h2>
+                <h2 className="title m-b0">Conheça nossos especialistas</h2>
               </div>
               <div
                 className="col-sm-5 text-sm-end d-sm-block d-none wow fadeInUp"
@@ -92,7 +92,6 @@ export default async function HomePage() {
                 data-wow-duration="0.8s"
               >
                 <Link href="/team" className="btn btn-icon btn-primary btn-shadow">
-                  {" "}
                   Ver todos
                   <span className="right-icon">
                     <i className="feather icon-arrow-right" />
@@ -100,6 +99,9 @@ export default async function HomePage() {
                 </Link>
               </div>
             </div>
+          </div>
+          {/* Carrossel full-width — sem container para ir de borda a borda */}
+          <div className="pb-5">
             <EmpolyBlog />
           </div>
         </section>

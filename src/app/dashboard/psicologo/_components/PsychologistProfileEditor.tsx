@@ -6,6 +6,7 @@ import type { CurriculumContent, CurriculumItem, CurriculumSection } from "@/lib
 import { emptyCurriculum } from "@/lib/types/psychologist-curriculum";
 import { BootstrapSkeleton } from "@/components/BootstrapSkeleton";
 import PsychologistCatalogSpecialtiesField from "@/component/PsychologistCatalogSpecialtiesField";
+import { CityAutocomplete, type CityOption } from "@/component/CityAutocomplete";
 import { usePsychologistProfile, useSavePsychologistProfile } from "@/hooks/psychologist/data";
 
 type AwardDraft = { title: string; link: string; imageUrl: string };
@@ -26,6 +27,11 @@ export default function PsychologistProfileEditor() {
 
   const [catalogSpecialtyIds, setCatalogSpecialtyIds] = useState<string[]>([]);
 
+  // Location
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [cityKey, setCityKey] = useState(""); // normalised key for autocomplete value
+
   const [skills, setSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState("");
 
@@ -45,6 +51,11 @@ export default function PsychologistProfileEditor() {
     setBio(profileData.psychologist?.bio ?? "");
     setCrp(profileData.psychologist?.crp ?? "");
     setProfileImageUrl(profileData.psychologist?.profileImageUrl ?? "");
+    const loadedCity = profileData.psychologist?.city ?? "";
+    const loadedState = profileData.psychologist?.state ?? "";
+    setCity(loadedCity);
+    setState(loadedState);
+    setCityKey(loadedCity ? loadedCity.toLowerCase().trim() : "");
     setCatalogSpecialtyIds(
       Array.isArray(profileData.catalogSpecialtyIds) ? profileData.catalogSpecialtyIds : []
     );
@@ -159,6 +170,8 @@ export default function PsychologistProfileEditor() {
           bio,
           crp,
           profileImageUrl,
+          city: city.trim() || null,
+          state: state.trim() || null,
           catalogSpecialtyIds,
           skills,
           awards: awards.filter((a) => a.title.trim()),
@@ -289,6 +302,29 @@ export default function PsychologistProfileEditor() {
                   onChange={(e) => setCrp(e.target.value)}
                   placeholder="Ex.: 06/123456"
                 />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Cidade de atendimento presencial</label>
+                <CityAutocomplete
+                  value={cityKey}
+                  onSelect={(opt: CityOption | null) => {
+                    if (opt) {
+                      setCity(opt.city);
+                      setState(opt.state);
+                      setCityKey(opt.key);
+                    } else {
+                      setCity("");
+                      setState("");
+                      setCityKey("");
+                    }
+                  }}
+                  placeholder="Ex.: São Paulo — SP"
+                  showBadge={false}
+                  disabled={saveProfileMutation.isPending}
+                />
+                <div className="form-text text-muted">
+                  Usada na busca pública por cidade. Deixe em branco se atender apenas online.
+                </div>
               </div>
               <div className="mb-0">
                 <label className="form-label">Sobre mim</label>

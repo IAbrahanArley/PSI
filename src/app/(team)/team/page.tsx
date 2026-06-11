@@ -4,6 +4,7 @@ import type { TeamFeaturedPsychologist } from "@/actions/psychologists/types";
 import { TeamFeaturedPsychologistSection } from "@/component/TeamFeaturedPsychologistSection";
 import { TeamPsychologistCard } from "@/component/TeamPsychologistCard";
 import PageBanner from "@/component/PageBanner";
+import { CityAutocomplete, type CityOption } from "@/component/CityAutocomplete";
 import { IMAGES } from "@/constant/theme";
 import {
   usePublicCatalogSpecialtyOptions,
@@ -73,11 +74,18 @@ function TeamContent() {
   const cityFilter = useMemo(() => parseListingParam(searchParams.get("cidade")), [searchParams]);
 
   const selectSpecialtyValue = specialtyFilter ?? "todos";
-  const selectCityValue = cityFilter ?? "";
 
   useEffect(() => {
     featuredPickCache.current = new Map();
   }, [specialtyFilter, cityFilter]);
+
+  // City autocomplete: keep an option object to display the label
+  const [cityOptionObj, setCityOptionObj] = useState<CityOption | null>(null);
+
+  function handleCitySelect(opt: CityOption | null) {
+    setCityOptionObj(opt);
+    syncQuery(specialtyFilter, opt?.key ?? null);
+  }
 
   const { data: specialtyOptions = [], isLoading: specialtiesLoading } = usePublicCatalogSpecialtyOptions();
   const { data: searchFilters } = usePublicSearchFilters();
@@ -114,16 +122,12 @@ function TeamContent() {
     syncQuery(v === "todos" ? null : v, cityFilter);
   }
 
-  function onCityChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const v = e.target.value.trim();
-    syncQuery(specialtyFilter, v || null);
-  }
-
   const specialtyDisplayName =
     specialtyOptions.find((s) => s.slug === specialtyFilter)?.name ??
     searchFilters?.specialties?.find((s) => s.slug === specialtyFilter)?.name ??
     specialtyFilter;
   const cityDisplayLabel =
+    cityOptionObj?.label ??
     searchFilters?.cities?.find((c) => c.key === cityFilter)?.label ??
     cityFilter ??
     "";
@@ -140,8 +144,6 @@ function TeamContent() {
   const hasAnyRegular = pages.some((p) => p.items.length > 0);
   const initialLoading = regular.isLoading && pages.length === 0;
   const labelsLoading = specialtiesLoading || !searchFilters;
-
-  const cityOptions = searchFilters?.cities ?? [];
 
   const pageKeyPrefix = `${specialtyFilter ?? "all"}-${cityFilter ?? "all"}`;
 
@@ -176,20 +178,16 @@ function TeamContent() {
                 <label htmlFor="team-cidade" className="form-label small mb-1">
                   Cidade
                 </label>
-                <select
+                <CityAutocomplete
                   id="team-cidade"
-                  className="form-select form-select-sm"
-                  value={selectCityValue}
-                  onChange={onCityChange}
+                  value={cityFilter ?? ""}
+                  onSelect={handleCitySelect}
+                  placeholder="Todas as cidades"
+                  size="sm"
+                  specialtyFilter={specialtyFilter}
+                  showBadge={true}
                   disabled={labelsLoading}
-                >
-                  <option value="">Todas as cidades</option>
-                  {cityOptions.map((c) => (
-                    <option key={c.key} value={c.key}>
-                      {c.label}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
             </div>
 

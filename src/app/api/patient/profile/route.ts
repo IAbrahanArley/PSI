@@ -17,6 +17,7 @@ const ProfileSchema = z.object({
   gender:     z.enum(GENDER_VALUES).optional().nullable(),
   state:      z.string().max(2).optional().nullable(),
   city:       z.string().max(100).optional().nullable(),
+  avatarUrl:  z.string().url().optional().nullable(),
 });
 
 async function resolvePatient(userId: string) {
@@ -105,6 +106,7 @@ export async function PUT(req: Request) {
         gender:    data.gender    ?? null,
         state:     data.state     ?? null,
         city:      data.city      ?? null,
+        ...(data.avatarUrl !== undefined && { avatarUrl: data.avatarUrl ?? null }),
         updatedAt: new Date(),
       })
       .where(eq(patients.id, patient.id));
