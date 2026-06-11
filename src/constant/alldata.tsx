@@ -76,8 +76,8 @@ export const headerdata : HeaderItem[] = [
             { title: "Blog Details", to: "/blog-details" },
         ],
     },*/
+    { title: "Psicólogos", to: "/team", },
     { title: "Contato", to: "/contato", },
-    { title: "Entrar", to: "/login", },
 ]
 // footer
 export const footerdata1 = [

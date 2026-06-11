@@ -11,6 +11,7 @@ import {
   dbSearchClinicalNotes,
   dbSetClinicalNotePinned,
   dbSoftDeleteClinicalNote,
+  dbUpdateClinicalNote,
   dbUpsertPsychologistPatientCare,
 } from "@/lib/db/queries/psychologist-clinical.queries";
 import type { createClinicalNoteSchema } from "@/lib/validation/clinical/clinical.schema";
@@ -135,6 +136,33 @@ export async function setClinicalNotePinnedService(
   if (!existing) throw new Error("Anotação não encontrada.");
   const row = await dbSetClinicalNotePinned(noteId, ctx.psychologistId, pinned);
   if (!row) throw new Error("Não foi possível atualizar.");
+  return row;
+}
+
+export async function updateClinicalNoteService(
+  ctx: PsychologistSessionContext,
+  noteId: string,
+  input: { title?: string | null; body?: string; noteType?: string; tagIds?: string[] },
+) {
+  const existing = await dbGetClinicalNoteForPsychologist(noteId, ctx.psychologistId);
+  if (!existing) throw new Error("Anotação não encontrada.");
+
+  if (input.tagIds?.length) {
+    const ok = await dbAssertTagsBelongToPsychologist(ctx.psychologistId, input.tagIds);
+    if (!ok) throw new Error("Uma ou mais tags são inválidas.");
+  }
+
+  const row = await dbUpdateClinicalNote(noteId, ctx.psychologistId, {
+    title: input.title !== undefined ? (input.title?.trim() || null) : undefined,
+    body: input.body?.trim(),
+    noteType: input.noteType as typeof existing.noteType | undefined,
+  });
+  if (!row) throw new Error("Falha ao atualizar anotação.");
+
+  if (input.tagIds !== undefined) {
+    await dbReplaceNoteTags(noteId, input.tagIds);
+  }
+
   return row;
 }
 

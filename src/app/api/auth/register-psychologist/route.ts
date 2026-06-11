@@ -4,7 +4,9 @@ import { db } from "@/lib/db";
 import {
   catalogSpecialties,
   psychologistSpecialties,
+  psychologistSubscriptions,
   psychologists,
+  subscriptionPlans,
   users,
 } from "@/lib/db/schema";
 import { stripPhoneDigits } from "@/lib/phone";
@@ -123,6 +125,23 @@ export async function POST(req: Request) {
   const userId = authData.user.id;
   const slug = generatePsychologistSlug(firstName, lastName);
 
+  // Busca o plano "start" fora da transação (read-only, pode falhar sem rollback)
+  const [startPlan] = await db
+    .select({ id: subscriptionPlans.id, trialDays: subscriptionPlans.trialDays })
+    .from(subscriptionPlans)
+    .where(eq(subscriptionPlans.slug, "start"))
+    .limit(1);
+
+  if (!startPlan) {
+    return NextResponse.json(
+      { error: "Plano inicial não encontrado. Execute db:seed para cadastrar os planos." },
+      { status: 500 },
+    );
+  }
+
+  const trialEndsAt = new Date();
+  trialEndsAt.setDate(trialEndsAt.getDate() + (startPlan.trialDays ?? 7));
+
   try {
     await db.transaction(async (tx) => {
       await tx.insert(users).values({
@@ -157,6 +176,14 @@ export async function POST(req: Request) {
           sortOrder: i,
         });
       }
+
+      // ── Cria a assinatura trial automaticamente no cadastro ──────────────────
+      await tx.insert(psychologistSubscriptions).values({
+        psychologistId: psy.id,
+        planId:         startPlan.id,
+        status:         "TRIAL",
+        trialEndsAt,
+      });
     });
   } catch {
     await supabaseAdmin.auth.admin.deleteUser(userId);

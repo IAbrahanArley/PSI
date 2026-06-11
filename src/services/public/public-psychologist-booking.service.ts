@@ -280,6 +280,108 @@ async function assertAddressBelongsToPsychologist(addressId: string, psychologis
   }
 }
 
+export type PatientBookAppointmentInput = {
+  startsAtIso: string;
+  endsAtIso: string;
+  modality: "ONLINE" | "PRESENTIAL";
+  addressId: string | null;
+  message?: string | null;
+  patientFullName: string;
+};
+
+/**
+ * Reserva autenticada — o paciente já tem conta, não precisa de guest creation.
+ */
+export async function bookAuthenticatedPatientAppointmentService(
+  slug: string,
+  patientId: string,
+  input: PatientBookAppointmentInput,
+  changedByUserId: string,
+): Promise<{ appointmentId: string } | "not_found" | "slot_taken" | "invalid_slot" | "conflict"> {
+  if (!process.env.DATABASE_URL?.trim()) return "not_found";
+
+  const psy = await loadPsychologistForPublicBooking(slug);
+  if (!psy) return "not_found";
+
+  const startsAt = new Date(input.startsAtIso);
+  const endsAt = new Date(input.endsAtIso);
+  if (Number.isNaN(startsAt.getTime()) || Number.isNaN(endsAt.getTime()) || endsAt <= startsAt) {
+    return "invalid_slot";
+  }
+
+  if (input.modality === "PRESENTIAL") {
+    if (!input.addressId) return "invalid_slot";
+    await assertAddressBelongsToPsychologist(input.addressId, psy.id);
+  } else if (input.addressId) {
+    return "invalid_slot";
+  }
+
+  const timeZone = PUBLIC_BOOKING_TIMEZONE;
+  const localDate = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(startsAt);
+
+  const rangeStart = new Date(findStartOfZonedDayUtcMs(localDate, timeZone));
+  const rangeEnd = new Date(findEndOfZonedDayUtcMs(localDate, timeZone));
+  const payload = await loadAgendaPayloadForUtcRange(
+    psy.id,
+    rangeStart,
+    rangeEnd,
+    localDate,
+    localDate,
+    psy.sessionDurationMinutes,
+  );
+
+  let free: ReturnType<typeof calculateAvailableSlots> = [];
+  try {
+    free = calculateAvailableSlots(buildDayInput(localDate, timeZone, payload));
+  } catch {
+    return "invalid_slot";
+  }
+
+  const match = free.find(
+    (s) =>
+      s.start.getTime() === startsAt.getTime() &&
+      s.end.getTime() === endsAt.getTime() &&
+      s.mode === input.modality &&
+      (s.addressId ?? null) === (input.addressId ?? null),
+  );
+  if (!match) return "invalid_slot";
+
+  const overlaps = await dbListAppointmentsOverlappingRange(psy.id, startsAt, endsAt);
+  if (overlaps.length > 0) return "slot_taken";
+
+  try {
+    const row = await dbInsertAppointment({
+      psychologistId: psy.id,
+      patientId,
+      modality: input.modality,
+      addressId: input.modality === "ONLINE" ? null : input.addressId!,
+      startsAt,
+      endsAt,
+      status: "SCHEDULED",
+      title: `Agendamento — ${input.patientFullName.trim()}`,
+      notes: input.message?.trim() || null,
+    });
+    if (!row) return "conflict";
+
+    await dbInsertAppointmentStatusEvent({
+      appointmentId: row.id,
+      fromStatus: null,
+      toStatus: "SCHEDULED",
+      changedByUserId,
+      note: "Reserva pelo painel do paciente",
+    });
+
+    return { appointmentId: row.id };
+  } catch {
+    return "conflict";
+  }
+}
+
 export async function bookPublicAppointmentService(
   slug: string,
   input: PublicBookAppointmentInput,

@@ -11,6 +11,10 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Spinner from "react-bootstrap/Spinner";
 import Table from "react-bootstrap/Table";
+import Link from "next/link";
+
+import { supabaseClient } from "@/lib/db/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 type PublicDaySlotItem = {
   startIso: string;
@@ -88,7 +92,60 @@ function SlotsTable({
   );
 }
 
+// ─── Login wall ───────────────────────────────────────────────────────────────
+
+function LoginWall({ slug }: { slug: string | undefined }) {
+  const redirectUrl = slug
+    ? `/login/paciente?redirect=${encodeURIComponent(`/team-detail?slug=${slug}`)}`
+    : "/login/paciente";
+
+  return (
+    <div className="text-center py-3">
+      <div className="mb-3">
+        <span
+          className="d-inline-flex align-items-center justify-content-center rounded-circle bg-white bg-opacity-10 mb-3"
+          style={{ width: 56, height: 56 }}
+        >
+          <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-white" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V7.5a4.5 4.5 0 10-9 0v3M4.5 10.5h15v9.75A1.5 1.5 0 0118 21.75H6A1.5 1.5 0 014.5 20.25V10.5z" />
+          </svg>
+        </span>
+        <p className="text-white mb-1 fw-semibold">Faça login para agendar</p>
+        <p className="text-white opacity-75 small mb-0">
+          Para reservar uma consulta, entre com sua conta de paciente.
+        </p>
+      </div>
+      <div className="d-flex flex-column flex-sm-row gap-2 justify-content-center">
+        <Link href={redirectUrl} className="btn btn-light">
+          Entrar como paciente
+        </Link>
+        <Link href="/cadastro/paciente" className="btn btn-outline-light">
+          Criar conta
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
+
 export function TeamDetailBookingSection({ slug }: { slug: string | undefined }) {
+  // ── auth state ──────────────────────────────────────────────────────────────
+  const [authLoading, setAuthLoading] = useState(true);
+  const [authUser, setAuthUser] = useState<User | null>(null);
+  const [authRole, setAuthRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabaseClient.auth.getUser().then(({ data }) => {
+      const u = data.user ?? null;
+      setAuthUser(u);
+      const role = u?.app_metadata?.role ?? u?.user_metadata?.role ?? null;
+      setAuthRole(role);
+      setAuthLoading(false);
+    });
+  }, []);
+
+  // ── calendar state ───────────────────────────────────────────────────────────
   const [displayMonth, setDisplayMonth] = useState(() => startOfMonth(new Date()));
   const [datesWithSlots, setDatesWithSlots] = useState<Set<string> | null>(null);
   const [monthError, setMonthError] = useState<string | null>(null);
@@ -100,6 +157,7 @@ export function TeamDetailBookingSection({ slug }: { slug: string | undefined })
 
   const [selectedSlot, setSelectedSlot] = useState<PublicDaySlotItem | null>(null);
 
+  // ── form fields (public / guest flow) ────────────────────────────────────────
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -108,6 +166,10 @@ export function TeamDetailBookingSection({ slug }: { slug: string | undefined })
   const [submitting, setSubmitting] = useState(false);
   const [submitMsg, setSubmitMsg] = useState<{ type: "ok" | "err"; text: string } | null>(null);
 
+  const isPatient = authRole === "PATIENT";
+  const isOtherRole = !authLoading && authUser !== null && !isPatient;
+
+  // ── load month dates ──────────────────────────────────────────────────────────
   useEffect(() => {
     if (!slug?.trim()) return;
     const y = displayMonth.getFullYear();
@@ -137,6 +199,7 @@ export function TeamDetailBookingSection({ slug }: { slug: string | undefined })
     return () => ac.abort();
   }, [slug, displayMonth]);
 
+  // ── load day slots ────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!slug?.trim() || !selected) {
       setSlotsRes(null);
@@ -186,7 +249,46 @@ export function TeamDetailBookingSection({ slug }: { slug: string | undefined })
     [datesWithSlots],
   );
 
-  const onSubmit = async (e: React.FormEvent) => {
+  // ── submit ────────────────────────────────────────────────────────────────────
+
+  const onSubmitAuthenticated = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!slug?.trim() || !selectedSlot) return;
+    setSubmitting(true);
+    setSubmitMsg(null);
+    try {
+      const r = await fetch("/api/patient/appointments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug,
+          startsAtIso: selectedSlot.startIso,
+          endsAtIso: selectedSlot.endIso,
+          modality: selectedSlot.modality,
+          addressId: selectedSlot.modality === "ONLINE" ? null : selectedSlot.addressId,
+          message: message.trim() || null,
+        }),
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        setSubmitMsg({ type: "err", text: data.error ?? "Não foi possível agendar." });
+        return;
+      }
+      setSubmitMsg({
+        type: "ok",
+        text: "Consulta agendada com sucesso! Você pode acompanhar em Minhas Consultas.",
+      });
+      setMessage("");
+      setSelectedSlot(null);
+      setSelected(undefined);
+    } catch {
+      setSubmitMsg({ type: "err", text: "Falha de rede ao enviar." });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const onSubmitPublic = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!slug?.trim() || !selectedSlot) return;
     setSubmitting(true);
@@ -228,6 +330,8 @@ export function TeamDetailBookingSection({ slug }: { slug: string | undefined })
     }
   };
 
+  // ── render ────────────────────────────────────────────────────────────────────
+
   if (!slug?.trim()) {
     return (
       <p className="text-white mb-0">
@@ -240,8 +344,8 @@ export function TeamDetailBookingSection({ slug }: { slug: string | undefined })
     <div className="text-start">
       {monthError ? <Alert variant="warning">{monthError}</Alert> : null}
 
+      {/* Calendar */}
       <div className="bg-white text-dark rounded p-3 mb-4">
-        
         <div className="d-flex justify-content-center team-detail-rdp">
           <DayPicker
             mode="single"
@@ -266,6 +370,7 @@ export function TeamDetailBookingSection({ slug }: { slug: string | undefined })
         </div>
       </div>
 
+      {/* Day slots */}
       {selected ? (
         <div className="mb-4">
           <h4 className="text-white font-18 m-b15">
@@ -308,6 +413,7 @@ export function TeamDetailBookingSection({ slug }: { slug: string | undefined })
         </div>
       ) : null}
 
+      {/* Booking form — only shows after slot selection */}
       {selectedSlot ? (
         <div className="border border-light border-opacity-25 rounded p-3 bg-black bg-opacity-10">
           <h5 className="text-white font-16 m-b15">Confirmar horário</h5>
@@ -319,65 +425,64 @@ export function TeamDetailBookingSection({ slug }: { slug: string | undefined })
                 ? ` · ${selectedSlot.addressLabel}`
                 : ""}
           </p>
+
           {submitMsg ? (
             <Alert variant={submitMsg.type === "ok" ? "success" : "danger"} className="mb-3">
               {submitMsg.text}
+              {submitMsg.type === "ok" && isPatient ? (
+                <div className="mt-2">
+                  <Link href="/dashboard/paciente/consultas" className="alert-link">
+                    Ver minhas consultas →
+                  </Link>
+                </div>
+              ) : null}
             </Alert>
           ) : null}
-          <Form onSubmit={onSubmit}>
-            <Form.Group className="mb-3">
-              <Form.Label className="text-white">Nome completo *</Form.Label>
-              <Form.Control
-                required
-                value={fullName}
-                onChange={(ev) => setFullName(ev.target.value)}
-                maxLength={200}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label className="text-white">E-mail *</Form.Label>
-              <Form.Control
-                type="email"
-                required
-                value={email}
-                onChange={(ev) => setEmail(ev.target.value)}
-                maxLength={320}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label className="text-white">Telefone *</Form.Label>
-              <Form.Control
-                required
-                value={phone}
-                onChange={(ev) => setPhone(ev.target.value)}
-                minLength={8}
-                maxLength={40}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label className="text-white">Mensagem (opcional)</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                value={message}
-                onChange={(ev) => setMessage(ev.target.value)}
-                maxLength={2000}
-              />
-            </Form.Group>
-            <div className="team-detail-form-actions d-flex flex-wrap align-items-center gap-2">
-              <Button type="submit" variant="light" disabled={submitting}>
-                {submitting ? "Enviando…" : "Agendar"}
-              </Button>
-              <Button
-                type="button"
-                variant="link"
-                className="text-white text-decoration-none"
-                onClick={() => setSelectedSlot(null)}
-              >
-                Voltar aos horários
-              </Button>
+
+          {/* Auth loading */}
+          {authLoading ? (
+            <div className="text-white d-flex align-items-center gap-2">
+              <Spinner animation="border" size="sm" />
+              Verificando sessão…
             </div>
-          </Form>
+          ) : isOtherRole ? (
+            /* Logged in as non-patient */
+            <Alert variant="warning">
+              Você está logado como <strong>{authRole}</strong>. Para agendar, faça login como
+              paciente.
+            </Alert>
+          ) : !authUser ? (
+            /* Not logged in */
+            <LoginWall slug={slug} />
+          ) : (
+            /* Authenticated patient */
+            <Form onSubmit={onSubmitAuthenticated}>
+              <Form.Group className="mb-3">
+                <Form.Label className="text-white">Mensagem para o profissional (opcional)</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  placeholder="Ex.: prefiro sessão no período da tarde, tenho mobilidade reduzida…"
+                  value={message}
+                  onChange={(ev) => setMessage(ev.target.value)}
+                  maxLength={2000}
+                />
+              </Form.Group>
+              <div className="team-detail-form-actions d-flex flex-wrap align-items-center gap-2">
+                <Button type="submit" variant="light" disabled={submitting}>
+                  {submitting ? "Agendando…" : "Confirmar agendamento"}
+                </Button>
+                <Button
+                  type="button"
+                  variant="link"
+                  className="text-white text-decoration-none"
+                  onClick={() => setSelectedSlot(null)}
+                >
+                  Voltar aos horários
+                </Button>
+              </div>
+            </Form>
+          )}
         </div>
       ) : null}
     </div>

@@ -42,8 +42,29 @@ export function RoleLoginForm({ expectedRole, signupHref, alternateHref }: Props
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [loading,  setLoading]  = useState(false);
+  const [checking, setChecking] = useState(true);
 
   const isPsi = expectedRole === "PSYCHOLOGIST";
+
+  // ── Redireciona se já estiver logado com o papel correto ──────────────────
+  useEffect(() => {
+    supabaseClient.auth.getUser().then(({ data }) => {
+      const u = data.user;
+      if (u) {
+        const role = u.app_metadata?.role ?? u.user_metadata?.role ?? null;
+        if (role === expectedRole || role === "ADMIN") {
+          const requested = searchParams.get("redirect");
+          const next =
+            role === "ADMIN"
+              ? "/dashboard"
+              : safeRedirect(expectedRole, requested);
+          router.replace(next);
+          return;
+        }
+      }
+      setChecking(false);
+    });
+  }, [router, searchParams, expectedRole]);
 
   useEffect(() => {
     if (!registeredRef.current && searchParams.get("registered") === "1") {
@@ -104,6 +125,15 @@ export function RoleLoginForm({ expectedRole, signupHref, alternateHref }: Props
     } finally {
       setLoading(false);
     }
+  }
+
+  // Enquanto verifica a sessão não renderiza o form (evita flash)
+  if (checking) {
+    return (
+      <div className="d-flex align-items-center justify-content-center py-5">
+        <span className="spinner-border text-primary" role="status" />
+      </div>
+    );
   }
 
   return (

@@ -8,15 +8,21 @@ import { supabaseClient } from "@/lib/db/supabase/client";
 import type { UserRole } from "@/lib/auth/roles";
 import { cn } from "@/lib/utils";
 import {
+  Bot,
+  CalendarCheck,
   CalendarDays,
   ChevronDown,
+  ClipboardList,
+  CreditCard,
   FileText,
   Home,
   LogOut,
   MapPin,
   Menu,
+  Search,
   Settings,
   Share2,
+  Smile,
   UserRound,
   Users,
   X,
@@ -50,8 +56,19 @@ export function DashboardShell({ children, userEmail, userAvatarUrl, role }: Pro
   const isPsychologistProfileActive = isRouteOrChild("/dashboard/psicologo/perfil");
   const isPsychologistAddressesActive = isRouteOrChild("/dashboard/psicologo/enderecos");
   const isPsychologistSocialActive = isRouteOrChild("/dashboard/psicologo/redes-sociais");
+  const isPsychologistAssinaturaActive = isRouteOrChild("/dashboard/psicologo/assinatura");
   const isPsychologistSubActive =
-    isPsychologistProfileActive || isPsychologistAddressesActive || isPsychologistSocialActive;
+    isPsychologistProfileActive ||
+    isPsychologistAddressesActive ||
+    isPsychologistSocialActive ||
+    isPsychologistAssinaturaActive;
+  const isPatientHomeActive        = isActive("/dashboard/paciente");
+  const isPatientAnamneseActive    = isRouteOrChild("/dashboard/paciente/anamnese");
+  const isPatientPsychsActive      = isRouteOrChild("/dashboard/paciente/psicologos");
+  const isPatientPerfilActive      = isRouteOrChild("/dashboard/paciente/perfil");
+  const isPatientHumorActive       = isRouteOrChild("/dashboard/paciente/humor");
+  const isPatientAssistenteActive  = isRouteOrChild("/dashboard/paciente/assistente");
+  const isPatientConsultasActive   = isRouteOrChild("/dashboard/paciente/consultas");
   const isPatientDashboardActive = isRouteOrChild("/dashboard/paciente");
   const isAdminDashboardActive = isRouteOrChild("/dashboard/admin");
 
@@ -142,7 +159,9 @@ export function DashboardShell({ children, userEmail, userAvatarUrl, role }: Pro
         </div>
 
         <nav className="flex-grow-1 p-2 list-group list-group-flush">
-          <NavItem href="/dashboard" label="Inicio" active={isActive("/dashboard")} icon={<Home size={16} />} />
+          {!isPatient ? (
+            <NavItem href="/dashboard" label="Inicio" active={isActive("/dashboard")} icon={<Home size={16} />} />
+          ) : null}
 
           {isPsychologist ? (
             <>
@@ -202,6 +221,12 @@ export function DashboardShell({ children, userEmail, userAvatarUrl, role }: Pro
                         active={isPsychologistSocialActive}
                         icon={<Share2 size={16} />}
                       />
+                      <NavItem
+                        href="/dashboard/psicologo/assinatura"
+                        label="Assinatura"
+                        active={isPsychologistAssinaturaActive}
+                        icon={<CreditCard size={16} />}
+                      />
                     </div>
                   </div>
                 ) : null}
@@ -210,12 +235,50 @@ export function DashboardShell({ children, userEmail, userAvatarUrl, role }: Pro
           ) : null}
 
           {isPatient ? (
-            <NavItem
-              href="/dashboard/paciente"
-              label="Paciente"
-              active={isPatientDashboardActive}
-              icon={<Users size={16} />}
-            />
+            <>
+              <NavItem
+                href="/dashboard/paciente"
+                label="Inicio"
+                active={isPatientHomeActive}
+                icon={<Home size={16} />}
+              />
+              <NavItem
+                href="/dashboard/paciente/anamnese"
+                label="Minha anamnese"
+                active={isPatientAnamneseActive}
+                icon={<ClipboardList size={16} />}
+              />
+              <NavItem
+                href="/dashboard/paciente/psicologos"
+                label="Encontrar psicologo"
+                active={isPatientPsychsActive}
+                icon={<Search size={16} />}
+              />
+              <NavItem
+                href="/dashboard/paciente/consultas"
+                label="Minhas consultas"
+                active={isPatientConsultasActive}
+                icon={<CalendarCheck size={16} />}
+              />
+              <NavItem
+                href="/dashboard/paciente/humor"
+                label="Diario de humor"
+                active={isPatientHumorActive}
+                icon={<Smile size={16} />}
+              />
+              <NavItem
+                href="/dashboard/paciente/assistente"
+                label="Assistente IA"
+                active={isPatientAssistenteActive}
+                icon={<Bot size={16} />}
+              />
+              <NavItem
+                href="/dashboard/paciente/perfil"
+                label="Meu perfil"
+                active={isPatientPerfilActive}
+                icon={<UserRound size={16} />}
+              />
+            </>
           ) : null}
 
           {isAdmin ? (

@@ -339,6 +339,30 @@ export async function dbSoftDeleteClinicalNote(noteId: string, psychologistId: s
   return row ?? null;
 }
 
+export async function dbUpdateClinicalNote(
+  noteId: string,
+  psychologistId: string,
+  patch: {
+    title?: string | null;
+    body?: string;
+    noteType?: typeof psychologistPatientClinicalNotes.$inferInsert["noteType"];
+  },
+) {
+  const now = new Date();
+  const [row] = await db
+    .update(psychologistPatientClinicalNotes)
+    .set({ ...patch, updatedAt: now })
+    .where(
+      and(
+        eq(psychologistPatientClinicalNotes.id, noteId),
+        eq(psychologistPatientClinicalNotes.psychologistId, psychologistId),
+        isNull(psychologistPatientClinicalNotes.deletedAt),
+      ),
+    )
+    .returning();
+  return row ?? null;
+}
+
 export async function dbReplaceNoteTags(noteId: string, tagIds: string[]) {
   await db.delete(psychologistClinicalNoteTags).where(eq(psychologistClinicalNoteTags.noteId, noteId));
   if (tagIds.length === 0) return;
