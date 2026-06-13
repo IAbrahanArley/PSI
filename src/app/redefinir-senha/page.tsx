@@ -4,8 +4,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import Header from "@/layout/Header";
+import { AuthSplitLayout } from "@/app/login/_components/AuthSplitLayout";
 import { supabaseClient } from "@/lib/db/supabase/client";
+
+const inputStyle = {
+  borderRadius: 10,
+  border: "1.5px solid #e5e7eb",
+  fontSize: "0.95rem",
+};
 
 export default function RedefinirSenhaPage() {
   const router = useRouter();
@@ -14,6 +20,7 @@ export default function RedefinirSenhaPage() {
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPass, setShowPass] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -45,7 +52,7 @@ export default function RedefinirSenhaPage() {
       return;
     }
     if (password !== confirmPassword) {
-      toast.error("As senhas nao conferem.");
+      toast.error("As senhas não conferem.");
       return;
     }
 
@@ -53,7 +60,7 @@ export default function RedefinirSenhaPage() {
     try {
       const { error } = await supabaseClient.auth.updateUser({ password });
       if (error) {
-        toast.error("Nao foi possivel redefinir a senha agora.");
+        toast.error("Não foi possível redefinir a senha agora.");
         return;
       }
 
@@ -61,91 +68,126 @@ export default function RedefinirSenhaPage() {
       await supabaseClient.auth.signOut();
       router.push("/login");
     } catch {
-      toast.error("Falha de conexao. Tente novamente.");
+      toast.error("Falha de conexão. Tente novamente.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <>
-      <Header />
-      <main className="page-content">
-        <section className="content-inner bg-light">
-          <div className="container">
-            <div className="row justify-content-center">
-              <div className="col-lg-8 col-xl-6">
-                <div className="card shadow-sm border-0">
-                  <div className="card-body p-4 p-md-5">
-                    <h1 className="title text-secondary m-b20">Redefinir senha</h1>
-                    <p className="text-muted m-b30">
-                      Defina uma nova senha para sua conta.
-                    </p>
+    <AuthSplitLayout role="paciente">
+      <h2 className="fw-bold mb-1" style={{ fontSize: "1.75rem", color: "#1a1a2e" }}>
+        Redefinir senha
+      </h2>
+      <p className="text-muted mb-4" style={{ fontSize: "0.92rem" }}>
+        Crie uma nova senha para acessar sua conta.
+      </p>
 
-                    {!ready ? (
-                      <p className="text-muted mb-0">Carregando...</p>
-                    ) : !canReset ? (
-                      <div className="alert alert-warning">
-                        Este link esta invalido ou expirou. Solicite um novo link de recuperacao.
-                      </div>
-                    ) : (
-                      <form onSubmit={onSubmit} noValidate>
-                        <div className="row g-3">
-                          <div className="col-12">
-                            <label className="form-label" htmlFor="new-password">
-                              Nova senha
-                            </label>
-                            <input
-                              id="new-password"
-                              type="password"
-                              className="form-control"
-                              value={password}
-                              onChange={(e) => setPassword(e.target.value)}
-                              autoComplete="new-password"
-                              required
-                              minLength={8}
-                            />
-                          </div>
-                          <div className="col-12">
-                            <label className="form-label" htmlFor="confirm-password">
-                              Confirmar nova senha
-                            </label>
-                            <input
-                              id="confirm-password"
-                              type="password"
-                              className="form-control"
-                              value={confirmPassword}
-                              onChange={(e) => setConfirmPassword(e.target.value)}
-                              autoComplete="new-password"
-                              required
-                              minLength={8}
-                            />
-                          </div>
-                        </div>
-
-                        <div className="d-flex flex-wrap gap-2 mt-4">
-                          <button type="submit" className="btn btn-primary btn-lg" disabled={loading}>
-                            {loading ? "Salvando..." : "Salvar nova senha"}
-                          </button>
-                          <Link href="/recuperar-senha" className="btn btn-outline-primary btn-lg">
-                            Solicitar novo link
-                          </Link>
-                        </div>
-                      </form>
-                    )}
-
-                    <div className="mt-3">
-                      <Link href="/login" className="small text-decoration-none">
-                        Voltar para login
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
+      {!ready ? (
+        <div className="d-flex align-items-center justify-content-center py-5">
+          <span className="spinner-border text-primary" role="status" />
+        </div>
+      ) : !canReset ? (
+        <>
+          <div
+            className="d-flex align-items-start gap-3 p-3 rounded-3 mb-4"
+            style={{ background: "#fffbeb", border: "1px solid #fde68a" }}
+          >
+            <span
+              className="d-inline-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
+              style={{ width: 36, height: 36, background: "#f59e0b" }}
+            >
+              <i className="feather icon-alert-triangle text-white" />
+            </span>
+            <div>
+              <p className="fw-semibold mb-1" style={{ color: "#92400e", fontSize: "0.95rem" }}>
+                Link inválido ou expirado
+              </p>
+              <p className="mb-0" style={{ color: "#b45309", fontSize: "0.85rem", lineHeight: 1.5 }}>
+                Este link de recuperação não é mais válido. Solicite um novo para continuar.
+              </p>
             </div>
           </div>
-        </section>
-      </main>
-    </>
+          <Link
+            href="/recuperar-senha"
+            className="btn btn-primary btn-lg w-100 fw-semibold"
+            style={{ borderRadius: 10, fontSize: "1rem", height: 52 }}
+          >
+            Solicitar novo link
+          </Link>
+        </>
+      ) : (
+        <form onSubmit={onSubmit} noValidate>
+          <div className="mb-3">
+            <label className="form-label fw-semibold small" htmlFor="new-password" style={{ color: "#374151" }}>
+              Nova senha
+            </label>
+            <div className="input-group">
+              <input
+                id="new-password"
+                type={showPass ? "text" : "password"}
+                className="form-control form-control-lg"
+                style={{ ...inputStyle, borderRadius: "10px 0 0 10px", borderRight: "none" }}
+                placeholder="Mínimo 8 caracteres"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="new-password"
+                required
+                minLength={8}
+              />
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={() => setShowPass((p) => !p)}
+                tabIndex={-1}
+                style={{ borderRadius: "0 10px 10px 0", border: "1.5px solid #e5e7eb", borderLeft: "none" }}
+              >
+                <i className={`feather ${showPass ? "icon-eye-off" : "icon-eye"}`} />
+              </button>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label className="form-label fw-semibold small" htmlFor="confirm-password" style={{ color: "#374151" }}>
+              Confirmar nova senha
+            </label>
+            <input
+              id="confirm-password"
+              type={showPass ? "text" : "password"}
+              className="form-control form-control-lg"
+              style={inputStyle}
+              placeholder="Repita a senha"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              autoComplete="new-password"
+              required
+              minLength={8}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="btn btn-primary btn-lg w-100 fw-semibold"
+            disabled={loading}
+            style={{ borderRadius: 10, fontSize: "1rem", height: 52 }}
+          >
+            {loading ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden />
+                Salvando…
+              </>
+            ) : (
+              "Salvar nova senha"
+            )}
+          </button>
+        </form>
+      )}
+
+      <div className="text-center mt-4">
+        <Link href="/login" className="small text-muted text-decoration-none">
+          ← Voltar ao login
+        </Link>
+      </div>
+    </AuthSplitLayout>
   );
 }

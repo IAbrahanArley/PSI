@@ -23,8 +23,8 @@ function normalizeSpecialty(raw: string | null | undefined): string | null {
 
 export async function getTeamRegularChunk(input: {
   specialty?: string | null;
-  /** Valor para filtro `lower(trim(psychologists.city))`. */
   city?: string | null;
+  modality?: "ONLINE" | "PRESENTIAL" | null;
   offset: number;
   limit: number;
 }): Promise<TeamRegularChunk> {
@@ -41,6 +41,7 @@ export async function getTeamRegularChunk(input: {
   const base = await publicPsychologistListingWhere({
     specialtyParam: specialty,
     cityParam: cityKey,
+    modality: input.modality ?? null,
   });
   const whereClause = and(base, eq(psychologists.advertisingHighlight, false));
 

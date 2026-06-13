@@ -334,6 +334,17 @@ function Header() {
         <div className={`sticky-header main-bar-wraper ${scroll ? "is-fixed" : ""}`}>
           <div className="main-bar clearfix bg-primary text-white">
             <div className="container-fluid clearfix inner-bar">
+              {/* Logo da marca */}
+              <div className="logo-header logo-dark" style={{ width: "auto" }}>
+                <Link href="/" aria-label="Página inicial">
+                  <Image
+                    src={IMAGES.headerLogo}
+                    alt="Mindzinho"
+                    priority
+                    style={{ height: 64, width: "auto", objectFit: "contain" }}
+                  />
+                </Link>
+              </div>
               <button
                 onClick={() => setShow(2)}
                 className={`w3menu-toggler navicon ${show ? "open" : ""}`}

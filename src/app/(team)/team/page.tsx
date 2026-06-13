@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import type { TeamFeaturedPsychologist } from "@/actions/psychologists/types";
 import { TeamFeaturedPsychologistSection } from "@/component/TeamFeaturedPsychologistSection";
@@ -13,8 +13,11 @@ import {
   useTeamRegularInfinite,
 } from "@/hooks/psychologists/queries";
 import Header from "@/layout/Header";
+import { Monitor, MapPin, LayoutGrid } from "lucide-react";
 import { Fragment, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+
+type Modality = "ONLINE" | "PRESENTIAL" | null;
 
 const ROW_SIZE = 4;
 
@@ -60,6 +63,35 @@ function pickFeaturedPair(
   return ids.map((id) => pool.find((p) => p.id === id)!).filter(Boolean);
 }
 
+/** Skeleton de um card de psicologo (mesma proporcao do TeamPsychologistCard). */
+function TeamCardSkeleton() {
+  return (
+    <div className="col-xl-3 col-sm-6 mb-4">
+      <div className="rounded-3 overflow-hidden border bg-white placeholder-glow">
+        <span
+          className="placeholder w-100 d-block"
+          style={{ aspectRatio: "1 / 1.12", borderRadius: 0 }}
+        />
+        <div className="p-3">
+          <span className="placeholder col-8 d-block mb-2" style={{ height: 16 }} />
+          <span className="placeholder col-5 d-block" style={{ height: 12 }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Grade de skeletons para o estado de carregamento inicial. */
+function TeamGridSkeleton({ rows = 2 }: { rows?: number }) {
+  return (
+    <div className="row" aria-busy="true" aria-label="Carregando profissionais">
+      {Array.from({ length: rows * ROW_SIZE }).map((_, i) => (
+        <TeamCardSkeleton key={i} />
+      ))}
+    </div>
+  );
+}
+
 function TeamContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -72,12 +104,17 @@ function TeamContent() {
     [searchParams],
   );
   const cityFilter = useMemo(() => parseListingParam(searchParams.get("cidade")), [searchParams]);
+  const modalityFilter = useMemo((): Modality => {
+    const raw = searchParams.get("modalidade");
+    if (raw === "ONLINE" || raw === "PRESENTIAL") return raw;
+    return null;
+  }, [searchParams]);
 
   const selectSpecialtyValue = specialtyFilter ?? "todos";
 
   useEffect(() => {
     featuredPickCache.current = new Map();
-  }, [specialtyFilter, cityFilter]);
+  }, [specialtyFilter, cityFilter, modalityFilter]);
 
   // City autocomplete: keep an option object to display the label
   const [cityOptionObj, setCityOptionObj] = useState<CityOption | null>(null);
@@ -89,8 +126,8 @@ function TeamContent() {
 
   const { data: specialtyOptions = [], isLoading: specialtiesLoading } = usePublicCatalogSpecialtyOptions();
   const { data: searchFilters } = usePublicSearchFilters();
-  const regular = useTeamRegularInfinite(specialtyFilter, cityFilter, ROW_SIZE);
-  const advertising = useTeamAdvertisingPool(specialtyFilter, cityFilter);
+  const regular = useTeamRegularInfinite(specialtyFilter, cityFilter, ROW_SIZE, modalityFilter);
+  const advertising = useTeamAdvertisingPool(specialtyFilter, cityFilter, modalityFilter);
 
   useEffect(() => {
     const el = loadMoreRef.current;
@@ -107,12 +144,15 @@ function TeamContent() {
     return () => obs.disconnect();
   }, [regular.hasNextPage, regular.isFetchingNextPage, regular.fetchNextPage]);
 
-  function syncQuery(nextEspecialidade: string | null, nextCidadeKey: string | null) {
+  function syncQuery(
+    nextEspecialidade: string | null,
+    nextCidadeKey: string | null,
+    nextModality: Modality = modalityFilter,
+  ) {
     const next = new URLSearchParams(searchParams.toString());
-    if (!nextEspecialidade) next.delete("especialidade");
-    else next.set("especialidade", nextEspecialidade);
-    if (!nextCidadeKey) next.delete("cidade");
-    else next.set("cidade", nextCidadeKey);
+    if (!nextEspecialidade) next.delete("especialidade"); else next.set("especialidade", nextEspecialidade);
+    if (!nextCidadeKey)     next.delete("cidade");        else next.set("cidade", nextCidadeKey);
+    if (!nextModality)      next.delete("modalidade");    else next.set("modalidade", nextModality);
     const qs = next.toString();
     router.push(qs ? `/team?${qs}` : "/team");
   }
@@ -120,6 +160,10 @@ function TeamContent() {
   function onSpecialtyChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const v = e.target.value;
     syncQuery(v === "todos" ? null : v, cityFilter);
+  }
+
+  function onModalityChange(m: Modality) {
+    syncQuery(specialtyFilter, cityFilter, m === modalityFilter ? null : m);
   }
 
   const specialtyDisplayName =
@@ -145,13 +189,61 @@ function TeamContent() {
   const initialLoading = regular.isLoading && pages.length === 0;
   const labelsLoading = specialtiesLoading || !searchFilters;
 
-  const pageKeyPrefix = `${specialtyFilter ?? "all"}-${cityFilter ?? "all"}`;
+  const pageKeyPrefix = `${specialtyFilter ?? "all"}-${cityFilter ?? "all"}-${modalityFilter ?? "all"}`;
 
   return (
     <>
       <Header />
       <main className="page-content">
-        <PageBanner title={bannerTitle} bnrimage={IMAGES.Banner01.src} />
+        <PageBanner
+          title={bannerTitle}
+          bnrimage={IMAGES.Banner01.src}
+          cta={
+            <div
+              className="d-inline-flex flex-wrap justify-content-center gap-2 p-2"
+              style={{
+                background:      "rgba(255,255,255,0.12)",
+                backdropFilter:  "blur(8px)",
+                WebkitBackdropFilter: "blur(8px)",
+                borderRadius:    40,
+                border:          "1px solid rgba(255,255,255,0.25)",
+              }}
+            >
+              {(
+                [
+                  { value: null,         label: "Todos",       icon: <LayoutGrid size={15} /> },
+                  { value: "ONLINE",     label: "Online",      icon: <Monitor    size={15} /> },
+                  { value: "PRESENTIAL", label: "Presencial",  icon: <MapPin     size={15} /> },
+                ] as { value: Modality; label: string; icon: React.ReactNode }[]
+              ).map(({ value, label, icon }) => {
+                const active = modalityFilter === value;
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => onModalityChange(value)}
+                    className="btn btn-sm d-flex align-items-center gap-2"
+                    style={{
+                      fontWeight:    600,
+                      borderRadius:  30,
+                      fontSize:      "0.85rem",
+                      paddingInline: "1.1rem",
+                      paddingBlock:  "0.5rem",
+                      border:        "none",
+                      transition:    "all 0.2s ease",
+                      background:    active ? "var(--bs-primary, #6a3093)" : "rgba(255,255,255,0.92)",
+                      color:         active ? "#fff" : "var(--bs-primary, #6a3093)",
+                      boxShadow:     active ? "0 4px 14px rgba(0,0,0,0.25)" : "none",
+                    }}
+                  >
+                    {icon}
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          }
+        />
         <section className="content-inner">
           <div className="container">
             <div className="row g-3 m-b30 align-items-end">
@@ -204,7 +296,7 @@ function TeamContent() {
             ) : null}
 
             {initialLoading ? (
-              <p className="text-muted">Carregando profissionais…</p>
+              <TeamGridSkeleton rows={2} />
             ) : !hasAnyRegular && pool.length > 0 ? (
               <div className="d-flex flex-column gap-4">
                 <p className="small text-muted mb-0">
@@ -220,8 +312,8 @@ function TeamContent() {
                 {(specialtyFilter || cityFilter) ?
                   <>
                     Nenhum profissional encontrado para estes filtros
-                    {specialtyDisplayName ? ` — especialidade “${specialtyDisplayName}”` : ""}
-                    {cityDisplayLabel ? ` — cidade “${cityDisplayLabel}”` : ""}
+                    {specialtyDisplayName ? ` — especialidade "${specialtyDisplayName}"` : ""}
+                    {cityDisplayLabel ? ` — cidade "${cityDisplayLabel}"` : ""}
                     .
                   </>
                 : "Nenhum profissional disponível no momento."}
@@ -253,12 +345,11 @@ function TeamContent() {
 
                   </Fragment>
                 ))}
+                {regular.isFetchingNextPage && <TeamGridSkeleton rows={1} />}
                 <div ref={loadMoreRef} className="py-4 text-center text-muted small">
-                  {regular.isFetchingNextPage ?
-                    "Carregando mais profissionais…"
-                  : !regular.hasNextPage && hasAnyRegular ?
-                    "Você viu todos os profissionais desta lista."
-                  : null}
+                  {!regular.isFetchingNextPage && !regular.hasNextPage && hasAnyRegular
+                    ? "Você viu todos os profissionais desta lista."
+                    : null}
                 </div>
               </>
             )}
@@ -276,7 +367,9 @@ function TeamFallback() {
       <main className="page-content">
         <PageBanner title="Nossos especialistas" bnrimage={IMAGES.Banner01.src} />
         <section className="content-inner">
-          <div className="container py-5 text-muted">Carregando…</div>
+          <div className="container">
+            <TeamGridSkeleton rows={2} />
+          </div>
         </section>
       </main>
     </>

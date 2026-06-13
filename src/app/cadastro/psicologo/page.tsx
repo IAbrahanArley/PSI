@@ -75,7 +75,8 @@ export default function CadastroPsicologoPage() {
         return;
       }
       setPassword("");
-      router.push("/login/psicologo?registered=1");
+      // Conta criada não confirmada → ativar por código enviado ao e-mail.
+      router.push(`/ativar-conta?role=psicologo&email=${encodeURIComponent(email)}`);
     } catch {
       toast.error("Falha de rede. Tente novamente.");
     } finally {

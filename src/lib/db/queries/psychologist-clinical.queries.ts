@@ -1,4 +1,4 @@
-import { type InferSelectModel, and, asc, desc, eq, inArray, isNull, lt, or, sql } from "drizzle-orm";
+﻿import { type InferSelectModel, and, asc, desc, eq, inArray, isNull, lt, or, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import {
   patients,
@@ -202,10 +202,10 @@ export type ListClinicalNotesOpts = {
 };
 
 /**
- * Lista por data decrescente (cursor estável). Destaque de “fixadas” na timeline fica na UI
+ * Lista por data decrescente (cursor estável). Destaque de "fixadas" na timeline fica na UI
  * ou via campo `isPinned` sem reordenar o cursor.
  */
-/** Bloco “destaques” no topo da timeline (fixadas). */
+/** Bloco "destaques" no topo da timeline (fixadas). */
 export async function dbListPinnedClinicalNotesByPatient(
   psychologistId: string,
   patientId: string,

@@ -4,6 +4,8 @@ import { db } from "@/lib/db";
 import { patients, users } from "@/lib/db/schema";
 import { stripPhoneDigits } from "@/lib/phone";
 import { supabaseAdmin } from "@/lib/db/supabase/admin";
+import { issueActivationCode } from "@/lib/auth/account-activation";
+import { resolveAppBaseUrl } from "@/lib/app-url";
 
 type Body = {
   firstName?: string;
@@ -70,7 +72,8 @@ export async function POST(req: Request) {
   const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
     email,
     password,
-    email_confirm: true,
+    // Conta nasce NAO confirmada — ativacao por codigo de 6 digitos via e-mail.
+    email_confirm: false,
     app_metadata: { role: "PATIENT" },
   });
 
@@ -129,5 +132,18 @@ export async function POST(req: Request) {
     );
   }
 
-  return NextResponse.json({ ok: true, userId });
+  // Envia o codigo de ativacao (nao bloqueia o sucesso do cadastro se o e-mail falhar;
+  // o usuario pode reenviar na tela de ativacao).
+  try {
+    await issueActivationCode({
+      userId,
+      email,
+      name: fullName,
+      baseUrl: resolveAppBaseUrl(req),
+    });
+  } catch (e) {
+    console.error("[register-patient] issueActivationCode falhou", e);
+  }
+
+  return NextResponse.json({ ok: true, userId, requiresActivation: true, email });
 }

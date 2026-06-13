@@ -1,6 +1,6 @@
 "use client";
 
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery, type QueryClient } from "@tanstack/react-query";
 import { getPsychologistBySlug } from "@/actions/psychologists/get-psychologist-by-slug";
 import { getPublicPsychologists } from "@/actions/psychologists/get-public-psychologists";
 import { getPublicCatalogSpecialtyOptions } from "@/actions/psychologists/get-public-specialty-options";
@@ -13,10 +13,14 @@ export const getTeamRegularInfiniteQueryKey = (
   specialty: string | null,
   city: string | null,
   pageSize: number,
-) => ["team-regular-infinite", specialty, city, pageSize] as const;
+  modality: string | null,
+) => ["team-regular-infinite", specialty, city, pageSize, modality] as const;
 
-export const getTeamAdvertisingPoolQueryKey = (specialty: string | null, city: string | null) =>
-  ["team-advertising-pool", specialty, city] as const;
+export const getTeamAdvertisingPoolQueryKey = (
+  specialty: string | null,
+  city: string | null,
+  modality: string | null,
+) => ["team-advertising-pool", specialty, city, modality] as const;
 
 export const getPsychologistBySlugQueryKey = (slug?: string) => ["psychologist-detail", slug ?? ""] as const;
 
@@ -33,18 +37,20 @@ export function usePublicPsychologists(limit = 4) {
 
 const TEAM_ROW_SIZE = 4;
 
-/** Grade “normal” da /team (sem destaque publicitário), paginada para scroll infinito. */
+/** Grade "normal" da /team (sem destaque publicitario), paginada para scroll infinito. */
 export function useTeamRegularInfinite(
   specialty: string | null,
   city: string | null,
   pageSize = TEAM_ROW_SIZE,
+  modality: "ONLINE" | "PRESENTIAL" | null = null,
 ) {
   return useInfiniteQuery({
-    queryKey: getTeamRegularInfiniteQueryKey(specialty, city, pageSize),
+    queryKey: getTeamRegularInfiniteQueryKey(specialty, city, pageSize, modality),
     queryFn: ({ pageParam }) =>
       getTeamRegularChunk({
         specialty: specialty ?? undefined,
         city: city ?? undefined,
+        modality: modality ?? undefined,
         offset: pageParam as number,
         limit: pageSize,
       }),
@@ -53,14 +59,19 @@ export function useTeamRegularInfinite(
   });
 }
 
-/** Pool de psicólogos com `advertising_highlight` (um sorteado por fileira na /team). */
-export function useTeamAdvertisingPool(specialty: string | null, city: string | null) {
+/** Pool de psicologos com advertising_highlight (um sorteado por fileira na /team). */
+export function useTeamAdvertisingPool(
+  specialty: string | null,
+  city: string | null,
+  modality: "ONLINE" | "PRESENTIAL" | null = null,
+) {
   return useQuery({
-    queryKey: getTeamAdvertisingPoolQueryKey(specialty, city),
+    queryKey: getTeamAdvertisingPoolQueryKey(specialty, city, modality),
     queryFn: () =>
       getTeamAdvertisingPool({
         specialty: specialty ?? undefined,
         city: city ?? undefined,
+        modality: modality ?? undefined,
       }),
     staleTime: 2 * 60 * 1000,
   });
@@ -85,7 +96,7 @@ export function usePublicSearchFilters() {
     queryFn: async (): Promise<PublicSearchFiltersWire> => {
       const res = await fetch("/api/public/search-filters");
       const data = (await res.json().catch(() => ({}))) as PublicSearchFiltersWire;
-      if (!res.ok) throw new Error((data as { error?: string }).error ?? "Não foi possível carregar filtros.");
+      if (!res.ok) throw new Error((data as { error?: string }).error ?? "Nao foi possivel carregar filtros.");
       return data;
     },
     staleTime: 5 * 60 * 1000,
@@ -109,5 +120,18 @@ export function usePsychologistBySlug(slug?: string) {
     queryKey: getPsychologistBySlugQueryKey(slug),
     queryFn: () => getPsychologistBySlug(slug),
     enabled: Boolean(slug),
+    // Perfis mudam pouco: 5 min fresco + 15 min em cache.
+    // Revisitar o mesmo perfil dentro da janela mostra os dados na hora (sem skeleton).
+    staleTime: 5 * 60_000,
+    gcTime: 15 * 60_000,
+  });
+}
+
+/** Prefetch do perfil — use ao passar o mouse/focar num card para navegacao instantanea. */
+export function prefetchPsychologistBySlug(queryClient: QueryClient, slug: string) {
+  return queryClient.prefetchQuery({
+    queryKey: getPsychologistBySlugQueryKey(slug),
+    queryFn: () => getPsychologistBySlug(slug),
+    staleTime: 5 * 60_000,
   });
 }

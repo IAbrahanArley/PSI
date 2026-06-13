@@ -43,7 +43,8 @@ export default function CadastroPacientePage() {
         return;
       }
       setPassword("");
-      router.push("/login/paciente?registered=1");
+      // Conta criada não confirmada → ativar por código enviado ao e-mail.
+      router.push(`/ativar-conta?role=paciente&email=${encodeURIComponent(email)}`);
     } catch {
       toast.error("Falha de rede. Tente novamente.");
     } finally {

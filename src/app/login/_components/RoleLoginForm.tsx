@@ -71,6 +71,9 @@ export function RoleLoginForm({ expectedRole, signupHref, alternateHref }: Props
       registeredRef.current = true;
       toast.success("Cadastro concluído! Entre com seu e-mail e senha.");
     }
+    if (searchParams.get("activated") === "1") {
+      toast.success("Conta ativada com sucesso! Faça login para continuar.");
+    }
   }, [searchParams]);
 
   useEffect(() => {
@@ -84,11 +87,23 @@ export function RoleLoginForm({ expectedRole, signupHref, alternateHref }: Props
     e.preventDefault();
     setLoading(true);
     try {
+      const normalizedEmail = email.trim().toLowerCase();
       const { error } = await supabaseClient.auth.signInWithPassword({
-        email:    email.trim().toLowerCase(),
+        email:    normalizedEmail,
         password,
       });
       if (error) {
+        // Conta criada mas ainda não confirmada → leva para ativação por código.
+        const notConfirmed =
+          (error as { code?: string }).code === "email_not_confirmed" ||
+          /not confirmed|não confirmad/i.test(error.message);
+        if (notConfirmed) {
+          toast.info("Sua conta ainda não foi ativada. Confirme o código enviado ao seu e-mail.");
+          router.push(
+            `/ativar-conta?role=${isPsi ? "psicologo" : "paciente"}&email=${encodeURIComponent(normalizedEmail)}`,
+          );
+          return;
+        }
         toast.error("E-mail ou senha incorretos. Verifique e tente novamente.");
         return;
       }

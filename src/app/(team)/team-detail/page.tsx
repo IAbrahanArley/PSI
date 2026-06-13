@@ -9,6 +9,7 @@ import Header from "@/layout/Header";
 import Table from "react-bootstrap/Table";
 import { TeamDetailBookingSection } from "./_componenets/TeamDetailBookingSection";
 import { TeamDetailSidebar } from "./_componenets/TeamDetailSidebar";
+import { TeamDetailSkeleton } from "./_componenets/TeamDetailSkeleton";
 import Image from "next/image";
 import { usePsychologistBySlug } from "@/hooks/psychologists/queries";
 import PsychologistSocialLinks from "@/component/PsychologistSocialLinks";
@@ -17,6 +18,45 @@ function TeamDetailContent() {
     const searchParams = useSearchParams();
     const slug = searchParams.get("slug") ?? undefined;
     const { data, isLoading } = usePsychologistBySlug(slug);
+
+    // ── Carregando: skeleton que espelha o layout ──
+    if (isLoading) {
+        return (
+            <>
+                <Header />
+                <main className="page-content">
+                    <section className="content-inner">
+                        <div className="container">
+                            <TeamDetailSkeleton />
+                        </div>
+                    </section>
+                </main>
+            </>
+        );
+    }
+
+    // ── Perfil nao encontrado ──
+    if (!data) {
+        return (
+            <>
+                <Header />
+                <main className="page-content">
+                    <section className="content-inner">
+                        <div className="container py-5 text-center">
+                            <div className="mb-3" style={{ fontSize: "3rem" }}>🔍</div>
+                            <h3 className="fw-semibold mb-2">Perfil não encontrado</h3>
+                            <p className="text-muted mb-4">
+                                Não conseguimos localizar este profissional. Ele pode ter saído da plataforma ou o link está incorreto.
+                            </p>
+                            <Link href="/team" className="btn btn-primary">
+                                Ver todos os especialistas
+                            </Link>
+                        </div>
+                    </section>
+                </main>
+            </>
+        );
+    }
 
     const displayName = data?.professionalName || data?.fullName || "Especialista";
     const primarySpecialty = data?.specialties[0] || "Psicologia";
@@ -49,13 +89,13 @@ function TeamDetailContent() {
                                             <PsychologistSocialLinks links={data?.socialLinks} iconClassName="" />
                                         </div>
                                     </div>
-                                    <TeamDetailSidebar data={data} isLoading={isLoading} />
+                                    <TeamDetailSidebar data={data} isLoading={false} />
                                 </aside>
                             </div>
                             <div className="col-lg-8 ps-xl-5 m-b30">
                                 <div className="section-head style-1 mb-30">
                                     <h2 className="titlev fw-semibold m-b0 wow fadeInUp" data-wow-delay="0.1s" data-wow-duration="0.7s">
-                                        {isLoading ? "Carregando perfil..." : displayName}
+                                        {displayName}
                                     </h2>
                                     <p className="text-primary m-b20 fw-normal font-16 wow fadeInUp" data-wow-delay="0.2s" data-wow-duration="0.7s">
                                         {data?.crp ? `CRP ${data.crp} (${primarySpecialty})` : primarySpecialty}
@@ -119,7 +159,9 @@ function TeamDetailFallback() {
             <Header />
             <main className="page-content">
                 <section className="content-inner">
-                    <div className="container py-5 text-center text-muted">Carregando…</div>
+                    <div className="container">
+                        <TeamDetailSkeleton />
+                    </div>
                 </section>
             </main>
         </>

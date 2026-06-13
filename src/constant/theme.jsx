@@ -11,6 +11,8 @@ import logo1 from '../../public/assets/images/logo/logo1.png'
 import logo2 from '../../public/assets/images/logo/logo2.png'
 import logo3 from '../../public/assets/images/logo/logo3.png'
 import logowhite from '../../public/assets/images/logo-white.svg'
+// Logo da marca usada no header
+import headerLogo from '../../public/assets/images/logo-white.svg'
 import logosmall1 from '../../public/assets/images/logo/small/logo1.png'
 import logosmall2 from '../../public/assets/images/logo/small/logo2.png'
 import logosmall3 from '../../public/assets/images/logo/small/logo3.png'
@@ -128,6 +130,7 @@ export const IMAGES = {
     bg5png: bg5png,
     logo: logo,
     logowhite: logowhite,
+    headerLogo: headerLogo,
     google: google,
     logo1: logo1,
     logo2: logo2,

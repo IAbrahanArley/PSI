@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useQueryClient } from "@tanstack/react-query";
 import type { PublicPsychologist } from "@/actions/psychologists/types";
 import { IMAGES } from "@/constant/theme";
+import { prefetchPsychologistBySlug } from "@/hooks/psychologists/queries";
 import PsychologistSocialLinks from "@/component/PsychologistSocialLinks";
 
 /** Mesmos atrasos do `EmpolyBlog` para manter o ritmo das animações WOW. */
@@ -36,11 +38,18 @@ export function TeamPsychologistCard({
   const isRemote =
     typeof psychologist.profileImageUrl === "string" && psychologist.profileImageUrl.startsWith("http");
 
+  const queryClient = useQueryClient();
+  function handleHover() {
+    onActivate();
+    void prefetchPsychologistBySlug(queryClient, psychologist.slug);
+  }
+
   return (
     <div className="col-xl-3 col-sm-6 wow fadeInUp" data-wow-delay={delay} data-wow-duration="0.8s">
       <div
         className={`dz-team style-1 box-hover ${isActive ? "active" : ""}`}
-        onMouseEnter={onActivate}
+        onMouseEnter={handleHover}
+        onFocus={handleHover}
       >
         <div className="dz-media bg-primary">
           <div

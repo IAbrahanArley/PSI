@@ -15,10 +15,11 @@ function normalizeSpecialty(raw: string | null | undefined): string | null {
   return t;
 }
 
-/** Todos os psicólogos com destaque publicitário (para sortear um por “fileira” na /team). */
+/** Todos os psicologos com destaque publicitario (para sortear um por fileira na /team). */
 export async function getTeamAdvertisingPool(input?: {
   specialty?: string | null;
   city?: string | null;
+  modality?: "ONLINE" | "PRESENTIAL" | null;
 }): Promise<TeamFeaturedPsychologist[]> {
   if (!process.env.DATABASE_URL?.trim()) return [];
 
@@ -28,6 +29,7 @@ export async function getTeamAdvertisingPool(input?: {
   const base = await publicPsychologistListingWhere({
     specialtyParam: specialtyNorm,
     cityParam: cityKey,
+    modality: input?.modality ?? null,
   });
   const whereClause = and(base, eq(psychologists.advertisingHighlight, true));
 

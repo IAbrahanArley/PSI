@@ -12,6 +12,8 @@ import {
 import { stripPhoneDigits } from "@/lib/phone";
 import { generatePsychologistSlug } from "@/lib/slug";
 import { supabaseAdmin } from "@/lib/db/supabase/admin";
+import { issueActivationCode } from "@/lib/auth/account-activation";
+import { resolveAppBaseUrl } from "@/lib/app-url";
 
 type Body = {
   firstName?: string;
@@ -111,7 +113,8 @@ export async function POST(req: Request) {
   const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
     email,
     password,
-    email_confirm: true,
+    // Conta nasce NAO confirmada — ativacao por codigo de 6 digitos via e-mail.
+    email_confirm: false,
     app_metadata: { role: "PSYCHOLOGIST" },
   });
 
@@ -196,5 +199,17 @@ export async function POST(req: Request) {
     );
   }
 
-  return NextResponse.json({ ok: true, userId });
+  // Envia o codigo de ativacao (nao bloqueia o sucesso do cadastro se o e-mail falhar).
+  try {
+    await issueActivationCode({
+      userId,
+      email,
+      name: fullName,
+      baseUrl: resolveAppBaseUrl(req),
+    });
+  } catch (e) {
+    console.error("[register-psychologist] issueActivationCode falhou", e);
+  }
+
+  return NextResponse.json({ ok: true, userId, requiresActivation: true, email });
 }

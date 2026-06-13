@@ -4,8 +4,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { IMAGES } from "@/constant/theme";
-import { usePublicPsychologists } from "@/hooks/psychologists/queries";
+import { prefetchPsychologistBySlug, usePublicPsychologists } from "@/hooks/psychologists/queries";
 import PsychologistSocialLinks from "@/component/PsychologistSocialLinks";
 
 const CARD_W   = 270;   // px — largura de cada card
@@ -21,6 +22,8 @@ function EmpolyBlog() {
 
   const { data: list = [], isLoading: loading } = usePublicPsychologists(8);
   const total = list.length;
+
+  const queryClient = useQueryClient();
 
   // ── Calcula quantos cards cabem na tela ──────────────────────────────────
   useEffect(() => {
@@ -203,6 +206,8 @@ function EmpolyBlog() {
             <div
               key={data.id}
               style={{ width: CARD_W, flexShrink: 0, scrollSnapAlign: "start" }}
+              onMouseEnter={() => void prefetchPsychologistBySlug(queryClient, data.slug)}
+              onFocus={() => void prefetchPsychologistBySlug(queryClient, data.slug)}
             >
               <div className="dz-team style-1 box-hover">
                 <div className="dz-media bg-primary">

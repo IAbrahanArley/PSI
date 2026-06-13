@@ -6,12 +6,13 @@ import { normalizeListingCity } from "@/lib/listing-city";
 import { resolveSpecialtyFilterParam } from "./resolve-specialty-param";
 
 /**
- * Combina filtros públicos para listagens (/team, home APIs):
- * status ativo + especialidade (catálogo por slug OU legado por label) + cidade.
+ * Combina filtros publicos para listagens (/team, home APIs):
+ * status ativo + especialidade (catalogo por slug OU legado por label) + cidade + modalidade.
  */
 export async function publicPsychologistListingWhere(opts: {
   specialtyParam?: string | null;
   cityParam?: string | null;
+  modality?: "ONLINE" | "PRESENTIAL" | null;
 }) {
   const statusOk = notInArray(psychologists.status, ["REJECTED", "INACTIVE"]);
   const { catalogSpecialtyId, legacyLabelNorm } = await resolveSpecialtyFilterParam(opts.specialtyParam ?? null);
@@ -41,6 +42,12 @@ export async function publicPsychologistListingWhere(opts: {
 
   if (cityNorm) {
     parts.push(sql`lower(trim(coalesce(${psychologists.city}, ''))) = ${cityNorm}`);
+  }
+
+  if (opts.modality === "ONLINE") {
+    parts.push(sql`${psychologists.offersOnline} = true`);
+  } else if (opts.modality === "PRESENTIAL") {
+    parts.push(sql`${psychologists.offersPresential} = true`);
   }
 
   return and(...parts)!;

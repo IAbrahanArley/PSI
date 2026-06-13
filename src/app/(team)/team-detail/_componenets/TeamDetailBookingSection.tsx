@@ -377,9 +377,45 @@ export function TeamDetailBookingSection({ slug }: { slug: string | undefined })
             {format(selected, "EEEE, d 'de' MMMM", { locale: ptBR })}
           </h4>
           {slotsLoading ? (
-            <div className="text-white d-flex align-items-center gap-2">
-              <Spinner animation="border" size="sm" />
-              Carregando horários…
+            <div className="team-detail-slots-tables row g-3" aria-busy="true" aria-label="Carregando horários">
+              {[0, 1].map((col) => (
+                <div key={col} className="col-12 col-lg-6">
+                  <div className="rounded overflow-hidden">
+                    {[0, 1, 2, 3].map((row) => (
+                      <div
+                        key={row}
+                        className="d-flex justify-content-between align-items-center px-3 py-2 mb-1 rounded"
+                        style={{ background: "rgba(255,255,255,0.08)" }}
+                      >
+                        <span
+                          className="rounded"
+                          style={{
+                            width: "40%",
+                            height: 12,
+                            background: "rgba(255,255,255,0.25)",
+                            animation: "tdSlotPulse 1.3s ease-in-out infinite",
+                          }}
+                        />
+                        <span
+                          className="rounded"
+                          style={{
+                            width: "30%",
+                            height: 12,
+                            background: "rgba(255,255,255,0.18)",
+                            animation: "tdSlotPulse 1.3s ease-in-out infinite",
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              <style>{`
+                @keyframes tdSlotPulse {
+                  0%, 100% { opacity: 0.5; }
+                  50%      { opacity: 1; }
+                }
+              `}</style>
             </div>
           ) : slotsError ? (
             <Alert variant="light">{slotsError}</Alert>

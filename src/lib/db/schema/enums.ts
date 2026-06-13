@@ -114,3 +114,12 @@ export const subscriptionStatusEnum = pgEnum("subscription_status", [
   "CANCELLED",
   "EXPIRED",
 ]);
+
+/**
+ * Propósito de um código de verificação enviado por e-mail.
+ * - ACCOUNT_ACTIVATION: ativação de conta no cadastro (paciente/psicólogo).
+ * (extensível: login OTP, troca de e-mail, etc.)
+ */
+export const emailVerificationPurposeEnum = pgEnum("email_verification_purpose", [
+  "ACCOUNT_ACTIVATION",
+]);
