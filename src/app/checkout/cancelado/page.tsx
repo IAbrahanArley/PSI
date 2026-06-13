@@ -40,7 +40,7 @@ export default function CheckoutCanceladoPage() {
 
               <p className="text-muted small m-t30">
                 Dúvidas sobre os planos?{" "}
-                <Link href="mailto:info@clinicmaster.com.br" className="text-primary">
+                <Link href="mailto:contato@amyre.com.br" className="text-primary">
                   Entre em contato
                 </Link>
                 .

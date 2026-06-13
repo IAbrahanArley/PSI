@@ -6,7 +6,7 @@ import Image, { StaticImageData } from "next/image"
 // header 
 export const headerinfo = [
     { image: IMAGES.svgicon1, title: 'Contatc Us', paragraph: <Link href="tel:+11234567890" className="text-secondary">+1 123 456 7890</Link>, },
-    { image: IMAGES.svgicon2, title: 'Email Supports', paragraph: <Link href="mailto:email@domain.com" className="text-secondary">email@domain.com</Link>, },
+    { image: IMAGES.svgicon2, title: 'Email Supports', paragraph: <Link href="mailto:contato@amyre.com.br" className="text-secondary">contato@amyre.com.br</Link>, },
     { image: IMAGES.svgicon3, title: 'Online Appointment', paragraph: <span>Book Now<i className="feather icon-arrow-right" /></span>, },
     { image: IMAGES.svgicon4, title: 'Supports', paragraph: '24x7 Supports', },
     { image: IMAGES.svgicon5, title: 'Payment', paragraph: <span>Pay Online <i className="feather icon-arrow-right" /></span>, },
@@ -82,7 +82,7 @@ export const headerdata : HeaderItem[] = [
 // footer
 export const footerdata1 = [
     { delay: '0.4s', icon: <i className="feather icon-phone" />, title: 'WhatsApp', paragraph: <Link href="https://wa.me/5583995775365" className="text-body">(83) 99577-5365</Link>, },
-    { delay: '0.6s', icon: <i className="feather icon-mail" />, title: 'Envie um e-mail', paragraph: <Link href="mailto:info@clinicmaster.com.br" className="text-body">info@clinicmaster.com.br</Link>, },
+    { delay: '0.6s', icon: <i className="feather icon-mail" />, title: 'Envie um e-mail', paragraph: <Link href="mailto:contato@amyre.com.br" className="text-body">contato@amyre.com.br</Link>, },
     { delay: '0.8s', icon: <i className="feather icon-clock" />, title: 'Suporte', paragraph: "Seg–Sex: 8h às 20h", },
 ]
 export const footerdata2 = [
@@ -242,7 +242,7 @@ export const inspirationaldata = [
 export const mapdata = [
     { id: 1, delay: '0.2s', icon: <i className="feather icon-map-pin" />, title: "Address", para: <p>234 Oak Drive, Villagetown, USA</p>, },
     { id: 2, delay: '0.4s', icon: <i className="feather icon-phone" />, title: "Call Us", para: <p><Link href="tel:+11234567890">+1 123 456 7890</Link></p>, },
-    { id: 3, delay: '0.6s', icon: <i className="feather icon-mail" />, title: "Send us a Mail", para: <p><Link href="mailto:info@example.com">email@domain.com</Link></p>, },
+    { id: 3, delay: '0.6s', icon: <i className="feather icon-mail" />, title: "Send us a Mail", para: <p><Link href="mailto:contato@amyre.com.br">contato@amyre.com.br</Link></p>, },
     { id: 4, delay: '0.8s', icon: <i className="feather icon-clock" />, title: "Opening Time", para: <p>Mon-Thu: 8:00am-5:00pm <br /> Fri: 8:00am-1:00pm</p>, },
 ]
 // meetdr 

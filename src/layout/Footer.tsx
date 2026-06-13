@@ -59,7 +59,7 @@ function Footer() {
                                     <div className="footer-logo logo-white">
                                         <Link href="/"><Image src={IMAGES.logo} alt="" /></Link>
                                     </div>
-                                    <p><span className="text-primary">ClinicMaster</span> conecta pacientes aos melhores psicólogos do Brasil. Atendimento online e presencial, com segurança, acolhimento e cuidado em cada etapa da sua jornada.</p>
+                                    <p><span className="text-primary">Amyre</span> conecta pacientes aos melhores psicólogos do Brasil. Atendimento online e presencial, com segurança, acolhimento e cuidado em cada etapa da sua jornada.</p>
                                 </div>
                             </div>
                             {footerdata2.map((data, i) => (
@@ -114,7 +114,7 @@ function Footer() {
                         <div className="fb-inner">
                             <div className="row">
                                 <div className="col-12 text-center">
-                                    <p className="copyright-text">© <span className="current-year">{year}</span> ClinicMaster. Todos os direitos reservados.</p>
+                                    <p className="copyright-text">© <span className="current-year">{year}</span> Amyre. Todos os direitos reservados.</p>
                                 </div>
                             </div>
                         </div>

@@ -142,7 +142,7 @@ export function DashboardShell({ children, userEmail, userAvatarUrl, role }: Pro
         <div className="border-bottom p-3 d-flex align-items-start justify-content-between gap-2">
           <div>
             <Link href="/dashboard" className="text-decoration-none" onClick={closeMobile}>
-              <span className="h5 mb-0 text-secondary fw-bold">Mindzinho</span>
+              <span className="h5 mb-0 text-secondary fw-bold">Amyre</span>
             </Link>
             <p className="small text-muted mb-0 mt-1">Painel</p>
           </div>

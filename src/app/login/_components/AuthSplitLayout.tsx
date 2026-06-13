@@ -72,7 +72,7 @@ export function AuthSplitLayout({ role, children }: Props) {
         <Link href="/" style={{ position: "relative", zIndex: 1 }}>
           <Image
             src={IMAGES.logowhite}
-            alt="ClinicMaster"
+            alt="Amyre"
             height={36}
             style={{ objectFit: "contain", objectPosition: "left" }}
           />
@@ -106,7 +106,7 @@ export function AuthSplitLayout({ role, children }: Props) {
 
         {/* Rodapé */}
         <p className="text-white mb-0" style={{ opacity: 0.45, fontSize: "0.78rem", position: "relative", zIndex: 1 }}>
-          © {new Date().getFullYear()} ClinicMaster. Todos os direitos reservados.
+          © {new Date().getFullYear()} Amyre. Todos os direitos reservados.
         </p>
       </div>
 
@@ -118,7 +118,7 @@ export function AuthSplitLayout({ role, children }: Props) {
         {/* Logo mobile (só aparece em telas pequenas) */}
         <div className="d-lg-none mb-4 text-center">
           <Link href="/">
-            <Image src={IMAGES.logo} alt="ClinicMaster" height={32} style={{ objectFit: "contain" }} />
+            <Image src={IMAGES.logo} alt="Amyre" height={32} style={{ objectFit: "contain" }} />
           </Link>
         </div>
 

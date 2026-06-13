@@ -18,7 +18,7 @@ export async function sendResendEmail({ to, subject, html, text }: SendResendEma
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
-      "User-Agent": "mindzinho-startupkit",
+      "User-Agent": "amayre-startupkit",
     },
     body: JSON.stringify({
       from,

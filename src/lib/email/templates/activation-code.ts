@@ -47,11 +47,11 @@ export function activationCodeEmail({ name, code, expiresMinutes, baseUrl }: Act
     `O código expira em ${expiresMinutes} minutos. Não compartilhe com ninguém.`,
     "Se você não criou esta conta, pode ignorar este e-mail.",
     "",
-    `Mindzinho • ${baseUrl}`,
+    `Amyre • ${baseUrl}`,
   ].join("\n");
 
   return {
-    subject: `${code} é o seu código de ativação • Mindzinho`,
+    subject: `${code} é o seu código de ativação • Amyre`,
     html,
     text,
   };

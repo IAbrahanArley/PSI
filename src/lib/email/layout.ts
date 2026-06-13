@@ -1,6 +1,6 @@
 /**
  * Shell HTML reutilizavel para e-mails transacionais da plataforma.
- * Estilos inline (exigencia dos clientes de e-mail). Visual da marca Mindzinho.
+ * Estilos inline (exigencia dos clientes de e-mail). Visual da marca Amyre.
  */
 
 const BRAND = {
@@ -28,7 +28,7 @@ export function wrapEmail({ heading, bodyHtml, baseUrl }: WrapInput): string {
       <!-- Cabecalho -->
       <div style="text-align:center;padding:8px 0 20px">
         <div style="display:inline-block;background:${BRAND.primary};color:#fff;font-weight:700;font-size:18px;letter-spacing:0.3px;padding:10px 18px;border-radius:30px">
-          Mindzinho
+          Amyre
         </div>
       </div>
 
@@ -40,7 +40,7 @@ export function wrapEmail({ heading, bodyHtml, baseUrl }: WrapInput): string {
 
       <!-- Rodape -->
       <div style="text-align:center;padding:20px 8px;color:${BRAND.muted};font-size:12px;line-height:1.6">
-        <p style="margin:0 0 4px">Voce recebeu este e-mail porque ha uma conta associada a este endereco na plataforma Mindzinho.</p>
+        <p style="margin:0 0 4px">Voce recebeu este e-mail porque ha uma conta associada a este endereco na plataforma Amyre.</p>
         <p style="margin:0"><a href="${baseUrl}" style="color:${BRAND.primary};text-decoration:none">${baseUrl.replace(/^https?:\/\//, "")}</a></p>
       </div>
     </div>

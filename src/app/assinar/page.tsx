@@ -169,7 +169,7 @@ export default async function AssinarPage({ searchParams }: Props) {
             <div className="text-center text-muted small">
               <p>
                 Dúvidas?{" "}
-                <Link href="mailto:info@clinicmaster.com.br" className="text-primary">
+                <Link href="mailto:contato@amyre.com.br" className="text-primary">
                   Entre em contato
                 </Link>{" "}
                 — respondemos por e-mail e WhatsApp.

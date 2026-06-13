@@ -41,7 +41,7 @@ export default function CheckoutSucessoPage() {
               <p className="text-muted small m-t30">
                 Você receberá um e-mail de confirmação em instantes.
                 Dúvidas?{" "}
-                <Link href="mailto:info@clinicmaster.com.br" className="text-primary">
+                <Link href="mailto:contato@amyre.com.br" className="text-primary">
                   Entre em contato
                 </Link>
                 .

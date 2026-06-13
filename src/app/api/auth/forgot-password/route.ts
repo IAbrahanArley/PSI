@@ -50,7 +50,7 @@ function recoveryHtml(actionLink: string, baseUrl: string) {
       <p>Se o botao nao funcionar, copie e cole este link no navegador:</p>
       <p style="word-break:break-all">${actionLink}</p>
       <p style="color:#666;font-size:13px">Se voce nao solicitou isso, pode ignorar este e-mail.</p>
-      <p style="color:#666;font-size:13px">Mindzinho • ${baseUrl}</p>
+      <p style="color:#666;font-size:13px">Amyre • ${baseUrl}</p>
     </div>
   `;
 }

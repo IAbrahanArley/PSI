@@ -44,7 +44,7 @@ function MeetDr() {
                                                 <Image src={data.image} alt="" />
                                             </div>
                                             <div className="dz-content">
-                                                <h3 className="title">ClinicMaster 2024</h3>
+                                                <h3 className="title">Amyre 2024</h3>
                                                 <p>Quality and Accreditation Institute</p>
                                                 <Link href={"#"} scroll={false} className="btn-link">Best Dermatologists</Link>
                                             </div>

@@ -41,7 +41,7 @@ function whatsappLink(number: string | null, name: string): string {
   if (!number) return "#";
   const digits = number.replace(/\D/g, "");
   const text = encodeURIComponent(
-    `Olá, ${name}! Vi seu perfil no Mindzinho e gostaria de agendar uma sessão.`,
+    `Olá, ${name}! Vi seu perfil no Amyre e gostaria de agendar uma sessão.`,
   );
   return `https://wa.me/55${digits}?text=${text}`;
 }

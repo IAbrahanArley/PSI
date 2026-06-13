@@ -9,8 +9,8 @@ import { Providers } from "./providers";
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
-  title: "Mindzinho - Agende sua consulta",
-  description: "Mindzinho é um sistema de agendamento de consultas online para profissionais de saúde. Ideal para psicólogos, psiquiatras, enfermeiros, enfermeiros, e outros profissionais de saúde.",
+  title: "Amyre - Agende sua consulta",
+  description: "Amyre é um sistema de agendamento de consultas online para profissionais de saúde. Ideal para psicólogos, psiquiatras, enfermeiros, enfermeiros, e outros profissionais de saúde.",
 };
 
 export default function RootLayout({

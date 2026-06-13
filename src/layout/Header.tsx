@@ -339,7 +339,7 @@ function Header() {
                 <Link href="/" aria-label="Página inicial">
                   <Image
                     src={IMAGES.headerLogo}
-                    alt="Mindzinho"
+                    alt="Amyre"
                     priority
                     style={{ height: 64, width: "auto", objectFit: "contain" }}
                   />
@@ -520,8 +520,8 @@ function Header() {
                 </Link>
               </div>
               <p>
-                ClinicMaster is a modern and responsive Bootstrap HTML template designed for
-                health and medical websites.
+                A Amyre conecta pacientes aos melhores psicólogos do Brasil, com
+                atendimento online e presencial, segurança e acolhimento.
               </p>
             </div>
             <div className="widget">
@@ -531,8 +531,8 @@ function Header() {
               <ul className="list-check">
                 <li>785 15h Street, Office 478 Berlin, De 81566</li>
                 <li>
-                  <Link href="mailto:email@domain.com" className="text-body">
-                    email@domain.com
+                  <Link href="mailto:contato@amyre.com.br" className="text-body">
+                    contato@amyre.com.br
                   </Link>
                 </li>
                 <li>
